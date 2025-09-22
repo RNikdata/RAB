@@ -72,9 +72,9 @@ with tab1:
 
     # --- KPIs ---
     total_employees = filtered_df_unique["Employee Id"].nunique()
-    total_billed = filtered_df_unique[filtered_df_unique["Billable Status"]=="Billed"]["Employee Id"].nunique()
+    total_unbilled = filtered_df_unique[filtered_df_unique["Billable Status"]=="Unbilled"]["Employee Id"].nunique()
     total_unallocated = filtered_df_unique[filtered_df_unique["Tag"]=="Unallocated"]["Employee Id"].nunique() if "Tag" in filtered_df_unique.columns else 0
-    total_snps = filtered_df_unique[filtered_df_unique["Tag"]=="SNP"]["Employee Id"].nunique() if "Tag" in filtered_df_unique.columns else 0
+    total_snps = filtered_df_unique[filtered_df_unique["SNP"]==1]["Employee Id"].nunique() if "Tag" in filtered_df_unique.columns else 0
 
     col1, col2, col3, col4 = st.columns(4)
     col1.metric("Total Employees", total_employees)
