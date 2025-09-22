@@ -129,19 +129,19 @@ with tab3:
     with col1:
         user_name_add = st.selectbox(
             "User Name (Add)",
-            options=df["Select an Option"] + df["Employee Name"].tolist(),
+            options=["Select an Option"] + df["Employee Name"].tolist(),
             key="user_name_add"
         )
     with col2:
         interested_employee_add = st.selectbox(
             "Interested Employee (Add)",
-            options=df["Select an Option"] + (df["Employee Id"].astype(str) + " - " + df["Employee Name"]).tolist(),
+            options=["Select an Option"] + (df["Employee Id"].astype(str) + " - " + df["Employee Name"]).tolist(),
             key="interested_employee_add"
         )
     with col3:
         employee_to_swap_add = st.selectbox(
             "Employee to Swap (Add)",
-            options = df["Select an Option"] + (df["Employee Id"].astype(str) + " - " + df["Employee Name"]).tolist(),
+            options = ["Select an Option"] + (df["Employee Id"].astype(str) + " - " + df["Employee Name"]).tolist(),
             key="employee_to_swap_add"
         )
 
