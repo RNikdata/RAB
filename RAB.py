@@ -161,7 +161,7 @@ with tab3:
 
                 # Generate unique request id
                 request_id = f"{user_id}{interested_emp_id}{swap_emp_id}"
-                employee_row["Request Id"] = request_id
+                employee_row["Request Id"] = int(request_id)
 
                 ads_df = pd.concat([ads_df, employee_row], ignore_index=True)
                 ads_df = ads_df.drop_duplicates(subset=["Employee Id","Interested Manager","Employee to Swap"], keep="last")
@@ -180,7 +180,7 @@ with tab3:
 
     request_id_remove = st.selectbox(
         "Enter Request ID to Remove",
-        options = ads_df["Request Id"],
+        options = ads_df["Request Id"].dropna().astype(int).tolist()
         key="request_id_remove"
     )
 
