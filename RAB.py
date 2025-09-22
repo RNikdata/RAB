@@ -191,6 +191,7 @@ with tab3:
             if request_id_remove in ads_df["Request Id"].values:
                 ads_df = ads_df[ads_df["Request Id"] != request_id_remove]
                 # Update Google Sheet
+                ads_sheet.clear()
                 set_with_dataframe(ads_sheet, ads_df)
                 st.success(f"✅ Swap request with Request ID {request_id_remove} has been removed.")
                 time.sleep(1)
