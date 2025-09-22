@@ -1,5 +1,5 @@
-streamlit==1.26.0
-pandas>=2.1.0
-gspread>=5.7.0
-gspread-dataframe>=4.2.2
-google-auth>=2.23.0
+streamlit
+pandas
+gspread
+gspread-dataframe
+google-auth
