@@ -78,7 +78,7 @@ with tab1:
 
     col1, col2, col3, col4 = st.columns(4)
     col1.metric("Total Employees", total_employees)
-    col2.metric("Total Billed", total_billed)
+    col2.metric("Total Billed", total_unbilled)
     col3.metric("Total Unallocated", total_unallocated)
     col4.metric("Total SNPs", total_snps)
 
