@@ -180,7 +180,7 @@ with tab3:
 
     request_id_remove = st.selectbox(
         "Enter Request ID to Remove",
-        options = asd_df["Employee Id"].astype(str) + " - " + asd_df["Employee Name"],
+        options = ads_df["Employee Id"].astype(str) + " - " + ads_df["Employee Name"],
         key="request_id_remove"
     )
 
