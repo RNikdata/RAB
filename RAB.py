@@ -178,9 +178,9 @@ with tab3:
     st.markdown("<hr>", unsafe_allow_html=True)
     st.subheader("❌ Remove Employee Swap Request")
 
-    request_id_remove = st.text_input(
+    request_id_remove = st.selectbox(
         "Enter Request ID to Remove",
-        placeholder="Enter the Request Id to remove",
+        options = asd_df["Employee Id"].astype(str) + " - " + asd_df["Employee Name"],
         key="request_id_remove"
     )
 
