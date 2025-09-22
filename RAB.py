@@ -171,7 +171,7 @@ with tab3:
 
                 st.success(f"✅ Swap request added for Employee ID {interested_emp_id}. The Request ID is {request_id}")
                 time.sleep(1)
-                st.experimental_rerun()
+                st.rerun()
             except Exception as e:
                 st.error(f"Error: {e}")
 
@@ -194,6 +194,6 @@ with tab3:
                 set_with_dataframe(ads_sheet, ads_df)
                 st.success(f"✅ Swap request with Request ID {request_id_remove} has been removed.")
                 time.sleep(1)
-                st.experimental_rerun()
+                st.rerun()
             else:
                 st.error(f"❌ Request ID {request_id_remove} not found.")
