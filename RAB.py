@@ -86,7 +86,7 @@ with tab1:
     columns_to_show = ["Employee Id", "Employee Name", "Email", "Designation",
                        "Manager Name", "Account Name", "Current Billability"]
     columns_to_show = [col for col in columns_to_show if col in filtered_df_unique.columns]
-    st.dataframe(filtered_df_unique[columns_to_show], use_container_width=True)
+    st.dataframe(filtered_df_unique[columns_to_show], use_container_width=True,hide_index = True)
     
 
 # --- Tab 2: Swap Requests ---
