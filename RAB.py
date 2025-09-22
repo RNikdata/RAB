@@ -30,7 +30,7 @@ if ads_df.empty:
 
 # --- Merge DataFrames ---
 merged_df = df.merge(
-    ads_df[["Employee Id", "Interested Manager", "Employee to Swap", "Request Id"]],
+    ads_df[["Employee Id", "Interested Manager", "Employee to Swap", "Request Id"]] if not ads_df.empty else pd.DataFrame(),
     on="Employee Id",
     how="left"
 )
@@ -60,7 +60,7 @@ with tab1:
         filtered_df = filtered_df[filtered_df["Account Name"].isin(account_filter)]
     if billability_filter:
         filtered_df = filtered_df[filtered_df["Billable Status"].isin(billability_filter)]
-    if tag_filter:
+    if tag_filter and "Tag" in filtered_df.columns:
         filtered_df = filtered_df[filtered_df["Tag"].isin(tag_filter)]
     if resource_search:
         filtered_df = filtered_df[
@@ -74,7 +74,7 @@ with tab1:
     total_employees = filtered_df_unique["Employee Id"].nunique()
     total_unbilled = filtered_df_unique[filtered_df_unique["Billable Status"]=="Unbilled"]["Employee Id"].nunique()
     total_unallocated = filtered_df_unique[filtered_df_unique["Tag"]=="Unallocated"]["Employee Id"].nunique() if "Tag" in filtered_df_unique.columns else 0
-    total_snps = filtered_df_unique[filtered_df_unique["SNP"]==1]["Employee Id"].nunique() if "Tag" in filtered_df_unique.columns else 0
+    total_snps = filtered_df_unique[filtered_df_unique["SNP"]==1]["Employee Id"].nunique() if "SNP" in filtered_df_unique.columns else 0
 
     col1, col2, col3, col4 = st.columns(4)
     col1.metric("Total Employees", total_employees)
@@ -86,16 +86,15 @@ with tab1:
     columns_to_show = ["Employee Id", "Employee Name", "Email", "Designation",
                        "Manager Name", "Account Name", "Current Billability"]
     columns_to_show = [col for col in columns_to_show if col in filtered_df_unique.columns]
-    st.dataframe(filtered_df_unique[columns_to_show], use_container_width=True,hide_index = True)
-    
+    st.dataframe(filtered_df_unique[columns_to_show], use_container_width=True, hide_index=True)
 
 # --- Tab 2: Swap Requests ---
 with tab2:
     st.subheader("🔎 Swap Requests")
     swap_df = ads_df.copy()
 
-    # Sidebar search
-    if resource_search:
+    # Search by Employee Name or ID
+    if resource_search and "Employee Name" in swap_df.columns:
         swap_df = swap_df[
             swap_df["Employee Name"].str.contains(resource_search, case=False, na=False) |
             swap_df["Employee Id"].astype(str).str.contains(resource_search, na=False)
@@ -106,7 +105,7 @@ with tab2:
         "Search by Interested Manager",
         key="interested_manager_search_box"
     )
-    if interested_manager_search:
+    if interested_manager_search and "Interested Manager" in swap_df.columns:
         swap_df = swap_df[
             swap_df["Interested Manager"].str.contains(interested_manager_search, case=False, na=False)
         ]
@@ -116,11 +115,11 @@ with tab2:
     swap_columns = [col for col in swap_columns if col in swap_df.columns]
 
     # Filter only rows with Request Id
-    swap_df_filtered = swap_df[swap_df["Request Id"].notna()]
+    swap_df_filtered = swap_df[swap_df["Request Id"].notna()] if "Request Id" in swap_df.columns else pd.DataFrame()
 
     # Display table
     st.dataframe(swap_df_filtered[swap_columns], use_container_width=True, hide_index=True)
-    
+
 # --- Tab 3: Employee Swap Form ---
 with tab3:
     st.subheader("🔄 Employee Swap Request")
@@ -147,34 +146,34 @@ with tab3:
         )
 
     if st.button("Submit Swap Request", key="submit_add"):
-    if not user_name_add or not interested_employee_add or not employee_to_swap_add:
-        st.warning("⚠️ Please fill all fields before submitting.")
-    else:
-        try:
-            interested_emp_id = interested_employee_add.split(" - ")[0]
-            user_id = df[df["Employee Name"] == user_name_add]["Employee Id"].values[0]
-            swap_emp_id = employee_to_swap_add.split(" - ")[0]
-            swap_emp_name = df[df["Employee Id"].astype(str) == swap_emp_id]["Employee Name"].values[0]
+        if not user_name_add or not interested_employee_add or not employee_to_swap_add:
+            st.warning("⚠️ Please fill all fields before submitting.")
+        else:
+            try:
+                interested_emp_id = interested_employee_add.split(" - ")[0]
+                user_id = df[df["Employee Name"] == user_name_add]["Employee Id"].values[0]
+                swap_emp_id = employee_to_swap_add.split(" - ")[0]
+                swap_emp_name = df[df["Employee Id"].astype(str) == swap_emp_id]["Employee Name"].values[0]
 
-            employee_row = df[df["Employee Id"].astype(str) == interested_emp_id].copy()
-            employee_row["Interested Manager"] = user_name_add
-            employee_row["Employee to Swap"] = swap_emp_name
+                employee_row = df[df["Employee Id"].astype(str) == interested_emp_id].copy()
+                employee_row["Interested Manager"] = user_name_add
+                employee_row["Employee to Swap"] = swap_emp_name
 
-            # Generate unique request id
-            request_id = f"{user_id}{interested_emp_id}{swap_emp_id}"
-            employee_row["Request Id"] = request_id
+                # Generate unique request id
+                request_id = f"{user_id}{interested_emp_id}{swap_emp_id}"
+                employee_row["Request Id"] = request_id
 
-            ads_df = pd.concat([ads_df, employee_row], ignore_index=True)
-            ads_df = ads_df.drop_duplicates(subset=["Employee Id","Interested Manager","Employee to Swap"], keep="last")
+                ads_df = pd.concat([ads_df, employee_row], ignore_index=True)
+                ads_df = ads_df.drop_duplicates(subset=["Employee Id","Interested Manager","Employee to Swap"], keep="last")
 
-            # Update Google Sheet
-            set_with_dataframe(ads_sheet, ads_df)
+                # Update Google Sheet
+                set_with_dataframe(ads_sheet, ads_df)
 
-            st.success(f"✅ Swap request added for Employee ID {interested_emp_id}. The Request ID is {request_id}")
-            time.sleep(1)
-            st.experimental_rerun()
-        except Exception as e:
-            st.error(f"Error: {e}")
+                st.success(f"✅ Swap request added for Employee ID {interested_emp_id}. The Request ID is {request_id}")
+                time.sleep(1)
+                st.experimental_rerun()
+            except Exception as e:
+                st.error(f"Error: {e}")
 
     st.markdown("<hr>", unsafe_allow_html=True)
     st.subheader("❌ Remove Employee Swap Request")
@@ -185,17 +184,16 @@ with tab3:
         key="request_id_remove"
     )
 
-   if st.button("Remove Swap Request", key="submit_remove"):
-    if not request_id_remove:
-        st.warning("⚠️ Please enter a Request ID before submitting.")
-    else:
-        if request_id_remove in ads_df["Request Id"].values:
-            ads_df = ads_df[ads_df["Request Id"] != request_id_remove]
-            # Update Google Sheet
-            set_with_dataframe(ads_sheet, ads_df)
-            st.success(f"✅ Swap request with Request ID {request_id_remove} has been removed.")
-            time.sleep(1)
-            st.experimental_rerun()
+    if st.button("Remove Swap Request", key="submit_remove"):
+        if not request_id_remove:
+            st.warning("⚠️ Please enter a Request ID before submitting.")
         else:
-            st.error(f"❌ Request ID {request_id_remove} not found.")
-
+            if request_id_remove in ads_df["Request Id"].values:
+                ads_df = ads_df[ads_df["Request Id"] != request_id_remove]
+                # Update Google Sheet
+                set_with_dataframe(ads_sheet, ads_df)
+                st.success(f"✅ Swap request with Request ID {request_id_remove} has been removed.")
+                time.sleep(1)
+                st.experimental_rerun()
+            else:
+                st.error(f"❌ Request ID {request_id_remove} not found.")
