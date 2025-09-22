@@ -87,24 +87,40 @@ with tab1:
                        "Manager Name", "Account Name", "Current Billability"]
     columns_to_show = [col for col in columns_to_show if col in filtered_df_unique.columns]
     st.dataframe(filtered_df_unique[columns_to_show], use_container_width=True)
+    
 
 # --- Tab 2: Swap Requests ---
 with tab2:
     st.subheader("🔎 Swap Requests")
     swap_df = ads_df.copy()
 
+    # Sidebar search
     if resource_search:
         swap_df = swap_df[
-            swap_df["Employee Id"].astype(str).str.contains(resource_search, na=False) |
-            swap_df["Employee to Swap"].str.contains(resource_search, case=False, na=False)
+            swap_df["Employee Name"].str.contains(resource_search, case=False, na=False) |
+            swap_df["Employee Id"].astype(str).str.contains(resource_search, na=False)
         ]
 
-    interested_manager_search = st.text_input("Search by Interested Manager", key="manager_search")
+    # Search by Interested Manager
+    interested_manager_search = st.text_input(
+        "Search by Interested Manager",
+        key="interested_manager_search_box"
+    )
     if interested_manager_search:
-        swap_df = swap_df[swap_df["Interested Manager"].str.contains(interested_manager_search, case=False, na=False)]
+        swap_df = swap_df[
+            swap_df["Interested Manager"].str.contains(interested_manager_search, case=False, na=False)
+        ]
 
-    st.dataframe(swap_df, use_container_width=True)
+    # Define columns to show
+    swap_columns = ["Request Id", "Employee Id", "Employee Name", "Email", "Interested Manager", "Employee to Swap"]
+    swap_columns = [col for col in swap_columns if col in swap_df.columns]
 
+    # Filter only rows with Request Id
+    swap_df_filtered = swap_df[swap_df["Request Id"].notna()]
+
+    # Display table
+    st.dataframe(swap_df_filtered[swap_columns], use_container_width=True, hide_index=True)
+    
 # --- Tab 3: Employee Swap Form ---
 with tab3:
     st.subheader("🔄 Employee Swap Request")
