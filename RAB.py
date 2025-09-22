@@ -78,7 +78,7 @@ with tab1:
 
     col1, col2, col3, col4 = st.columns(4)
     col1.metric("Total Employees", total_employees)
-    col2.metric("Total Billed", total_unbilled)
+    col2.metric("Total Unbilled", total_unbilled)
     col3.metric("Total Unallocated", total_unallocated)
     col4.metric("Total SNPs", total_snps)
 
@@ -107,54 +107,76 @@ with tab2:
 
 # --- Tab 3: Employee Swap Form ---
 with tab3:
-    st.subheader("✏️ Employee Swap Form")
+    st.subheader("🔄 Employee Swap Request")
 
-    col1, col2, col3 = st.columns([1,2,2])
+    # --- Add Swap Request ---
+    col1, col2, col3 = st.columns([1, 2, 2])
     with col1:
-        user_name_add = st.selectbox("User Name (Add)", options=["Select an Option"] + df["Employee Name"].tolist())
+        user_name_add = st.selectbox(
+            "User Name (Add)",
+            options=df["Employee Name"],
+            key="user_name_add"
+        )
     with col2:
-        interested_employee_add = st.selectbox("Interested Employee (Add)", options=["Select an Option"] + (df["Employee Id"].astype(str) + " - " + df["Employee Name"]).tolist())
+        interested_employee_add = st.selectbox(
+            "Interested Employee (Add)",
+            options=df["Employee Id"].astype(str) + " - " + df["Employee Name"],
+            key="interested_employee_add"
+        )
     with col3:
-        employee_to_swap_add = st.selectbox("Employee to Swap (Add)", options=["Select an Option"] + (df["Employee Id"].astype(str) + " - " + df["Employee Name"]).tolist())
+        employee_to_swap_add = st.selectbox(
+            "Employee to Swap (Add)",
+            options=df["Employee Id"].astype(str) + " - " + df["Employee Name"],
+            key="employee_to_swap_add"
+        )
 
-    if st.button("Submit Swap Request"):
-        if "Select an Option" in [user_name_add, interested_employee_add, employee_to_swap_add]:
+    if st.button("Submit Swap Request", key="submit_add"):
+        if not user_name_add or not interested_employee_add or not employee_to_swap_add:
             st.warning("⚠️ Please fill all fields before submitting.")
         else:
             try:
                 interested_emp_id = interested_employee_add.split(" - ")[0]
-                user_id = df[df["Employee Name"]==user_name_add]["Employee Id"].values[0]
+                user_id = df[df["Employee Name"] == user_name_add]["Employee Id"].values[0]
                 swap_emp_id = employee_to_swap_add.split(" - ")[0]
-                swap_emp_name = df[df["Employee Id"].astype(str)==swap_emp_id]["Employee Name"].values[0]
+                swap_emp_name = df[df["Employee Id"].astype(str) == swap_emp_id]["Employee Name"].values[0]
 
-                employee_row = df[df["Employee Id"].astype(str)==interested_emp_id].copy()
+                employee_row = df[df["Employee Id"].astype(str) == interested_emp_id].copy()
                 employee_row["Interested Manager"] = user_name_add
                 employee_row["Employee to Swap"] = swap_emp_name
-                request_id = f"{str(user_id)[-4:]}{str(interested_emp_id)[-4:]}{str(swap_emp_id)[-4:]}"
+
+                # Generate unique request id
+                request_id = f"{user_id}{interested_emp_id}{swap_emp_id}"
                 employee_row["Request Id"] = request_id
 
                 ads_df = pd.concat([ads_df, employee_row], ignore_index=True)
-                ads_df = ads_df.drop_duplicates(subset=["Employee Id","Interested Manager","Employee to Swap","Request Id"], keep="last")
+                ads_df = ads_df.drop_duplicates(subset=["Employee Id","Interested Manager","Employee to Swap"], keep="last")
+                ads_df.to_excel(final_path, index=False)
 
-                # Save back to Google Sheet
-                ads_sheet.clear()
-                set_with_dataframe(ads_sheet, ads_df)
+                st.success(f"✅ Swap request added for Employee ID {interested_emp_id}. The Request ID is {request_id}")
 
-                st.success(f"✅ Swap request added. Request ID: {request_id}")
+                time.sleep(1)
                 st.experimental_rerun()
             except Exception as e:
                 st.error(f"Error: {e}")
 
-    st.markdown("---")
+    st.markdown("<hr>", unsafe_allow_html=True)
     st.subheader("❌ Remove Employee Swap Request")
-    request_id_remove = st.selectbox("Select Request ID to Remove", options=ads_df["Request Id"].dropna().tolist())
 
-    if st.button("Remove Swap Request"):
-        if request_id_remove not in ads_df["Request Id"].values:
-            st.error("❌ Request ID not found.")
+    request_id_remove = st.text_input(
+        "Enter Request ID to Remove",
+        placeholder="Enter the Request Id to remove",
+        key="request_id_remove"
+    )
+
+    if st.button("Remove Swap Request", key="submit_remove"):
+        if not request_id_remove:
+            st.warning("⚠️ Please enter a Request ID before submitting.")
         else:
-            ads_df = ads_df[ads_df["Request Id"] != request_id_remove]
-            ads_sheet.clear()
-            set_with_dataframe(ads_sheet, ads_df)
-            st.success(f"✅ Swap request with Request ID {request_id_remove} removed.")
-            st.experimental_rerun()
+            if request_id_remove in ads_df["Request Id"].values:
+                ads_df = ads_df[ads_df["Request Id"] != request_id_remove]
+                ads_df.to_excel(final_path, index=False)
+                st.success(f"✅ Swap request with Request ID {request_id_remove} has been removed.")
+                time.sleep(1)
+                st.experimental_rerun()
+            else:
+                st.error(f"❌ Request ID {request_id_remove} not found.")
