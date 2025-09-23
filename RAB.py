@@ -5,37 +5,6 @@ from gspread_dataframe import get_as_dataframe, set_with_dataframe
 from google.oauth2.service_account import Credentials
 import time
 
-st.markdown("""
-<style>
-/* Base container */
-.block-container {
-    width: 100%;
-    height: 100%;
-    transform-origin: top center;
-}
-
-/* Dynamically scale based on viewport height */
-@media (max-height: 1200px) {
-    .block-container {
-        transform: scale(0.85);
-        width: 117.5%;  /* inverse of scale to keep layout width correct */
-    }
-}
-@media (min-height: 1201px) and (max-height: 1600px) {
-    .block-container {
-        transform: scale(0.95);
-        width: 105.26%;
-    }
-}
-@media (min-height: 1601px) {
-    .block-container {
-        transform: scale(1);
-        width: 100%;
-    }
-}
-</style>
-""", unsafe_allow_html=True)
-
 st.set_page_config(layout="wide")
 
 # --- Connect to Google Sheets using Streamlit secrets ---
