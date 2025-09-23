@@ -7,24 +7,22 @@ import time
 
 st.markdown("""
 <style>
-/* Make the whole app use the full screen */
-html, body, [data-testid="stAppViewContainer"], .main, .block-container {
-    height: 100vh;
-    width: 100vw;
-    overflow: hidden; /* no extra scrollbars */
-    margin: 0;
-    padding: 0;
+/* Keep normal scaling but restrict width */
+.block-container {
+    max-width: 95% !important;   /* adjust between 90–100% */
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+    margin: auto;
 }
 
-/* Keep sidebar consistent */
+/* Make app height consistent */
+html, body, [data-testid="stAppViewContainer"] {
+    height: 100%;
+}
+
+/* Sidebar scroll independent */
 [data-testid="stSidebar"] {
     height: 100vh;
-    overflow-y: auto;
-}
-
-/* Ensure dashboard content scrolls within */
-section.main > div {
-    height: calc(100vh - 2rem);
     overflow-y: auto;
 }
 </style>
