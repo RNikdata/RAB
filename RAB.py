@@ -168,6 +168,7 @@ with tab2:
     swap_df_filtered = swap_df[swap_df["Request Id"].notna()] if "Request Id" in swap_df.columns else pd.DataFrame()
 
     # Display table
+    st.sidebar.markdown("<br><br>",unsafe_allow_html = True)
     st.dataframe(swap_df_filtered[swap_columns], use_container_width=True, hide_index=True)
 
 # --- Tab 3: Employee Swap Form ---
