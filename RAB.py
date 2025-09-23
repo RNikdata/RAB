@@ -54,7 +54,6 @@ tab1, tab2, tab3 = st.tabs(["📋 Employee Table", "🔄 Swap Requests", "✏️
 
 # --- Tab 1: Employee Table & KPIs ---
 with tab1:
-    st.markdown("<br><br>", unsafe_allow_html=True)
     st.subheader("📋 Employee Table")
     filtered_df = merged_df.copy()
 
