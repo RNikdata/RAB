@@ -6,28 +6,18 @@ from google.oauth2.service_account import Credentials
 import time
 
 st.markdown("""
-<style>
-/* Base settings */
-.block-container {
-    max-width: 95% !important;
-    padding-top: 1rem;
-    padding-bottom: 1rem;
-}
-
-/* For smaller screens (like 1920x1200 or below) */
-@media (max-width: 2000px) {
-    .block-container {
-        zoom: 0.9;   /* scale down slightly */
+<script>
+function resizeApp() {
+    let app = window.parent.document.querySelector('[data-testid="stAppViewContainer"]');
+    if (app) {
+        let scale = window.innerHeight / 1200;  // 1200 = baseline height you designed for
+        app.style.transform = "scale(" + scale + ")";
+        app.style.transformOrigin = "top center";
     }
 }
-
-/* For very large screens (like 2880x1800) */
-@media (min-width: 2500px) {
-    .block-container {
-        zoom: 1.1;   /* scale up slightly */
-    }
-}
-</style>
+window.addEventListener("resize", resizeApp);
+window.addEventListener("load", resizeApp);
+</script>
 """, unsafe_allow_html=True)
 
 
