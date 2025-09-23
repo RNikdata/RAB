@@ -108,7 +108,7 @@ with tab1:
         }
         </style>
     """
-st.markdown(kpi_style, unsafe_allow_html=True)
+    st.markdown(kpi_style, unsafe_allow_html=True)
 
     st.markdown(f"""
     <div class="kpi-container">
