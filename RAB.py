@@ -6,8 +6,43 @@ from google.oauth2.service_account import Credentials
 import time
 
 st.markdown("""
-<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<style>
+/* Remove Streamlit’s default max width/height restrictions */
+html, body, [data-testid="stAppViewContainer"] {
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+}
+.block-container {
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+}
+</style>
+
+<script>
+(function() {
+    function adjustScale() {
+        let app = document.querySelector('[data-testid="stAppViewContainer"]');
+        if (!app) return;
+
+        let screenHeight = window.innerHeight;
+        let designHeight = 1080;  // reference design height (adjust if needed)
+
+        let scale = screenHeight / designHeight;
+        app.style.transform = "scale(" + scale + ")";
+        app.style.transformOrigin = "top center";
+        app.style.width = (100/scale) + "%";
+        app.style.height = (100/scale) + "%";
+    }
+
+    window.addEventListener('resize', adjustScale);
+    window.addEventListener('load', adjustScale);
+})();
+</script>
 """, unsafe_allow_html=True)
+
 
 st.set_page_config(layout="wide")
 
