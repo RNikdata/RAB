@@ -5,6 +5,32 @@ from gspread_dataframe import get_as_dataframe, set_with_dataframe
 from google.oauth2.service_account import Credentials
 import time
 
+st.markdown("""
+<style>
+/* Make the whole app use the full screen */
+html, body, [data-testid="stAppViewContainer"], .main, .block-container {
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden; /* no extra scrollbars */
+    margin: 0;
+    padding: 0;
+}
+
+/* Keep sidebar consistent */
+[data-testid="stSidebar"] {
+    height: 100vh;
+    overflow-y: auto;
+}
+
+/* Ensure dashboard content scrolls within */
+section.main > div {
+    height: calc(100vh - 2rem);
+    overflow-y: auto;
+}
+</style>
+""", unsafe_allow_html=True)
+
+
 st.set_page_config(layout="wide")
 
 # --- Connect to Google Sheets using Streamlit secrets ---
