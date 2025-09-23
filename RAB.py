@@ -52,9 +52,9 @@ st.markdown("<h1 style='text-align:center'>🧑‍💼 Resource Allocation Board
 # --- Tabs ---
 tab1, tab2, tab3 = st.tabs(["📋 Employee Table", "🔄 Swap Requests", "✏️ Employee Swap Form"])
 
-# --- Tab 1: Resource Table ---
+# --- Tab 1: Employee Table & KPIs ---
 with tab1:
-    st.markdown("<br><br>",unsafe_allow_html = True)
+    st.markdown("<br><br>", unsafe_allow_html=True)
     st.subheader("📋 Employee Table")
     filtered_df = merged_df.copy()
 
@@ -73,24 +73,51 @@ with tab1:
 
     filtered_df_unique = filtered_df.drop_duplicates(subset=["Employee Id"], keep="first")
 
-    # --- KPIs ---
+    # --- KPI Metrics ---
     total_employees = filtered_df_unique["Employee Id"].nunique()
     total_unbilled = filtered_df_unique[filtered_df_unique["Billable Status"]=="Unbilled"]["Employee Id"].nunique()
     total_unallocated = filtered_df_unique[filtered_df_unique["Tag"]=="Unallocated"]["Employee Id"].nunique() if "Tag" in filtered_df_unique.columns else 0
     total_snps = filtered_df_unique[filtered_df_unique["SNP"]==1]["Employee Id"].nunique() if "SNP" in filtered_df_unique.columns else 0
 
-    col1, col2, col3, col4 = st.columns(4)
-    col1.metric("Total Employees", total_employees)
-    col2.metric("Total Unbilled", total_unbilled)
-    col3.metric("Total Unallocated", total_unallocated)
-    col4.metric("Total SNPs", total_snps)
+    # --- KPI Cards Styling ---
+    kpi_style = """
+    <style>
+    .kpi-container { display: flex; gap: 20px; margin-bottom: 20px; flex-wrap: wrap; }
+    .kpi-card { flex: 1; background: #B0C4DE; border-radius: 10px; padding: 20px; text-align: center;
+                box-shadow: 2px 2px 8px rgba(0,0,0,0.1); min-width: 150px; }
+    .kpi-card h3 { margin: 0; font-size: 18px; color: black; }
+    .kpi-card p { margin: 5px 0 0 0; font-size: 24px; font-weight: bold; color: black; }
+    </style>
+    """
+    st.markdown(kpi_style, unsafe_allow_html=True)
+
+    st.markdown(f"""
+    <div class="kpi-container">
+        <div class="kpi-card">
+            <h3>Total Employees</h3>
+            <p>{total_employees}</p>
+        </div>
+        <div class="kpi-card">
+            <h3>Total Unbilled</h3>
+            <p>{total_unbilled}</p>
+        </div>
+        <div class="kpi-card">
+            <h3>Total Unallocated</h3>
+            <p>{total_unallocated}</p>
+        </div>
+        <div class="kpi-card">
+            <h3>Total SNPs</h3>
+            <p>{total_snps}</p>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
 
     # Display table
     columns_to_show = ["Employee Id", "Employee Name", "Email", "Designation",
                        "Manager Name", "Account Name", "Current Billability"]
     columns_to_show = [col for col in columns_to_show if col in filtered_df_unique.columns]
-    st.dataframe(filtered_df_unique[columns_to_show], use_container_width=True, hide_index=True)
-
+    st.dataframe(filtered_df_unique[columns_to_show], use_container_width=True, height=500, hide_index=True)
+    
 # --- Tab 2: Swap Requests ---
 with tab2:
     st.markdown("<br><br>",unsafe_allow_html = True)
