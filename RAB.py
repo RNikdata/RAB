@@ -83,7 +83,7 @@ with tab1:
     <style>
     .kpi-container { display: flex; gap: 20px; margin-bottom: 20px; flex-wrap: wrap; }
     .kpi-card { flex: 1; background: #B0C4DE; border-radius: 5px; padding: 5px; text-align: center;
-                box-shadow: 2px 2px 8px rgba(0,0,0,0.1); min-width: 150px; }
+                box-shadow: 2px 2px 8px rgba(0,0,0,0.1); min-width: 120px; }
     .kpi-card h3 { margin: 0; font-size: 18px; color: black; }
     .kpi-card p { margin: 5px 0 0 0; font-size: 24px; font-weight: bold; color: black; }
     </style>
