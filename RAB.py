@@ -6,28 +6,8 @@ from google.oauth2.service_account import Credentials
 import time
 
 st.markdown("""
-<style>
-/* Keep normal scaling but restrict width */
-.block-container {
-    max-width: 95% !important;   /* adjust between 90–100% */
-    padding-top: 1rem;
-    padding-bottom: 1rem;
-    margin: auto;
-}
-
-/* Make app height consistent */
-html, body, [data-testid="stAppViewContainer"] {
-    height: 100%;
-}
-
-/* Sidebar scroll independent */
-[data-testid="stSidebar"] {
-    height: 100vh;
-    overflow-y: auto;
-}
-</style>
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 """, unsafe_allow_html=True)
-
 
 st.set_page_config(layout="wide")
 
