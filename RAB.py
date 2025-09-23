@@ -47,14 +47,15 @@ st.sidebar.header("🔎 Search")
 resource_search = st.sidebar.text_input("Search Employee Name or ID")
 
 # --- Main Heading ---
-st.markdown("<h2 style='text-align:center'>📊 Resource Allocation Board</h2>", unsafe_allow_html=True)
+st.markdown("<h1 style='text-align:center'>🧑‍💼 Resource Allocation Board</h2>", unsafe_allow_html=True)
 
 # --- Tabs ---
-tab1, tab2, tab3 = st.tabs(["📋 Resource Table", "🔄 Swap Requests", "✏️ Employee Swap Form"])
+tab1, tab2, tab3 = st.tabs(["📋 Employee Table", "🔄 Swap Requests", "✏️ Employee Swap Form"])
 
 # --- Tab 1: Resource Table ---
 with tab1:
-    st.subheader("📋 Resource Table")
+    st.markdown("<br><br>",unsafe_allow_html = True)
+    st.subheader("📋 Employee Table")
     filtered_df = merged_df.copy()
 
     # Apply filters
@@ -92,6 +93,7 @@ with tab1:
 
 # --- Tab 2: Swap Requests ---
 with tab2:
+    st.markdown("<br><br>",unsafe_allow_html = True)
     st.subheader("🔎 Swap Requests")
     swap_df = ads_df.copy()
 
