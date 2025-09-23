@@ -121,34 +121,10 @@ with tab2:
 
     # Display table
     st.dataframe(swap_df_filtered[swap_columns], use_container_width=True, hide_index=True)
-    
+
 # --- Tab 3: Employee Swap Form ---
 with tab3:
     st.subheader("🔄 Employee Swap Request")
-
-    # --- Helper function to safely update Google Sheet ---
-    def safe_update_ads(new_row=None, remove_id=None):
-        ads_df_latest = get_as_dataframe(ads_sheet, evaluate_formulas=True).dropna(how="all")
-        if ads_df_latest.empty:
-            ads_df_latest = pd.DataFrame(columns=[
-                "Employee Id", "Employee Name", "Email",
-                "Interested Manager", "Employee to Swap", "Request Id"
-            ])
-
-        if new_row is not None:  # Add request
-            ads_df_latest = pd.concat([ads_df_latest, new_row], ignore_index=True)
-            ads_df_latest = ads_df_latest.drop_duplicates(
-                subset=["Employee Id", "Interested Manager", "Employee to Swap"],
-                keep="last"
-            )
-
-        if remove_id is not None:  # Remove request
-            ads_df_latest = ads_df_latest[ads_df_latest["Request Id"] != remove_id]
-
-        # Clear and write back updated sheet
-        ads_sheet.clear()
-        set_with_dataframe(ads_sheet, ads_df_latest)
-        return ads_df_latest
 
     # --- Add Swap Request ---
     col1, col2, col3 = st.columns([1, 2, 2])
@@ -189,8 +165,11 @@ with tab3:
                 request_id = f"{user_id}{interested_emp_id}{swap_emp_id}"
                 employee_row["Request Id"] = int(request_id)
 
-                # ✅ Concurrency-safe update
-                ads_df = safe_update_ads(new_row=employee_row)
+                ads_df = pd.concat([ads_df, employee_row], ignore_index=True)
+                ads_df = ads_df.drop_duplicates(subset=["Employee Id","Interested Manager","Employee to Swap"], keep="last")
+
+                # Update Google Sheet
+                set_with_dataframe(ads_sheet, ads_df)
 
                 st.success(f"✅ Swap request added for Employee ID {interested_emp_id}. The Request ID is {request_id}")
                 time.sleep(1)
@@ -211,13 +190,13 @@ with tab3:
         if not request_id_remove:
             st.warning("⚠️ Please enter a Request ID before submitting.")
         else:
-            try:
-                # ✅ Concurrency-safe update
-                ads_df = safe_update_ads(remove_id=request_id_remove)
-
+            if request_id_remove in ads_df["Request Id"].values:
+                ads_df = ads_df[ads_df["Request Id"] != request_id_remove]
+                # Update Google Sheet
+                ads_sheet.clear()
+                set_with_dataframe(ads_sheet, ads_df)
                 st.success(f"✅ Swap request with Request ID {request_id_remove} has been removed.")
                 time.sleep(1)
                 st.rerun()
-            except Exception as e:
-                st.error(f"Error: {e}")
-
+            else:
+                st.error(f"❌ Request ID {request_id_remove} not found.")
