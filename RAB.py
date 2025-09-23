@@ -94,7 +94,7 @@ with tab1:
 # --- Tab 2: Swap Requests ---
 with tab2:
     st.markdown("<br><br>",unsafe_allow_html = True)
-    st.subheader("🔎 Swap Requests")
+    st.subheader("🔄 Swap Requests")
     swap_df = ads_df.copy()
 
     # Search by Employee Name or ID
