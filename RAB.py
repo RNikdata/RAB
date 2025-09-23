@@ -7,40 +7,27 @@ import time
 
 st.markdown("""
 <style>
-/* Remove Streamlit’s default max width/height restrictions */
-html, body, [data-testid="stAppViewContainer"] {
-    height: 100%;
-    width: 100%;
-    margin: 0;
-    padding: 0;
-    overflow: hidden;
-}
+/* Base settings */
 .block-container {
+    max-width: 95% !important;
     padding-top: 1rem;
     padding-bottom: 1rem;
 }
-</style>
 
-<script>
-(function() {
-    function adjustScale() {
-        let app = document.querySelector('[data-testid="stAppViewContainer"]');
-        if (!app) return;
-
-        let screenHeight = window.innerHeight;
-        let designHeight = 1080;  // reference design height (adjust if needed)
-
-        let scale = screenHeight / designHeight;
-        app.style.transform = "scale(" + scale + ")";
-        app.style.transformOrigin = "top center";
-        app.style.width = (100/scale) + "%";
-        app.style.height = (100/scale) + "%";
+/* For smaller screens (like 1920x1200 or below) */
+@media (max-width: 2000px) {
+    .block-container {
+        zoom: 0.9;   /* scale down slightly */
     }
+}
 
-    window.addEventListener('resize', adjustScale);
-    window.addEventListener('load', adjustScale);
-})();
-</script>
+/* For very large screens (like 2880x1800) */
+@media (min-width: 2500px) {
+    .block-container {
+        zoom: 1.1;   /* scale up slightly */
+    }
+}
+</style>
 """, unsafe_allow_html=True)
 
 
