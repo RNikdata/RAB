@@ -198,10 +198,8 @@ with tab2:
                 horizontal=True,
                 key="decision_radio"
             )
-
         # Submit button on a separate row below with some space
-        st.markdown("<br>", unsafe_allow_html=True)
-        if st.button("Submit Decision", key="submit_decision"):
+        if st.button("Submit", key="submit_decision"):
             try:
                 status_value = "Approved" if decision == "Approve" else "Rejected"
                 # Update local dataframe
