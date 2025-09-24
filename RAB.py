@@ -92,11 +92,23 @@ with tab1:
     filtered_df_unique = filtered_df_unique.drop_duplicates(subset=["Employee Id"], keep="first")
     filtered_df_unique["3+_yr_Tenure_Flag"] = filtered_df_unique["Tenure"].apply(lambda x: "Yes" if x > 3 else "No")
 
+    if account_filter:
+        filtered_df_unique = filtered_df_unique[filtered_df["Account Name"].isin(account_filter)]
+    if manager_filter:
+        filtered_df_unique = filtered_df_unique[
+        (filtered_df_unique["Manager Name"].isin(manager_filter))
+    ] 
+    if resource_search:
+        filtered_df_unique = filtered_df_unique[
+            filtered_df_unique["Employee Name"].str.contains(resource_search, case=False, na=False) |
+            filtered_df_unique["Employee Id"].astype(str).str.contains(resource_search, na=False)
+        ]
+        
     # --- KPI Metrics ---
-    total_requests = filtered_df["Request Id"].notna().sum()
-    total_approved = filtered_df["Status"].eq("Approved").sum()
-    total_rejected = filtered_df["Status"].eq("Rejected").sum()
-    total_pending = filtered_df["Status"].eq("Pending").sum()
+    total_requests = filtered_df_unique["Request Id"].notna().sum()
+    total_approved = filtered_df_unique["Status"].eq("Approved").sum()
+    total_rejected = filtered_df_unique["Status"].eq("Rejected").sum()
+    total_pending = filtered_df_unique["Status"].eq("Pending").sum()
     
     kpi_style = """
         <style>
@@ -156,17 +168,6 @@ with tab1:
     # Display table
     columns_to_show = ["Manager Name","Account Name","Employee Id", "Employee Name", "Designation"]
     columns_to_show = [col for col in columns_to_show if col in filtered_df_unique.columns]
-    if account_filter:
-        filtered_df_unique = filtered_df_unique[filtered_df["Account Name"].isin(account_filter)]
-    if manager_filter:
-        filtered_df_unique = filtered_df_unique[
-        (filtered_df_unique["Manager Name"].isin(manager_filter))
-    ] 
-    if resource_search:
-        filtered_df_unique = filtered_df_unique[
-            filtered_df_unique["Employee Name"].str.contains(resource_search, case=False, na=False) |
-            filtered_df_unique["Employee Id"].astype(str).str.contains(resource_search, na=False)
-        ]
     st.dataframe(filtered_df_unique[columns_to_show], use_container_width=True, height=500, hide_index=True)
     
 # --- Tab 2: Swap Requests ---
