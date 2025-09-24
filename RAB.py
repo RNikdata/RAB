@@ -37,10 +37,10 @@ merged_df = df.merge(
 )
 
 # --- Sidebar: Logo & Company Name ---
-company_logo_url = "https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.deccanherald.com%2Fdhcup2024%2Fteam%2Fmu-sigma&psig=AOvVaw0CIB0e4icXKFRVmdVI8y-8&ust=1758779836104000&source=images&cd=vfe&opi=89978449&ved=0CBIQjRxqFwoTCNiA-s7b8I8DFQAAAAAdAAAAABAE"  # Replace with your logo URL
+#company_logo_url = 
 company_name = "Mu Sigma"
 
-st.sidebar.image(company_logo_url, width=150)
+#st.sidebar.image(company_logo_url, width=150)
 st.sidebar.markdown(f"<h2 style='text-align:center'>{company_name}</h2>", unsafe_allow_html=True)
 st.sidebar.markdown("<hr>", unsafe_allow_html=True)
 
