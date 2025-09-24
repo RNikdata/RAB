@@ -180,7 +180,7 @@ with tab2:
 
         request_id_select = st.selectbox(
             "Select Request ID",
-            options=swap_df["Request Id"].dropna().unique().tolist(),
+            options=swap_df["Request Id"].dropna().unique().astype(int).tolist(),
             key="request_id_select_tab2"
         )
 
@@ -222,6 +222,7 @@ with tab2:
     swap_columns = [col for col in swap_columns if col in swap_df.columns]
 
     swap_df_filtered = swap_df[swap_df["Request Id"].notna()] if "Request Id" in swap_df.columns else pd.DataFrame()
+    swap_df_filtered["Request Id"] = swap_df_filtered["Request Id"].astype(int)
 
     styled_swap_df = swap_df_filtered[swap_columns].style.applymap(color_status, subset=["Status"])
     st.dataframe(styled_swap_df, use_container_width=True, hide_index=True)
