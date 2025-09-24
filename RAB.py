@@ -268,8 +268,6 @@ with tab2:
                     st.rerun()
                 except Exception as e:
                     msg_placeholder.error(f"❌ Error updating request: {e}")
-    else:
-        st.info("No pending requests available.")
 
     # --- Colored Status Table ---
     def color_status(val):
