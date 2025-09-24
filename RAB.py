@@ -148,7 +148,7 @@ with tab1:
     st.markdown(
         """
         <p style='margin-top:15px; color:#b0b0b0; font-size:14px; font-style:italic;'>
-            Note: Account Name and Designation filters are not applicable for this summary view.
+            Note: "Account Name" and "Designation" filters are not applicable for this Manager Summary view.
         </p>
         """,
         unsafe_allow_html=True
