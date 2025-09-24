@@ -241,7 +241,10 @@ with tab3:
         ]
     if status_filter != "All" and "Status" in swap_df.columns:
         swap_df = swap_df[swap_df["Status"] == status_filter]
-    st.markdown("---")
+    st.markdown(
+        "<hr style='margin-top:20px; margin-bottom:5px; border:0; solid #d3d3d3;'>", 
+        unsafe_allow_html=True
+    )
 
     # --- Row 2: Approve/Reject Form ---
     # Pending requests **after search**
