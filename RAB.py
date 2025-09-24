@@ -186,7 +186,6 @@ with tab1:
 # --- Tab 2: Swap Requests ---
 with tab2:
     st.subheader("🔄 Transfer Requests")
-    
     swap_df = ads_df.copy()
 
     # Ensure Status column exists and default to Pending
@@ -221,15 +220,14 @@ with tab2:
     st.markdown("---")
 
     # --- Row 2: Approve/Reject Form ---
-    if not swap_df.empty:
+    pending_swap_df = swap_df[swap_df["Status"] == "Pending"]  # Only pending requests
+    
+    if not pending_swap_df.empty:
         col1, col2 = st.columns([2, 2])
         with col1:
-            # Only include Pending request IDs
-            pending_request_ids = swap_df[swap_df["Status"] == "Pending"]["Request Id"].dropna().unique().astype(int).tolist()
-    
             request_id_select = st.selectbox(
                 "Select Request ID",
-                options=pending_request_ids if pending_request_ids else ["No Pending Requests"],
+                options=pending_swap_df["Request Id"].dropna().unique().astype(int).tolist(),
                 key="request_id_select_tab2",
                 index=None
             )
@@ -241,18 +239,12 @@ with tab2:
                 horizontal=True,
                 key="decision_radio"
             )
-
-    # --- Message placeholder below submit ---
-    msg_placeholder = st.empty()
-
-    # Submit button
-    if st.button("Submit", key="submit_decision"):
-        if not pending_request_ids or request_id_select == "No Pending Requests":
-            msg_placeholder.warning("⚠️ No valid Request ID selected.")
-        else:
+    
+        msg_placeholder = st.empty()
+    
+        if st.button("Submit", key="submit_decision"):
             current_status = ads_df.loc[ads_df["Request Id"] == request_id_select, "Status"].values[0]
-
-            # Logic: Approved cannot be rejected, Rejected can be approved
+    
             if current_status == "Approved" and decision == "Reject":
                 msg_placeholder.error(f"❌ Request ID {request_id_select} is already Approved and cannot be Rejected.")
                 time.sleep(1)
@@ -260,14 +252,14 @@ with tab2:
             else:
                 try:
                     status_value = "Approved" if decision == "Approve" else "Rejected"
-                    # Update local dataframe
                     ads_df.loc[ads_df["Request Id"] == request_id_select, "Status"] = status_value
-                    # Update Google Sheet
                     set_with_dataframe(ads_sheet, ads_df, include_index=False, resize=True)
                     msg_placeholder.success(f"✅ Request ID {request_id_select} marked as {status_value}")
                     st.rerun()
                 except Exception as e:
                     msg_placeholder.error(f"❌ Error updating request: {e}")
+    else:
+        st.info("No pending requests available.")
 
     # --- Colored Status Table ---
     def color_status(val):
