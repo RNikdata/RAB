@@ -37,7 +37,14 @@ merged_df = df.merge(
 )
 
 # --- Sidebar: Logo & Company Name ---
-st.sidebar.image("logo.jpeg", width=150)
+st.sidebar.markdown(
+    """
+    <div style='text-align: center;'>
+        <img src="logo.jpeg" width="150">
+    </div>
+    """,
+    unsafe_allow_html=True
+)
 
 # --- Sidebar Filters ---
 st.sidebar.markdown("<br><br>",unsafe_allow_html = True)
