@@ -270,7 +270,8 @@ with tab3:
         )
 
     with col3:
-        st.button("Submit",Key="Submit")
+        if st.button("Submit", key="submit_button"):
+            st.success("Button clicked!")
 
     # --- Message placeholder ---
     msg_placeholder = st.empty()
