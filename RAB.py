@@ -37,10 +37,10 @@ merged_df = df.merge(
 )
 
 # --- Sidebar: Logo & Company Name ---
-#company_logo_url = "https://yourcompany.com/logo.png"  # Replace with your logo URL
+company_logo_url = "https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.deccanherald.com%2Fdhcup2024%2Fteam%2Fmu-sigma&psig=AOvVaw0CIB0e4icXKFRVmdVI8y-8&ust=1758779836104000&source=images&cd=vfe&opi=89978449&ved=0CBIQjRxqFwoTCNiA-s7b8I8DFQAAAAAdAAAAABAE"  # Replace with your logo URL
 company_name = "Mu Sigma"
 
-#st.sidebar.image(company_logo_url, width=150)
+st.sidebar.image(company_logo_url, width=150)
 st.sidebar.markdown(f"<h2 style='text-align:center'>{company_name}</h2>", unsafe_allow_html=True)
 st.sidebar.markdown("<hr>", unsafe_allow_html=True)
 
@@ -53,7 +53,7 @@ account_filter = st.sidebar.multiselect("Account Name", options=merged_df["Accou
 #tag_filter = st.sidebar.multiselect("Tag", options=merged_df["Tag"].dropna().unique()) if "Tag" in merged_df.columns else []
 st.sidebar.markdown("<br><br>",unsafe_allow_html = True)
 st.sidebar.header("🔎 Search")
-resource_search = st.sidebar.text_input("Search Employee Name or ID")
+resource_search = st.sidebar.text_input("Search Employee Name or ID",placeholder = "Employe ID/Name")
 
 # --- Main Heading ---
 st.markdown("<h1 style='text-align:center'>🧑‍💼 Resource Transfer Board</h2>", unsafe_allow_html=True)
