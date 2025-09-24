@@ -70,10 +70,10 @@ with col_refresh:
         st.rerun()
 
 # --- Tabs ---
-tab1, tab2, tab3 = st.tabs(["Transfer Summary","📝 Supply Pool", "🔄 Transfer Requests", "✏️ Employee Transfer Form"])
+tab1, tab2, tab3, tab4 = st.tabs(["Transfer Summary","📝 Supply Pool", "🔄 Transfer Requests", "✏️ Employee Transfer Form"])
 
 # --- Tab 1: Employee Table & KPIs ---
-with tab1:
+with tab2:
     st.subheader("📝 Supply Pool")
     filtered_df = merged_df.copy()
 
@@ -141,7 +141,7 @@ with tab1:
         ]
     st.dataframe(filtered_df_unique[columns_to_show], use_container_width=True, height=500, hide_index=True)
     
-with tab2:
+with tab3:
     st.subheader("🔄 Transfer Requests")
     
     swap_df = ads_df.copy()
@@ -247,7 +247,7 @@ with tab2:
         st.dataframe(styled_swap_df, use_container_width=True, hide_index=True)
 
 # --- Tab 3: Employee Transfer Form ---
-with tab3:
+with tab4:
     st.markdown("<br><br>", unsafe_allow_html=True)
     st.subheader("🔄 Employee Transfer Request")
 
