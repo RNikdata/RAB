@@ -71,7 +71,7 @@ with tab1:
         ]
 
     filtered_df_unique = filtered_df.drop_duplicates(subset=["Employee Id"], keep="first")
-    filtered_df_unique = filtered_df_unique[filtered_df_unique["Billable Status"].isin(["PU - Person Unbilled"])]
+    filtered_df_unique = filtered_df_unique[filtered_df_unique["Current Billability"].isin(["PU - Person Unbilled", "-", "PI - Person Investment"])]
 
     # --- KPI Metrics ---
     total_employees = filtered_df_unique["Employee Id"].nunique()
