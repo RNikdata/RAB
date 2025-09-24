@@ -137,7 +137,7 @@ with tab1:
     grouped_summary = pd.DataFrame(summary_list)
 
     # Display summary table
-    st.dataframe(grouped_summary.sort_values(by=["Manager Name", "Total Requests Raised"], ascending=[True, True]),use_container_width=True,hide_index=True,height=500)
+    st.dataframe(grouped_summary.sort_values(by=["Manager Name", "Total Requests Raised"], ascending=[True, False]),use_container_width=True,hide_index=True,height=500)
 
 
 # --- Tab 2: Employee Table & KPIs ---
