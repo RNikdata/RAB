@@ -87,7 +87,7 @@ with tab1:
     filtered_df_unique["3+_yr_Tenure_Flag"] = filtered_df_unique["Tenure"].apply(lambda x: "Yes" if x > 3 else "No")
 
     # --- KPI Metrics ---
-    total_employees = filtered_df["Employee Id"].nunique()
+    total_requests = filtered_df["Request Id"].notna().sum()
     total_unbilled = filtered_df_unique[filtered_df_unique["Billable Status"]=="Unbilled"]["Employee Id"].nunique()
     total_unallocated = filtered_df_unique[filtered_df_unique["Tag"]=="Unallocated"]["Employee Id"].nunique() if "Tag" in filtered_df_unique.columns else 0
     total_investments = filtered_df_unique[filtered_df_unique["Billable Status"]=="Investment"]["Employee Id"].nunique() if "Billable Status" in filtered_df_unique.columns else 0
@@ -129,8 +129,8 @@ with tab1:
     st.markdown(f"""
     <div class="kpi-container">
         <div class="kpi-card">
-            <h3>Total Employees</h3>
-            <p>{total_employees}</p>
+            <h3>Total Requests Raised</h3>
+            <p>{total_requests}</p>
         </div>
         <div class="kpi-card">
             <h3>Total Unbilled</h3>
