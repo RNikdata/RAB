@@ -214,6 +214,9 @@ with tab2:
 
                 if current_status == "Approved" and decision == "Reject":
                     st.error(f"❌ Request ID {request_id_select} is already Approved and cannot be Rejected.")
+                    # Clear the message after 2 seconds
+                     time.sleep(2)
+                    msg_placeholder.empty()
                 else:
                     try:
                         status_value = "Approved" if decision == "Approve" else "Rejected"
