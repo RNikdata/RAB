@@ -158,15 +158,15 @@ with tab1:
     columns_to_show = [col for col in columns_to_show if col in filtered_df_unique.columns]
     # Apply filters
     if account_filter:
-        filtered_df = filtered_df[filtered_df["Account Name"].isin(account_filter)]
+        filtered_df_unique = filtered_df_unique[filtered_df_unique["Account Name"].isin(account_filter)]
     if manager_filter:
-        filtered_df = filtered_df[
-        (filtered_df["Manager Name"].isin(manager_filter))
+        filtered_df_unique = filtered_df_unique[
+        (filtered_df_unique["Manager Name"].isin(manager_filter))
     ] 
     if resource_search:
-        filtered_df = filtered_df[
-            filtered_df["Employee Name"].str.contains(resource_search, case=False, na=False) |
-            filtered_df["Employee Id"].astype(str).str.contains(resource_search, na=False)
+        filtered_df_unique = filtered_df_unique[
+            filtered_df_unique["Employee Name"].str.contains(resource_search, case=False, na=False) |
+            filtered_df_unique["Employee Id"].astype(str).str.contains(resource_search, na=False)
         ]
     st.dataframe(filtered_df_unique[columns_to_show], use_container_width=True, height=500, hide_index=True)
     
