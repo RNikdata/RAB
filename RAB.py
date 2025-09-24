@@ -247,7 +247,7 @@ with tab3:
     # Pending requests **after search**
     pending_swap_df_filtered = swap_df[swap_df["Status"] == "Pending"]
     
-    col1, col2 = st.columns([2, 2])
+    col1, col2, col3= st.columns([2, 2, 1])
     
     with col1:
         if not pending_swap_df_filtered.empty:
