@@ -145,7 +145,7 @@ with tab1:
     
     st.markdown(f"""
     <div class="kpi-container">
-        <div class="kpi-card" style="background:#4CAF50;">  <!-- Green -->
+        <div class="kpi-card" style="background:#B0C4DE;">  <!-- Green -->
             <h3>Total Requests Raised</h3>
             <p>{total_requests}</p>
         </div>
@@ -153,11 +153,11 @@ with tab1:
             <h3>Total Approved Requests</h3>
             <p>{total_approved}</p>
         </div>
-        <div class="kpi-card" style="background:#f44336;">  <!-- Red -->
+        <div class="kpi-card" style="background:#F44336;">  <!-- Red -->
             <h3>Total Rejected Requests</h3>
             <p>{total_rejected}</p>
         </div>
-        <div class="kpi-card" style="background:#FF9800;">  <!-- Orange -->
+        <div class="kpi-card" style="background:#FFC107;">  <!-- Orange -->
             <h3>Total Pending Requests</h3>
             <p>{total_pending}</p>
         </div>
