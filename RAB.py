@@ -60,8 +60,13 @@ st.sidebar.markdown("<br><br>",unsafe_allow_html = True)
 st.sidebar.header("🔎 Search")
 resource_search = st.sidebar.text_input("Search Employee Name or ID",placeholder = "Employe ID/Name")
 
-# --- Main Heading ---
-st.markdown("<h1 style='text-align:center'>🧑‍💼 Resource Transfer Board</h2>", unsafe_allow_html=True)
+# --- Main Heading with Refresh Button ---
+col_title, col_refresh = st.columns([9, 1])  # Title + refresh button
+with col_title:
+    st.markdown("<h1 style='text-align:left'>🧑‍💼 Resource Transfer Board</h1>", unsafe_allow_html=True)
+with col_refresh:
+    if st.button("🔄 Refresh"):
+        st.rerun()
 
 # --- Tabs ---
 tab1, tab2, tab3 = st.tabs(["📝 Supply Pool", "🔄 Transfer Requests", "✏️ Employee Transfer Form"])
