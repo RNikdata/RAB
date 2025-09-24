@@ -197,3 +197,54 @@ with tab3:
                     user_id = str(hash_val%9000 + 1000)
                 swap_emp_id = employee_to_swap_add.split(" - ")[0]
                 swap_emp_name = df
+                swap_emp_name = df[df["Employee Id"].astype(str) == swap_emp_id]["Employee Name"].values[0]
+
+                # Create new row for ADS
+                employee_row = df[df["Employee Id"].astype(str) == interested_emp_id].copy()
+                employee_row["Interested Manager"] = user_name_add
+                employee_row["Employee to Swap"] = swap_emp_name
+                employee_row["Status"] = "Pending"
+
+                # Generate unique Request ID
+                request_id = f"{user_id}{interested_emp_id}{swap_emp_id}"
+                employee_row["Request Id"] = int(request_id)
+
+                # Append to ADS DataFrame
+                ads_df = pd.concat([ads_df, employee_row], ignore_index=True)
+                ads_df = ads_df.drop_duplicates(subset=["Employee Id", "Interested Manager", "Employee to Swap"], keep="last")
+
+                # Update Google Sheet
+                set_with_dataframe(ads_sheet, ads_df, include_index=False, resize=True)
+
+                st.success(f"✅ Transfer request added for Employee ID {interested_emp_id}. The Request ID is {request_id}")
+                # Clear preselect after submission
+                st.session_state.preselect_interested_employee = None
+                time.sleep(1)
+                st.experimental_rerun()
+            except Exception as e:
+                st.error(f"❌ Error: {e}")
+
+    st.markdown("<hr>", unsafe_allow_html=True)
+    st.subheader("❌ Remove Employee Transfer Request")
+    request_id_remove = st.selectbox(
+        "Enter Request ID to Remove",
+        options=ads_df["Request Id"].dropna().astype(int).tolist(),
+        key="request_id_remove",
+        index=None
+    )
+
+    if st.button("Remove Transfer Request", key="submit_remove"):
+        if not request_id_remove:
+            st.warning("⚠️ Please enter a Request ID before submitting.")
+        else:
+            if request_id_remove in ads_df["Request Id"].values:
+                ads_df = ads_df[ads_df["Request Id"] != request_id_remove]
+                # Update Google Sheet
+                ads_sheet.clear()
+                set_with_dataframe(ads_sheet, ads_df, include_index=False, resize=True)
+                st.success(f"✅ Swap request with Request ID {request_id_remove} has been removed.")
+                time.sleep(1)
+                st.experimental_rerun()
+            else:
+                st.error(f"❌ Request ID {request_id_remove} not found.")
+
