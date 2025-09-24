@@ -178,6 +178,7 @@ with tab2:
     filtered_df2 = filtered_df.copy()
 
     filtered_df_unique = filtered_df.drop_duplicates(subset=["Employee Id"], keep="first")
+    filtered_df_unique = filtered_df_unique[~filtered_df_unique["Designation"].isin(["AL"])]
     filtered_df_unique1 = filtered_df_unique[filtered_df_unique["Current Billability"].isin(["PU - Person Unbilled", "-", "PI - Person Investment"])]
     filtered_df_unique["Tenure"] = pd.to_numeric(filtered_df_unique["Tenure"], errors='coerce')
     filtered_df_unique2 = filtered_df_unique[filtered_df_unique["Tenure"] > 3]
@@ -203,6 +204,7 @@ with tab2:
             filtered_df_unique["Employee Name"].str.contains(resource_search, case=False, na=False) |
             filtered_df_unique["Employee Id"].astype(str).str.contains(resource_search, na=False)
         ]
+
     st.dataframe(filtered_df_unique[columns_to_show], use_container_width=True, height=500, hide_index=True)
     
 with tab3:
