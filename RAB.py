@@ -191,7 +191,7 @@ with tab2:
     if not swap_df.empty:
         col1, col2 = st.columns([2, 2])
         with col1:
-            request_id_options = ["Select Request ID..."] + swap_df["Request Id"].dropna().unique().astype(int).tolist()
+            request_id_options = swap_df["Request Id"].dropna().unique().astype(int).tolist()
             request_id_select = st.selectbox(
                 "Select Request ID",
                 options=request_id_options,
