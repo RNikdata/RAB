@@ -70,11 +70,11 @@ with col_refresh:
         st.rerun()
 
 # --- Tabs ---
-tab1, tab2, tab3, tab4 = st.tabs(["Transfer Summary","📝 Supply Pool", "🔄 Transfer Requests", "✏️ Employee Transfer Form"])
+tab1, tab2, tab3, tab4 = st.tabs(["📊 Transfer Summary","📝 Supply Pool", "🔄 Transfer Requests", "✏️ Employee Transfer Form"])
 
 # --- Tab 1: Manager-wise Summary ---
 with tab1:
-    st.subheader("📊 Manager-wise Transfer Summary")
+    st.subheader("📊 Manager Transfer Summary")
     st.markdown("<br>", unsafe_allow_html=True)
     summary_df = ads_df.copy()
 
