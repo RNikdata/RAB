@@ -72,7 +72,38 @@ with col_refresh:
 # --- Tabs ---
 tab1, tab2, tab3, tab4 = st.tabs(["Transfer Summary","📝 Supply Pool", "🔄 Transfer Requests", "✏️ Employee Transfer Form"])
 
-# --- Tab 1: Employee Table & KPIs ---
+# --- Tab 1: Transfer Summary ---
+with tab1:
+    st.subheader("📊 Transfer Summary by Manager")
+
+    # Create a copy of ads_df for filtering
+    summary_df = ads_df.copy()
+
+    # Apply sidebar filters
+    if account_filter:
+        summary_df = summary_df[summary_df["Account Name"].isin(account_filter)]
+    if manager_filter:
+        summary_df = summary_df[summary_df["Manager Name"].isin(manager_filter)]
+    if designation_filter:
+        summary_df = summary_df[summary_df["Designation"].isin(designation_filter)]
+
+    # Ensure Status column exists
+    if "Status" not in summary_df.columns:
+        summary_df["Status"] = "Pending"
+    else:
+        summary_df["Status"] = summary_df["Status"].fillna("Pending")
+
+    # Group by Manager Name
+    grouped_summary = summary_df.groupby("Manager Name").agg(
+        Total_Requests_Raised=("Request Id", "count"),
+        Total_Approved=("Status", lambda x: (x == "Approved").sum()),
+        Total_Pending=("Status", lambda x: (x == "Pending").sum())
+    ).reset_index()
+
+    # Display summary table
+    st.dataframe(grouped_summary, use_container_width=True, height=500)
+
+# --- Tab 2: Employee Table & KPIs ---
 with tab2:
     st.subheader("📝 Supply Pool")
     filtered_df = merged_df.copy()
