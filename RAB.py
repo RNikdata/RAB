@@ -114,7 +114,7 @@ with tab1:
             .nunique()
         )
         # Total Rejected (unique Request Ids with status Approved)
-        total_approved = (
+        total_rejected = (
             temp_df[temp_df["Status"].notna() & (temp_df["Status"] == "Rejected")]["Request Id"]
             .dropna()
             .nunique()
