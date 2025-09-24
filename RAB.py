@@ -136,7 +136,7 @@ with tab1:
 
     grouped_summary = pd.DataFrame(summary_list)
 
-    f account_filter:
+    if account_filter:
         grouped_summary = grouped_summary[grouped_summary["Account Name"].isin(account_filter)]
     if manager_filter:
         grouped_summary = grouped_summary[
