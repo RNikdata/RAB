@@ -79,6 +79,10 @@ with tab1:
     # Create a copy of ads_df for filtering
     summary_df = ads_df.copy()
 
+    # Remove rows without a valid Manager Name
+    summary_df = summary_df[summary_df["Manager Name"].notna()]  # Remove NaN
+    summary_df = summary_df[summary_df["Manager Name"].str.strip() != "---"]  # Remove "---"
+
     # Apply sidebar filters
     if account_filter:
         summary_df = summary_df[summary_df["Account Name"].isin(account_filter)]
