@@ -303,42 +303,44 @@ with tab3:
     approved_interested = approved_requests["Employee Id"].astype(str).tolist()  # Employees who are Interested
     approved_swap = approved_requests["Employee to Swap"].tolist()                 # Employees already swapped
 
-    # Prepare options excluding approved employees
+    # Prepare available employees excluding approved ones
     available_employees = df[~df["Employee Id"].astype(str).isin(approved_interested) & 
                              ~df["Employee Name"].isin(approved_swap)]
     options_interested = ["Select Interested Employee"] + (available_employees["Employee Id"].astype(str) + " - " + available_employees["Employee Name"]).tolist()
+    options_swap = ["Select Employee to Swap"] + (available_employees["Employee Id"].astype(str) + " - " + available_employees["Employee Name"]).tolist()
 
     # Pre-fill if selected from Tab 1
     preselected = st.session_state.get("preselect_interested_employee", None)
     default_idx = options_interested.index(preselected) if preselected in options_interested else 0
 
-    # --- Interested Employee Selectbox ---
-    interested_employee_add = st.selectbox(
-        "Interested Employee",
-        options=options_interested,
-        index=default_idx,
-        key="interested_employee_add"
-    )
+    # --- Form in a single row (3 columns) ---
+    col1, col2, col3 = st.columns([1, 2, 2])
+
+    with col1:
+        user_name_add = st.selectbox(
+            "User Name",
+            options=["Select Your Name"] + df["Manager Name"].dropna().unique().tolist(),
+            key="user_name_add"
+        )
+
+    with col2:
+        interested_employee_add = st.selectbox(
+            "Interested Employee",
+            options=options_interested,
+            index=default_idx,
+            key="interested_employee_add"
+        )
+
+    with col3:
+        employee_to_swap_add = st.selectbox(
+            "Employee to Transfer",
+            options=options_swap,
+            key="employee_to_swap_add"
+        )
 
     # Clear session state after prefill
     if "preselect_interested_employee" in st.session_state:
         del st.session_state["preselect_interested_employee"]
-
-    # --- User Name Selectbox ---
-    user_name_add = st.selectbox(
-        "User Name",
-        options=["Select Your Name"] + df["Manager Name"].dropna().unique().tolist(),
-        key="user_name_add"
-    )
-
-    # --- Employee to Swap Selectbox ---
-    # Exclude employees who are already approved in any swap
-    options_swap = ["Select Employee to Swap"] + available_employees["Employee Id"].astype(str) + " - " + available_employees["Employee Name"]
-    employee_to_swap_add = st.selectbox(
-        "Employee to Transfer",
-        options=options_swap,
-        key="employee_to_swap_add"
-    )
 
     # --- Submit Transfer Request ---
     if st.button("Submit Transfer Request", key="submit_add"):
