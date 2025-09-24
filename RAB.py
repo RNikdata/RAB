@@ -142,7 +142,12 @@ with tab1:
     columns_to_show = ["Employee Id", "Employee Name", "Email", "Designation",
                        "Manager Name", "Account Name", "Current Billability","3+_yr_Tenure_Flag"]
     columns_to_show = [col for col in columns_to_show if col in filtered_df_unique.columns]
-    st.dataframe(filtered_df_unique[columns_to_show], use_container_width=True, height=500, hide_index=True)
+    styled_df = filtered_df_unique[columns_to_show].style.set_properties(
+        **{"text-align": "center"}
+    ).set_table_styles(
+        [dict(selector="th", props=[("text-align", "center")])])
+    st.dataframe(styled_df, use_container_width=True, height=500, hide_index=True)
+    #st.dataframe(filtered_df_unique[columns_to_show], use_container_width=True, height=500, hide_index=True)
     
 # --- Tab 2: Swap Requests ---
 with tab2:
