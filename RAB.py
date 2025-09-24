@@ -199,20 +199,6 @@ with tab2:
     st.subheader("🔄 Transfer Requests")
     
     swap_df = ads_df.copy()
-    # Apply filters
-    if account_filter:
-        swap_df = swap_df[swap_df["Account Name"].isin(account_filter)]
-    if manager_filter:
-        swap_df = swap_df[
-        (swap_df["Manager Name"].isin(manager_filter))
-    ]
-    if designation_filter:
-        swap_df = swap_df[filtered_df["Designation"].isin(designation_filter)]
-    if resource_search:
-        swap_df = swap_df[
-            swap_df["Employee Name"].str.contains(resource_search, case=False, na=False) |
-            swap_df["Employee Id"].astype(str).str.contains(resource_search, na=False)
-        ]
 
     # Ensure Status column exists and default to Pending
     if "Status" not in swap_df.columns:
