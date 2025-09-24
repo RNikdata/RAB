@@ -105,7 +105,7 @@ with tab1:
     ).reset_index()
 
     # Display summary table
-    st.dataframe(grouped_summary, use_container_width=True, height=500)
+    st.dataframe(grouped_summary, use_container_width=True,hide_index=True,height=500)
 
 # --- Tab 2: Employee Table & KPIs ---
 with tab2:
