@@ -181,9 +181,10 @@ with tab2:
 
     st.markdown("---")
 
-    # --- Row 2: Approve/Reject Form (Compact) ---
+    # --- Row 2: Approve/Reject Form ---
     if not swap_df.empty:
-        col1, col2, col3 = st.columns([2, 2, 1])
+        # Request ID and Action on same row
+        col1, col2 = st.columns([2, 2])
         with col1:
             request_id_select = st.selectbox(
                 "Select Request ID",
@@ -197,10 +198,10 @@ with tab2:
                 horizontal=True,
                 key="decision_radio"
             )
-        with col3:
-            submit_pressed = st.button("Submit", key="submit_decision")
 
-        if submit_pressed:
+        # Submit button on a separate row below with some space
+        st.markdown("<br>", unsafe_allow_html=True)
+        if st.button("Submit Decision", key="submit_decision"):
             try:
                 status_value = "Approved" if decision == "Approve" else "Rejected"
                 # Update local dataframe
@@ -212,6 +213,8 @@ with tab2:
                 st.rerun()
             except Exception as e:
                 st.error(f"❌ Error updating request: {e}")
+
+    st.markdown("---")  # Space before the table
 
     # --- Colored Status Table ---
     def color_status(val):
@@ -231,7 +234,6 @@ with tab2:
         swap_df_filtered["Request Id"] = swap_df_filtered["Request Id"].astype(int)
         styled_swap_df = swap_df_filtered[swap_columns].style.applymap(color_status, subset=["Status"])
         st.dataframe(styled_swap_df, use_container_width=True, hide_index=True)
-
 
 # --- Tab 3: Employee Swap Form ---
 with tab3:
