@@ -225,50 +225,53 @@ with tab2:
     st.markdown("---")
 
     # --- Row 2: Approve/Reject Form ---
-    pending_swap_df = swap_df[swap_df["Status"] == "Pending"]  # Only pending requests
+    # Pending requests **after search**
+    pending_swap_df_filtered = swap_df[swap_df["Status"] == "Pending"]
+    
+    col1, col2 = st.columns([2, 2])
+    
+    with col1:
+        if not pending_swap_df_filtered.empty:
+            request_id_options = pending_swap_df_filtered["Request Id"].dropna().unique().astype(int).tolist()
+        else:
+            request_id_options = []
+        request_id_select = st.selectbox(
+            "Select Request ID",
+            options=request_id_options,
+            key="request_id_select_tab2"
+        )
 
-    if not pending_swap_df.empty:
-        col1, col2 = st.columns([2, 2])
-        with col1:
-            request_id_options = pending_swap_df["Request Id"].dropna().unique().astype(int).tolist()
-            request_id_select = st.selectbox(
-                "Select Request ID",
-                options=request_id_options,
-                key="request_id_select_tab2"
-            )
-        with col2:
-            decision = st.radio(
-                "Action",
-                options=["Approve", "Reject"],
-                horizontal=True,
-                key="decision_radio"
-            )
+    with col2:
+        decision = st.radio(
+            "Action",
+            options=["Approve", "Reject"],
+            horizontal=True,
+            key="decision_radio"
+        )
 
-        # --- Message placeholder ---
-        msg_placeholder = st.empty()
+    # --- Message placeholder ---
+    msg_placeholder = st.empty()
 
-        # Submit button
-        if st.button("Submit", key="submit_decision"):
-            if request_id_select not in pending_swap_df["Request Id"].values:
-                msg_placeholder.warning("⚠️ Please select a valid pending Request ID.")
+    # Submit button
+    if st.button("Submit", key="submit_decision"):
+        if request_id_select not in pending_swap_df_filtered["Request Id"].values:
+            msg_placeholder.warning("⚠️ Please select a valid pending Request ID.")
+        else:
+            current_status = ads_df.loc[ads_df["Request Id"] == request_id_select, "Status"].values[0]
+            if current_status == "Approved" and decision == "Reject":
+                msg_placeholder.error(f"❌ Request ID {request_id_select} is already Approved and cannot be Rejected.")
             else:
-                current_status = ads_df.loc[ads_df["Request Id"] == request_id_select, "Status"].values[0]
-                if current_status == "Approved" and decision == "Reject":
-                    msg_placeholder.error(f"❌ Request ID {request_id_select} is already Approved and cannot be Rejected.")
-                else:
-                    try:
-                        status_value = "Approved" if decision == "Approve" else "Rejected"
-                        # Update local dataframe
-                        ads_df.loc[ads_df["Request Id"] == request_id_select, "Status"] = status_value
-                        # Update Google Sheet
-                        set_with_dataframe(ads_sheet, ads_df, include_index=False, resize=True)
-                        msg_placeholder.success(f"✅ Request ID {request_id_select} marked as {status_value}")
-                        time.sleep(1)
-                        st.experimental_rerun()
-                    except Exception as e:
-                        msg_placeholder.error(f"❌ Error updating request: {e}")
-    else:
-        st.info("No pending requests available.")
+                try:
+                    status_value = "Approved" if decision == "Approve" else "Rejected"
+                    # Update local dataframe
+                    ads_df.loc[ads_df["Request Id"] == request_id_select, "Status"] = status_value
+                    # Update Google Sheet
+                    set_with_dataframe(ads_sheet, ads_df, include_index=False, resize=True)
+                    msg_placeholder.success(f"✅ Request ID {request_id_select} marked as {status_value}")
+                    time.sleep(1)
+                    st.experimental_rerun()
+                except Exception as e:
+                    msg_placeholder.error(f"❌ Error updating request: {e}")
 
     # --- Colored Status Table ---
     def color_status(val):
