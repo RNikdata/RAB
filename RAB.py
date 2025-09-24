@@ -189,14 +189,13 @@ with tab2:
 
     # --- Row 2: Approve/Reject Form ---
     if not swap_df.empty:
-        # Request ID and Action on same row
         col1, col2 = st.columns([2, 2])
         with col1:
+            request_id_options = ["Select Request ID..."] + swap_df["Request Id"].dropna().unique().astype(int).tolist()
             request_id_select = st.selectbox(
                 "Select Request ID",
-                options=swap_df["Request Id"].dropna().unique().astype(int).tolist(),
-                key="request_id_select_tab2",
-                index = None
+                options=request_id_options,
+                key="request_id_select_tab2"
             )
         with col2:
             decision = st.radio(
@@ -205,19 +204,28 @@ with tab2:
                 horizontal=True,
                 key="decision_radio"
             )
-        # Submit button on a separate row below with some space
+
+        # Submit button on a separate row below
         if st.button("Submit", key="submit_decision"):
-            try:
-                status_value = "Approved" if decision == "Approve" else "Rejected"
-                # Update local dataframe
-                ads_df.loc[ads_df["Request Id"] == request_id_select, "Status"] = status_value
-                # Update Google Sheet
-                set_with_dataframe(ads_sheet, ads_df, include_index=False, resize=True)
-                st.success(f"✅ Request ID {request_id_select} marked as {status_value}")
-                time.sleep(1)
-                st.rerun()
-            except Exception as e:
-                st.error(f"❌ Error updating request: {e}")
+            if request_id_select == "Select Request ID...":
+                st.warning("⚠️ Please select a Request ID before submitting.")
+            else:
+                current_status = ads_df.loc[ads_df["Request Id"] == request_id_select, "Status"].values[0]
+
+                if current_status == "Approved" and decision == "Reject":
+                    st.error(f"❌ Request ID {request_id_select} is already Approved and cannot be Rejected.")
+                else:
+                    try:
+                        status_value = "Approved" if decision == "Approve" else "Rejected"
+                        # Update local dataframe
+                        ads_df.loc[ads_df["Request Id"] == request_id_select, "Status"] = status_value
+                        # Update Google Sheet
+                        set_with_dataframe(ads_sheet, ads_df, include_index=False, resize=True)
+                        st.success(f"✅ Request ID {request_id_select} marked as {status_value}")
+                        time.sleep(1)
+                        st.rerun()
+                    except Exception as e:
+                        st.error(f"❌ Error updating request: {e}")
 
     # --- Colored Status Table ---
     def color_status(val):
@@ -237,6 +245,7 @@ with tab2:
         swap_df_filtered["Request Id"] = swap_df_filtered["Request Id"].astype(int)
         styled_swap_df = swap_df_filtered[swap_columns].style.applymap(color_status, subset=["Status"])
         st.dataframe(styled_swap_df, use_container_width=True, hide_index=True)
+
 
 # --- Tab 3: Employee Swap Form ---
 with tab3:
