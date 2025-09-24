@@ -31,7 +31,7 @@ if ads_df.empty:
 
 # --- Merge DataFrames ---
 merged_df = df.merge(
-    ads_df[["Employee Id", "Interested Manager", "Employee to Swap", "Request Id"]] if not ads_df.empty else pd.DataFrame(),
+    ads_df[["Employee Id", "Interested Manager", "Employee to Swap", "Request Id","Status"]] if not ads_df.empty else pd.DataFrame(),
     on="Employee Id",
     how="left"
 )
@@ -142,18 +142,19 @@ with tab1:
     columns_to_show = ["Employee Id", "Employee Name", "Email", "Designation",
                        "Manager Name", "Account Name", "Current Billability","3+_yr_Tenure_Flag"]
     columns_to_show = [col for col in columns_to_show if col in filtered_df_unique.columns]
-    styled_df = filtered_df_unique[columns_to_show].style.set_properties(
-        **{"text-align": "center"}
-    ).set_table_styles(
-        [dict(selector="th", props=[("text-align", "center")])])
-    st.dataframe(styled_df, use_container_width=True, height=500, hide_index=True)
-    #st.dataframe(filtered_df_unique[columns_to_show], use_container_width=True, height=500, hide_index=True)
+    st.dataframe(filtered_df_unique[columns_to_show], use_container_width=True, height=500, hide_index=True)
     
 # --- Tab 2: Swap Requests ---
 with tab2:
-    st.markdown("<br><br>",unsafe_allow_html = True)
-    st.subheader("🔄 Swap Requests")
+    st.markdown("<br><br>", unsafe_allow_html=True)
+    st.subheader("🔄 Transfer Requests")
     swap_df = ads_df.copy()
+
+    # Ensure Status column exists and default to Pending for new rows
+    if "Status" not in swap_df.columns:
+        swap_df["Status"] = "Pending"
+    else:
+        swap_df["Status"] = swap_df["Status"].fillna("Pending")
 
     # Search by Employee Name or ID
     if resource_search and "Employee Name" in swap_df.columns:
@@ -172,16 +173,55 @@ with tab2:
             swap_df["Interested Manager"].str.contains(interested_manager_search, case=False, na=False)
         ]
 
-    # Define columns to show
-    swap_columns = ["Request Id", "Employee Id", "Employee Name", "Email", "Interested Manager", "Employee to Swap"]
+    # --- Approve/Reject Form ---
+    if not swap_df.empty:
+        st.markdown("### ✅ Approve or Reject Requests")
+
+        request_id_select = st.selectbox(
+            "Select Request ID",
+            options=swap_df["Request Id"].dropna().unique().tolist(),
+            key="request_id_select_tab2"
+        )
+
+        decision = st.radio(
+            "Action",
+            options=["Approve", "Reject"],
+            horizontal=True,
+            key="decision_radio"
+        )
+
+        if st.button("Submit Decision", key="submit_decision"):
+            try:
+                status_value = "Approved" if decision == "Approve" else "Rejected"
+                swap_df.loc[swap_df["Request Id"] == request_id_select, "Status"] = status_value
+
+                # Update Google Sheet
+                ads_df.update(swap_df)
+                set_with_dataframe(ads_sheet, ads_df)
+
+                st.success(f"✅ Request ID {request_id_select} marked as {status_value}")
+                time.sleep(1)
+                st.rerun()
+            except Exception as e:
+                st.error(f"Error updating request: {e}")
+
+    # --- Colored Status Table ---
+    def color_status(val):
+        if val == "Approved":
+            return "color: green; font-weight: bold;"
+        elif val == "Rejected":
+            return "color: red; font-weight: bold;"
+        else:  # Pending
+            return "color: orange; font-weight: bold;"
+
+    swap_columns = ["Request Id", "Employee Id", "Employee Name", "Email", 
+                    "Interested Manager", "Employee to Swap", "Status"]
     swap_columns = [col for col in swap_columns if col in swap_df.columns]
 
-    # Filter only rows with Request Id
     swap_df_filtered = swap_df[swap_df["Request Id"].notna()] if "Request Id" in swap_df.columns else pd.DataFrame()
 
-    # Display table
-    st.sidebar.markdown("<br><br>",unsafe_allow_html = True)
-    st.dataframe(swap_df_filtered[swap_columns], use_container_width=True, hide_index=True)
+    styled_swap_df = swap_df_filtered[swap_columns].style.applymap(color_status, subset=["Status"])
+    st.dataframe(styled_swap_df, use_container_width=True, hide_index=True)
 
 # --- Tab 3: Employee Swap Form ---
 with tab3:
