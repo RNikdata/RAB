@@ -166,7 +166,7 @@ with tab2:
     col1, col2 = st.columns([2, 2])
     with col1:
         interested_manager_search = st.text_input(
-            "Search by Manager",
+            "Search by Interested Manager",
             key="interested_manager_search_box",
             placeholder="Type manager name..."
         )
