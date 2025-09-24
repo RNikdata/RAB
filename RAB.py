@@ -54,6 +54,7 @@ st.sidebar.markdown("<br><br>",unsafe_allow_html = True)
 st.sidebar.header("⚙️ Filters")
 account_filter = st.sidebar.multiselect("Account Name", options=merged_df["Account Name"].dropna().unique())
 manager_filter = st.sidebar.multiselect("Manager Name", options=merged_df["Manager Name"].dropna().unique())
+designation_filter = st.sidebar.multiselect("Designation", options=merged_df["Designation"].dropna().unique())
 #billability_filter = st.sidebar.multiselect("Billable Status", options=merged_df["Billable Status"].dropna().unique())
 #tag_filter = st.sidebar.multiselect("Tag", options=merged_df["Tag"].dropna().unique()) if "Tag" in merged_df.columns else []
 st.sidebar.markdown("<br><br>",unsafe_allow_html = True)
@@ -83,7 +84,9 @@ with tab1:
         filtered_df = filtered_df[
         (filtered_df["Manager Name"].isin(manager_filter)) |
         (filtered_df["Interested Manager"].isin(manager_filter)) 
-    ] 
+    ]
+    if designation_filter:
+        filtered_df = filtered_df[filtered_df["Designation"].isin(designation_filter)]
     if resource_search:
         filtered_df = filtered_df[
             filtered_df["Employee Name"].str.contains(resource_search, case=False, na=False) |
@@ -105,7 +108,9 @@ with tab1:
     if manager_filter:
         filtered_df2 = filtered_df2[
         (filtered_df["Interested Manager"].isin(manager_filter))
-    ] 
+    ]
+    if designation_filter:
+        filtered_df = filtered_df[filtered_df["Designation"].isin(designation_filter)]
     if resource_search:
         filtered_df2 = filtered_df2[
             filtered_df2["Employee Name"].str.contains(resource_search, case=False, na=False) |
@@ -180,7 +185,9 @@ with tab1:
     if manager_filter:
         filtered_df_unique = filtered_df_unique[
         (filtered_df_unique["Manager Name"].isin(manager_filter))
-    ] 
+    ]
+    if designation_filter:
+        filtered_df = filtered_df[filtered_df["Designation"].isin(designation_filter)]
     if resource_search:
         filtered_df_unique = filtered_df_unique[
             filtered_df_unique["Employee Name"].str.contains(resource_search, case=False, na=False) |
