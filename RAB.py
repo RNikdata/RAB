@@ -83,34 +83,39 @@ with tab1:
         <style>
         .kpi-container { 
             display: flex; 
-            gap: 15px; 
-            margin-bottom: 20px; 
+            justify-content: center;  /* center the row */
+            gap: 20px; 
+            margin: 20px 0; 
             flex-wrap: wrap; 
         }
         .kpi-card { 
-            flex: 1; 
-            background: #B0C4DE; /* Aluminum grey / light blue */ 
-            border-radius: 8px; 
-            padding: 10px 15px; 
+            flex: 0 1 180px;  /* fixed card width but responsive */
+            background: #B0C4DE; /* light steel blue */
+            border-radius: 12px; 
+            padding: 15px 20px; 
             text-align: center; 
-            box-shadow: 1px 1px 5px rgba(0,0,0,0.1); 
-            min-width: 120px; 
+            box-shadow: 2px 2px 8px rgba(0,0,0,0.15); 
+            transition: transform 0.2s ease-in-out; 
+        }
+        .kpi-card:hover { 
+            transform: scale(1.05); /* subtle hover effect */
         }
         .kpi-card h3 { 
             margin: 0; 
-            font-size: 14px; 
-            color: black; 
+            font-size: 15px; 
+            font-weight: 500;
+            color: #222; 
         }
         .kpi-card p { 
-            margin: 3px 0 0 0; 
-            font-size: 20px; 
+            margin: 6px 0 0 0; 
+            font-size: 24px; 
             font-weight: bold; 
-            color: black; 
+            color: #000; 
         }
         </style>
     """
     st.markdown(kpi_style, unsafe_allow_html=True)
-
+    
     st.markdown(f"""
     <div class="kpi-container">
         <div class="kpi-card">
