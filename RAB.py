@@ -74,7 +74,10 @@ with tab1:
     if account_filter:
         filtered_df = filtered_df[filtered_df["Account Name"].isin(account_filter)]
     if manager_filter:
-        filtered_df = filtered_df[filtered_df["Manager Name"].isin(manager_filter)]    
+    filtered_df = filtered_df[
+        (filtered_df["Manager Name"].isin(manager_filter)) |
+        (filtered_df["Interested Manager"].isin(manager_filter))
+    ] 
     if resource_search:
         filtered_df = filtered_df[
             filtered_df["Employee Name"].str.contains(resource_search, case=False, na=False) |
