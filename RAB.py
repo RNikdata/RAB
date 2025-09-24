@@ -189,6 +189,9 @@ with tab2:
 
     # --- Row 2: Approve/Reject Form ---
     if not swap_df.empty:
+        # Placeholder for messages
+        msg_placeholder = st.empty()
+
         col1, col2 = st.columns([2, 2])
         with col1:
             request_id_options = ["Select Request ID..."] + swap_df["Request Id"].dropna().unique().astype(int).tolist()
@@ -205,18 +208,16 @@ with tab2:
                 key="decision_radio"
             )
 
-       # Submit button on a separate row below
+        # Submit button on a separate row below
         if st.button("Submit", key="submit_decision"):
             if request_id_select == "Select Request ID...":
                 msg_placeholder.warning("⚠️ Please select a Request ID before submitting.")
             else:
                 current_status = ads_df.loc[ads_df["Request Id"] == request_id_select, "Status"].values[0]
-    
+
+                # Logic: Approved cannot be rejected, Rejected can be approved
                 if current_status == "Approved" and decision == "Reject":
                     msg_placeholder.error(f"❌ Request ID {request_id_select} is already Approved and cannot be Rejected.")
-                    # Clear the message after 2 seconds
-                    time.sleep(2)
-                    msg_placeholder.empty()
                 else:
                     try:
                         status_value = "Approved" if decision == "Approve" else "Rejected"
@@ -225,11 +226,10 @@ with tab2:
                         # Update Google Sheet
                         set_with_dataframe(ads_sheet, ads_df, include_index=False, resize=True)
                         msg_placeholder.success(f"✅ Request ID {request_id_select} marked as {status_value}")
-                        time.sleep(1)
-                        st.rerun()
+                        st.experimental_rerun()
                     except Exception as e:
                         msg_placeholder.error(f"❌ Error updating request: {e}")
-                        
+
     # --- Colored Status Table ---
     def color_status(val):
         if val == "Approved":
