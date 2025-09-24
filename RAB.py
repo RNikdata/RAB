@@ -411,9 +411,10 @@ with tab4:
 
     # --- Remove Transfer Request ---
     st.markdown(
-        "<hr style='margin-top:5px; margin-bottom:5px; border:1px solid gray;'>", 
+        "<hr style='margin-top:5px; margin-bottom:5px; border:1px solid #d3d3d3;'>", 
         unsafe_allow_html=True
     )
+    st.markdown("<br>", unsafe_allow_html=True)
     st.subheader("❌ Remove Employee Transfer Request")
 
     request_id_remove = st.selectbox(
