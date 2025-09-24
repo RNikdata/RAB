@@ -72,40 +72,55 @@ with col_refresh:
 # --- Tabs ---
 tab1, tab2, tab3, tab4 = st.tabs(["Transfer Summary","📝 Supply Pool", "🔄 Transfer Requests", "✏️ Employee Transfer Form"])
 
-# --- Tab 1: Transfer Summary ---
+# --- Tab 1: Manager-wise Summary ---
 with tab1:
-    st.subheader("📊 Transfer Summary by Manager")
+    st.subheader("📊 Manager-wise Transfer Summary")
 
-    # Create a copy of ads_df for filtering
     summary_df = ads_df.copy()
 
-    # Remove rows without a valid Manager Name
-    summary_df = summary_df[summary_df["Manager Name"].notna()]  # Remove NaN
-    summary_df = summary_df[summary_df["Manager Name"].str.strip() != "- - -"]  # Remove "---"
+    # Remove invalid manager rows
+    summary_df = summary_df[summary_df["Manager Name"].notna()]
+    summary_df = summary_df[summary_df["Manager Name"].str.strip() != "---"]
 
     # Apply sidebar filters
     if account_filter:
         summary_df = summary_df[summary_df["Account Name"].isin(account_filter)]
     if manager_filter:
-        summary_df = summary_df[summary_df["Manager Name"].isin(manager_filter)]
+        summary_df = summary_df[
+            (summary_df["Manager Name"].isin(manager_filter)) | 
+            (summary_df["Interested Manager"].isin(manager_filter))
+        ]
     if designation_filter:
         summary_df = summary_df[summary_df["Designation"].isin(designation_filter)]
 
     # Ensure Status column exists
-    if "Status" not in summary_df.columns:
-        summary_df["Status"] = "Pending"
-    else:
-        summary_df["Status"] = summary_df["Status"].fillna("Pending")
+    summary_df["Status"] = summary_df["Status"].fillna("Pending")
 
-    # Group by Manager Name
-    grouped_summary = summary_df.groupby("Manager Name").agg(
-        Total_Requests_Raised=("Request Id", "count"),
-        Total_Approved=("Status", lambda x: (x == "Approved").sum()),
-        Total_Pending=("Status", lambda x: (x == "Pending").sum())
-    ).reset_index()
+    # List of all managers for summary
+    all_managers = pd.concat([summary_df["Manager Name"], summary_df["Interested Manager"]]).dropna().unique()
+
+    # Prepare summary table
+    summary_list = []
+    for mgr in all_managers:
+        temp_df = summary_df[
+            (summary_df["Manager Name"] == mgr) | 
+            (summary_df["Interested Manager"] == mgr)
+        ]
+        total_requests = temp_df["Request Id"].dropna().nunique()
+        total_approved = (temp_df["Status"] == "Approved").sum()
+        total_pending = (temp_df["Status"] == "Pending").sum()
+        
+        summary_list.append({
+            "Manager Name": mgr,
+            "Total Requests Raised": total_requests,
+            "Total Approved": total_approved,
+            "Total Pending": total_pending
+        })
+
+    grouped_summary = pd.DataFrame(summary_list)
 
     # Display summary table
-    st.dataframe(grouped_summary, use_container_width=True,hide_index=True,height=500)
+    st.dataframe(grouped_summary.sort_values(by="Total Requests Raised", ascending=False), use_container_width=True, height=500)
 
 # --- Tab 2: Employee Table & KPIs ---
 with tab2:
