@@ -149,7 +149,7 @@ with tab1:
             <h3>Total Requests Raised</h3>
             <p>{total_requests}</p>
         </div>
-        <div class="kpi-card" style="background:#2196F3;">  <!-- Blue -->
+        <div class="kpi-card" style="background:#4CAF50;">  <!-- Green -->
             <h3>Total Approved Requests</h3>
             <p>{total_approved}</p>
         </div>
