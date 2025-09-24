@@ -86,25 +86,24 @@ with tab1:
             gap: 15px; 
             margin-bottom: 20px; 
             flex-wrap: wrap; 
-            justify-content: center; /* keep all cards centered */
         }
         .kpi-card { 
-            flex: 0 1 150px; 
-            background: #B0C4DE; 
+            flex: 1; 
+            background: #B0C4DE; /* Aluminum grey / light blue */ 
             border-radius: 8px; 
-            padding: 15px; 
-            text-align: center; /* center everything inside */
+            padding: 10px 15px; 
+            text-align: center; 
             box-shadow: 1px 1px 5px rgba(0,0,0,0.1); 
+            min-width: 120px; 
         }
         .kpi-card h3 { 
             margin: 0; 
             font-size: 14px; 
-            font-weight: 500;
             color: black; 
             text-align: center; 
         }
         .kpi-card p { 
-            margin: 8px 0 0 0; 
+            margin: 3px 0 0 0; 
             font-size: 20px; 
             font-weight: bold; 
             color: black; 
@@ -134,7 +133,6 @@ with tab1:
         </div>
     </div>
     """, unsafe_allow_html=True)
-
 
     # Display table
     columns_to_show = ["Employee Id", "Employee Name", "Email", "Designation",
