@@ -177,7 +177,8 @@ with tab2:
         status_filter = st.selectbox(
             "Filter by Status",
             options=["All", "Pending", "Approved", "Rejected"],
-            key="status_filter_box"
+            key="status_filter_box",
+            index = None
         )
 
     # Apply filters
@@ -206,42 +207,37 @@ with tab2:
                 st.info("No pending requests available.")
                 request_id_select = None
 
-        with col2:
-            # Radio buttons with colored labels using HTML
-            decision = st.radio(
-                "Action",
-                options=[
-                    '<span style="color:green;font-weight:bold;">Approve</span>',
-                    '<span style="color:red;font-weight:bold;">Reject</span>'
-                ],
-                format_func=lambda x: x,
-                key="decision_radio",
-                horizontal=True
-            )
-
-        # --- Message placeholder below submit ---
+        # Message placeholder below submit
         msg_placeholder = st.empty()
 
-        # Submit button
-        if st.button("Submit", key="submit_decision") and request_id_select is not None:
-            current_status = ads_df.loc[ads_df["Request Id"] == request_id_select, "Status"].values[0]
+        if request_id_select is not None:
+            with col2:
+                # Approve button
+                if st.button("✅ Approve", key="approve_btn"):
+                    decision = "Approved"
+                    try:
+                        ads_df.loc[ads_df["Request Id"] == request_id_select, "Status"] = decision
+                        set_with_dataframe(ads_sheet, ads_df, include_index=False, resize=True)
+                        msg_placeholder.success(f"✅ Request ID {request_id_select} marked as {decision}")
+                        st.rerun()
+                    except Exception as e:
+                        msg_placeholder.error(f"❌ Error updating request: {e}")
 
-            # Logic: Approved cannot be rejected, Rejected can be approved
-            if current_status == "Approved" and "Reject" in decision:
-                msg_placeholder.error(f"❌ Request ID {request_id_select} is already Approved and cannot be Rejected.")
-                time.sleep(1)
-                st.rerun()
-            else:
-                try:
-                    status_value = "Approved" if "Approve" in decision else "Rejected"
-                    # Update local dataframe
-                    ads_df.loc[ads_df["Request Id"] == request_id_select, "Status"] = status_value
-                    # Update Google Sheet
-                    set_with_dataframe(ads_sheet, ads_df, include_index=False, resize=True)
-                    msg_placeholder.success(f"✅ Request ID {request_id_select} marked as {status_value}")
-                    st.rerun()
-                except Exception as e:
-                    msg_placeholder.error(f"❌ Error updating request: {e}")
+                # Reject button
+                if st.button("❌ Reject", key="reject_btn"):
+                    # Check if already approved
+                    current_status = ads_df.loc[ads_df["Request Id"] == request_id_select, "Status"].values[0]
+                    if current_status == "Approved":
+                        msg_placeholder.error(f"❌ Request ID {request_id_select} is already Approved and cannot be Rejected.")
+                    else:
+                        decision = "Rejected"
+                        try:
+                            ads_df.loc[ads_df["Request Id"] == request_id_select, "Status"] = decision
+                            set_with_dataframe(ads_sheet, ads_df, include_index=False, resize=True)
+                            msg_placeholder.success(f"✅ Request ID {request_id_select} marked as {decision}")
+                            st.rerun()
+                        except Exception as e:
+                            msg_placeholder.error(f"❌ Error updating request: {e}")
 
     # --- Colored Status Table ---
     def color_status(val):
@@ -261,6 +257,7 @@ with tab2:
         swap_df_filtered["Request Id"] = swap_df_filtered["Request Id"].astype(int)
         styled_swap_df = swap_df_filtered[swap_columns].style.applymap(color_status, subset=["Status"])
         st.dataframe(styled_swap_df, use_container_width=True, hide_index=True)
+
 
 # --- Tab 3: Employee Swap Form ---
 with tab3:
