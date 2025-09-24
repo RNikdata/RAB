@@ -293,57 +293,81 @@ with tab2:
         styled_swap_df = swap_df_filtered[swap_columns].style.applymap(color_status, subset=["Status"])
         st.dataframe(styled_swap_df, use_container_width=True, hide_index=True)
 
-# --- Tab 3: Employee Swap Form ---
+# --- Tab 3: Employee Transfer Form ---
 with tab3:
-    st.markdown("<br><br>",unsafe_allow_html = True)
+    st.markdown("<br><br>", unsafe_allow_html=True)
     st.subheader("🔄 Employee Transfer Request")
 
-    # --- Add Swap Request ---
-    col1, col2, col3 = st.columns([1, 2, 2])
-    with col1:
-        user_name_add = st.selectbox(
-            "User Name",
-            options=["Select Your Name"] + df["Manager Name"].dropna().unique().tolist(),
-            key="user_name_add"
-        )
-    with col2:
-        interested_employee_add = st.selectbox(
-            "Interested Employee",
-            options=["Select Interested Employee"] + (df["Employee Id"].astype(str) + " - " + df["Employee Name"]).tolist(),
-            key="interested_employee_add"
-        )
-    with col3:
-        employee_to_swap_add = st.selectbox(
-            "Employee to Transfer",
-            options = ["Select Employee to Swap"] + (df["Employee Id"].astype(str) + " - " + df["Employee Name"]).tolist(),
-            key="employee_to_swap_add"
-        )
+    # Get list of approved employees (either as Interested Employee or Employee to Swap)
+    approved_requests = ads_df[ads_df["Status"] == "Approved"]
+    approved_interested = approved_requests["Employee Id"].astype(str).tolist()  # Employees who are Interested
+    approved_swap = approved_requests["Employee to Swap"].tolist()                 # Employees already swapped
 
+    # Prepare options excluding approved employees
+    available_employees = df[~df["Employee Id"].astype(str).isin(approved_interested) & 
+                             ~df["Employee Name"].isin(approved_swap)]
+    options_interested = ["Select Interested Employee"] + (available_employees["Employee Id"].astype(str) + " - " + available_employees["Employee Name"]).tolist()
+
+    # Pre-fill if selected from Tab 1
+    preselected = st.session_state.get("preselect_interested_employee", None)
+    default_idx = options_interested.index(preselected) if preselected in options_interested else 0
+
+    # --- Interested Employee Selectbox ---
+    interested_employee_add = st.selectbox(
+        "Interested Employee",
+        options=options_interested,
+        index=default_idx,
+        key="interested_employee_add"
+    )
+
+    # Clear session state after prefill
+    if "preselect_interested_employee" in st.session_state:
+        del st.session_state["preselect_interested_employee"]
+
+    # --- User Name Selectbox ---
+    user_name_add = st.selectbox(
+        "User Name",
+        options=["Select Your Name"] + df["Manager Name"].dropna().unique().tolist(),
+        key="user_name_add"
+    )
+
+    # --- Employee to Swap Selectbox ---
+    # Exclude employees who are already approved in any swap
+    options_swap = ["Select Employee to Swap"] + available_employees["Employee Id"].astype(str) + " - " + available_employees["Employee Name"]
+    employee_to_swap_add = st.selectbox(
+        "Employee to Transfer",
+        options=options_swap,
+        key="employee_to_swap_add"
+    )
+
+    # --- Submit Transfer Request ---
     if st.button("Submit Transfer Request", key="submit_add"):
         if not user_name_add or not interested_employee_add or not employee_to_swap_add:
             st.warning("⚠️ Please fill all fields before submitting.")
         else:
             try:
                 interested_emp_id = interested_employee_add.split(" - ")[0]
-                #user_id = df[df["Employee Name"] == user_name_add]["Employee Id"].values[0]
-                if user_name_add in df["Employee Name"].values:
-                    user_id = df.loc[df["Employee Name"] == user_name_add, "Employee Id"].values[0]
-                else:
-                    # Convert username to a hash and then into a 4-digit int
-                    hash_val = int(hashlib.sha256(user_name_add.encode()).hexdigest(), 16)
-                    user_id = str(hash_val % 9000 + 1000)  # ensures it's 4 digits (1000–9999)
                 swap_emp_id = employee_to_swap_add.split(" - ")[0]
                 swap_emp_name = df[df["Employee Id"].astype(str) == swap_emp_id]["Employee Name"].values[0]
 
+                # Determine user ID
+                if user_name_add in df["Employee Name"].values:
+                    user_id = df.loc[df["Employee Name"] == user_name_add, "Employee Id"].values[0]
+                else:
+                    hash_val = int(hashlib.sha256(user_name_add.encode()).hexdigest(), 16)
+                    user_id = str(hash_val % 9000 + 1000)
+
+                # Create new request row
                 employee_row = df[df["Employee Id"].astype(str) == interested_emp_id].copy()
                 employee_row["Interested Manager"] = user_name_add
                 employee_row["Employee to Swap"] = swap_emp_name
                 employee_row["Status"] = "Pending"
 
-                # Generate unique request id
+                # Generate unique Request ID
                 request_id = f"{user_id}{interested_emp_id}{swap_emp_id}"
                 employee_row["Request Id"] = int(request_id)
 
+                # Add to ADS dataframe
                 ads_df = pd.concat([ads_df, employee_row], ignore_index=True)
                 ads_df = ads_df.drop_duplicates(subset=["Employee Id","Interested Manager","Employee to Swap"], keep="last")
 
@@ -356,14 +380,15 @@ with tab3:
             except Exception as e:
                 st.error(f"Error: {e}")
 
+    # --- Remove Transfer Request ---
     st.markdown("<hr>", unsafe_allow_html=True)
     st.subheader("❌ Remove Employee Transfer Request")
 
     request_id_remove = st.selectbox(
         "Enter Request ID to Remove",
-        options = ads_df["Request Id"].dropna().astype(int).tolist(),
+        options=ads_df["Request Id"].dropna().astype(int).tolist(),
         key="request_id_remove",
-        index = None
+        index=None
     )
 
     if st.button("Remove Transfer Request", key="submit_remove"):
@@ -372,7 +397,6 @@ with tab3:
         else:
             if request_id_remove in ads_df["Request Id"].values:
                 ads_df = ads_df[ads_df["Request Id"] != request_id_remove]
-                # Update Google Sheet
                 ads_sheet.clear()
                 set_with_dataframe(ads_sheet, ads_df)
                 st.success(f"✅ Swap request with Request ID {request_id_remove} has been removed.")
