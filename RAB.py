@@ -76,7 +76,7 @@ with tab1:
     if manager_filter:
         filtered_df = filtered_df[
         (filtered_df["Manager Name"].isin(manager_filter)) |
-        (filtered_df["Interested Manager"].isin(manager_filter))
+        (filtered_df["Interested Manager"].isin(manager_filter)) 
     ] 
     if resource_search:
         filtered_df = filtered_df[
@@ -98,7 +98,7 @@ with tab1:
         filtered_df2 = filtered_df2[filtered_df_unique["Account Name"].isin(account_filter)]
     if manager_filter:
         filtered_df2 = filtered_df2[
-        (filtered_df2["Manager Name"].isin(manager_filter))
+        (filtered_df["Interested Manager"].isin(manager_filter))
     ] 
     if resource_search:
         filtered_df2 = filtered_df2[
