@@ -80,7 +80,7 @@ with tab1:
 
     # Remove invalid manager rows
     summary_df = summary_df[summary_df["Manager Name"].notna()]
-    summary_df = summary_df[summary_df["Manager Name"].str.strip() != "---"]
+    summary_df = summary_df[summary_df["Manager Name"].str.strip() != "- - -"]
 
     # Apply sidebar filters
     if account_filter:
@@ -107,13 +107,30 @@ with tab1:
             (summary_df["Interested Manager"] == mgr)
         ]
         total_requests = temp_df["Request Id"].dropna().nunique()
-        total_approved = (temp_df["Status"] == "Approved").sum()
-        total_pending = (temp_df["Status"] == "Pending").sum()
+        # Total Approved (unique Request Ids with status Approved)
+        total_approved = (
+            temp_df[temp_df["Status"].notna() & (temp_df["Status"] == "Approved")]["Request Id"]
+            .dropna()
+            .nunique()
+        )
+        # Total Rejected (unique Request Ids with status Approved)
+        total_approved = (
+            temp_df[temp_df["Status"].notna() & (temp_df["Status"] == "Rejected")]["Request Id"]
+            .dropna()
+            .nunique()
+        )
+        # Total Pending (unique Request Ids with status Pending)
+        total_pending = (
+            temp_df[temp_df["Status"].notna() & (temp_df["Status"] == "Pending")]["Request Id"]
+            .dropna()
+            .nunique()
+        )
         
         summary_list.append({
             "Manager Name": mgr,
             "Total Requests Raised": total_requests,
             "Total Approved": total_approved,
+            "Total Rejected": total_rejected,
             "Total Pending": total_pending
         })
 
