@@ -126,7 +126,7 @@ with tab1:
         text-align: center; 
         box-shadow: 1px 1px 5px rgba(0,0,0,0.1); 
         min-width: 120px; 
-        color: white;  /* Text color */
+        color: black;  /* Text color */
     }
     .kpi-card h3 { 
         margin: 0; 
