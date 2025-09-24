@@ -221,26 +221,26 @@ with tab2:
     st.markdown("---")
 
     # --- Row 2: Approve/Reject Form ---
-if not swap_df.empty:
-    col1, col2 = st.columns([2, 2])
-    with col1:
-        # Only include Pending request IDs
-        pending_request_ids = swap_df[swap_df["Status"] == "Pending"]["Request Id"].dropna().unique().astype(int).tolist()
-
-        request_id_select = st.selectbox(
-            "Select Request ID",
-            options=pending_request_ids if pending_request_ids else ["No Pending Requests"],
-            key="request_id_select_tab2",
-            index=None
-        )
-
-    with col2:
-        decision = st.radio(
-            "Action",
-            options=["Approve", "Reject"],
-            horizontal=True,
-            key="decision_radio"
-        )
+    if not swap_df.empty:
+        col1, col2 = st.columns([2, 2])
+        with col1:
+            # Only include Pending request IDs
+            pending_request_ids = swap_df[swap_df["Status"] == "Pending"]["Request Id"].dropna().unique().astype(int).tolist()
+    
+            request_id_select = st.selectbox(
+                "Select Request ID",
+                options=pending_request_ids if pending_request_ids else ["No Pending Requests"],
+                key="request_id_select_tab2",
+                index=None
+            )
+    
+        with col2:
+            decision = st.radio(
+                "Action",
+                options=["Approve", "Reject"],
+                horizontal=True,
+                key="decision_radio"
+            )
 
     # --- Message placeholder below submit ---
     msg_placeholder = st.empty()
