@@ -270,7 +270,7 @@ with tab2:
                     set_with_dataframe(ads_sheet, ads_df, include_index=False, resize=True)
                     msg_placeholder.success(f"✅ Request ID {request_id_select} marked as {status_value}")
                     time.sleep(1)
-                    st.experimental_rerun()
+                    st.rerun()
                 except Exception as e:
                     msg_placeholder.error(f"❌ Error updating request: {e}")
 
