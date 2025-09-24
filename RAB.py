@@ -133,15 +133,15 @@ with tab1:
             <p>{total_requests}</p>
         </div>
         <div class="kpi-card">
-            <h3>Total Unbilled</h3>
-            <p>{total_unbilled}</p>
+            <h3>Total Approved Requests</h3>
+            <p>{total_approved}</p>
         </div>
         <div class="kpi-card">
-            <h3>Total Unallocated</h3>
+            <h3>Total Rejected Requests</h3>
             <p>{total_unallocated}</p>
         </div>
         <div class="kpi-card">
-            <h3>Total Investments</h3>
+            <h3>Total Pending Requests</h3>
             <p>{total_investments}</p>
         </div>
     </div>
