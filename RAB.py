@@ -206,7 +206,7 @@ with tab2:
     total_pending = filtered_df2["Status"].eq("Pending").sum()
 
     # Display table
-    columns_to_show = ["Manager Name","Account Name","Employee Id", "Employee Name", "Designation"]
+    columns_to_show = ["Manager Name","Account Name","Employee Id", "Employee Name", "Designation","Tag","Billable Status"]
     columns_to_show = [col for col in columns_to_show if col in filtered_df_unique.columns]
     # Apply filters
     if account_filter:
