@@ -455,3 +455,13 @@ with tab4:
                 st.rerun()
             else:
                 st.error(f"❌ Request ID {request_id_remove} not found.")
+
+    # --- Note Section ---
+    st.markdown(
+        """
+        <p style='margin-top:15px; color:#b0b0b0; font-size:14px; font-style:italic;'>
+            Note: "Sidebar filters do not apply for this view.
+        </p>
+        """,
+        unsafe_allow_html=True
+    )
