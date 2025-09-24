@@ -282,7 +282,7 @@ with tab3:
             unsafe_allow_html=True
         )
         if st.button("Submit", key="submit_button"):
-        st.success("Button clicked!")
+            st.success("Button clicked!")
 
     # --- Message placeholder ---
     msg_placeholder = st.empty()
