@@ -73,7 +73,7 @@ with tab1:
     # Apply filters
     if account_filter:
         filtered_df = filtered_df[filtered_df["Account Name"].isin(account_filter)]
-     if manager_filter:
+    if manager_filter:
         filtered_df = filtered_df[filtered_df["Manager Name"].isin(manager_filter)]    
     if resource_search:
         filtered_df = filtered_df[
