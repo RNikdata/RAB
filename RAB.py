@@ -270,6 +270,7 @@ with tab3:
         )
 
     with col3:
+        st.markdown("<br><br>", unsafe_allow_html=True)
         if st.button("Submit", key="submit_button"):
             st.success("Button clicked!")
 
