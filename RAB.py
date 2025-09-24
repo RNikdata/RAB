@@ -130,7 +130,7 @@ with tab1:
     # Apply sidebar filters
     if manager_filter:
         grouped_summary = grouped_summary[
-            (summary_df["Manager Name"].isin(manager_filter))
+            (grouped_summary["Manager Name"].isin(manager_filter))
         ]
 
     # Display summary table
