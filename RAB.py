@@ -136,6 +136,16 @@ with tab1:
 
     grouped_summary = pd.DataFrame(summary_list)
 
+    f account_filter:
+        grouped_summary = grouped_summary[grouped_summary["Account Name"].isin(account_filter)]
+    if manager_filter:
+        grouped_summary = grouped_summary[
+            (grouped_summary["Manager Name"].isin(manager_filter)) | 
+            (grouped_summary["Interested Manager"].isin(manager_filter))
+        ]
+    if designation_filter:
+        grouped_summary = grouped_summary[grouped_summary["Designation"].isin(designation_filter)]
+
     # Display summary table
     st.dataframe(
         grouped_summary.sort_values(
@@ -146,8 +156,6 @@ with tab1:
         hide_index=True,
         height=500
     )
-
-
 
 # --- Tab 2: Employee Table & KPIs ---
 with tab2:
