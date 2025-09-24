@@ -262,6 +262,7 @@ with tab3:
         )
 
     with col2:
+        st.markdown("<div style='padding-left:20px;'>", unsafe_allow_html=True) 
         decision = st.radio(
             "Action",
             options=["Approve", "Reject"],
