@@ -270,9 +270,19 @@ with tab3:
         )
 
     with col3:
-        st.markdown("<br>", unsafe_allow_html=True)
+        st.markdown(
+            """
+            <style>
+            div.stButton > button:first-child {
+                margin-top: 23px;  /* adjust this to align with radio button */
+                width: 100%;
+            }
+            </style>
+            """,
+            unsafe_allow_html=True
+        )
         if st.button("Submit", key="submit_button"):
-            st.success("Button clicked!")
+        st.success("Button clicked!")
 
     # --- Message placeholder ---
     msg_placeholder = st.empty()
