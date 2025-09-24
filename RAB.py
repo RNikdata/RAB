@@ -147,6 +147,7 @@ with tab1:
 # --- Tab 2: Swap Requests ---
 with tab2:
     st.subheader("🔄 Transfer Requests")
+    
     swap_df = ads_df.copy()
 
     # Ensure Status column exists and default to Pending
@@ -180,9 +181,9 @@ with tab2:
 
     st.markdown("---")
 
-    # --- Row 2: Approve/Reject Form ---
+    # --- Row 2: Approve/Reject Form (Compact) ---
     if not swap_df.empty:
-        col1, col2, col3 = st.columns([2, 2, 2])
+        col1, col2, col3 = st.columns([2, 2, 1])
         with col1:
             request_id_select = st.selectbox(
                 "Select Request ID",
@@ -197,16 +198,20 @@ with tab2:
                 key="decision_radio"
             )
         with col3:
-            if st.button("Submit", key="submit_decision"):
-                try:
-                    status_value = "Approved" if decision == "Approve" else "Rejected"
-                    ads_df.loc[ads_df["Request Id"] == request_id_select, "Status"] = status_value
-                    set_with_dataframe(ads_sheet, ads_df, include_index=False, resize=True)
-                    st.success(f"✅ Request ID {request_id_select} marked as {status_value}")
-                    time.sleep(1)
-                    st.rerun()
-                except Exception as e:
-                    st.error(f"❌ Error updating request: {e}")
+            submit_pressed = st.button("Submit", key="submit_decision")
+
+        if submit_pressed:
+            try:
+                status_value = "Approved" if decision == "Approve" else "Rejected"
+                # Update local dataframe
+                ads_df.loc[ads_df["Request Id"] == request_id_select, "Status"] = status_value
+                # Update Google Sheet
+                set_with_dataframe(ads_sheet, ads_df, include_index=False, resize=True)
+                st.success(f"✅ Request ID {request_id_select} marked as {status_value}")
+                time.sleep(1)
+                st.rerun()
+            except Exception as e:
+                st.error(f"❌ Error updating request: {e}")
 
     # --- Colored Status Table ---
     def color_status(val):
@@ -226,6 +231,7 @@ with tab2:
         swap_df_filtered["Request Id"] = swap_df_filtered["Request Id"].astype(int)
         styled_swap_df = swap_df_filtered[swap_columns].style.applymap(color_status, subset=["Status"])
         st.dataframe(styled_swap_df, use_container_width=True, hide_index=True)
+
 
 # --- Tab 3: Employee Swap Form ---
 with tab3:
