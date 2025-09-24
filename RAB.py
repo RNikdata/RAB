@@ -38,6 +38,8 @@ merged_df = df.merge(
 # --- Sidebar Filters ---
 st.sidebar.markdown("<br><br>",unsafe_allow_html = True)
 st.sidebar.markdown("<br><br>",unsafe_allow_html = True)
+st.sidebar.markdown("<br><br>",unsafe_allow_html = True)
+st.sidebar.markdown("<br><br>",unsafe_allow_html = True)
 st.sidebar.header("⚙️ Filters")
 account_filter = st.sidebar.multiselect("Account Name", options=merged_df["Account Name"].dropna().unique())
 #billability_filter = st.sidebar.multiselect("Billable Status", options=merged_df["Billable Status"].dropna().unique())
@@ -47,14 +49,14 @@ st.sidebar.header("🔎 Search")
 resource_search = st.sidebar.text_input("Search Employee Name or ID")
 
 # --- Main Heading ---
-st.markdown("<h1 style='text-align:center'>🧑‍💼 Resource Allocation Board</h2>", unsafe_allow_html=True)
+st.markdown("<h1 style='text-align:center'>🧑‍💼 Resource Transfer Board</h2>", unsafe_allow_html=True)
 
 # --- Tabs ---
-tab1, tab2, tab3 = st.tabs(["📋 Employee Table", "🔄 Swap Requests", "✏️ Employee Swap Form"])
+tab1, tab2, tab3 = st.tabs(["📋 Supply Pool", "🔄 Swap Requests", "✏️ Employee Swap Form"])
 
 # --- Tab 1: Employee Table & KPIs ---
 with tab1:
-    st.subheader("📋 Employee Table")
+    st.subheader("📋 Supply Pool")
     filtered_df = merged_df.copy()
 
     # Apply filters
