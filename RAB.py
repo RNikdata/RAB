@@ -259,7 +259,7 @@ with tab3:
     with col3:
         employee_to_swap_add = st.selectbox(
             "Employee to Transfer",
-            options = (df["Employee Id"].astype(str) + " - " + df["Employee Name"]).tolist(),
+            options = ["Select Employee to Swap"] + (df["Employee Id"].astype(str) + " - " + df["Employee Name"]).tolist(),
             key="employee_to_swap_add",
             index = None
         )
