@@ -298,8 +298,9 @@ with tab3:
 
     request_id_remove = st.selectbox(
         "Enter Request ID to Remove",
-        options = ["Select Request ID"] + ads_df["Request Id"].dropna().astype(int).tolist(),
-        key="request_id_remove"
+        options = ads_df["Request Id"].dropna().astype(int).tolist(),
+        key="request_id_remove",
+        index = None
     )
 
     if st.button("Remove Transfer Request", key="submit_remove"):
