@@ -62,11 +62,11 @@ resource_search = st.sidebar.text_input("Search Employee Name or ID",placeholder
 st.markdown("<h1 style='text-align:center'>🧑‍💼 Resource Transfer Board</h2>", unsafe_allow_html=True)
 
 # --- Tabs ---
-tab1, tab2, tab3 = st.tabs(["📋 Supply Pool", "🔄 Transfer Requests", "✏️ Employee Transfer Form"])
+tab1, tab2, tab3 = st.tabs(["🪪 Supply Pool", "🔄 Transfer Requests", "✏️ Employee Transfer Form"])
 
 # --- Tab 1: Employee Table & KPIs ---
 with tab1:
-    st.subheader("📋 Supply Pool")
+    st.subheader("🪪 Supply Pool")
     filtered_df = merged_df.copy()
 
     # Apply filters
