@@ -204,8 +204,7 @@ with tab2:
         swap_df = swap_df[swap_df["Account Name"].isin(account_filter)]
     if manager_filter:
         swap_df = swap_df[
-        (swap_df["Manager Name"].isin(manager_filter)) |
-        (swap_df["Interested Manager"].isin(manager_filter)) 
+        (swap_df["Manager Name"].isin(manager_filter))
     ]
     if designation_filter:
         swap_df = swap_df[filtered_df["Designation"].isin(designation_filter)]
