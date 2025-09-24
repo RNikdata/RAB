@@ -40,13 +40,12 @@ merged_df = df.merge(
 #st.sidebar.image("logo.jpeg", width=150)
 st.sidebar.markdown(
     """
-    <p style='padding-left: 50px; display: block;'>
-        <img src="https://www.google.com/imgres?q=mu%20sigma%20logo&imgurl=https%3A%2F%2Fupload.wikimedia.org%2Fwikipedia%2Fen%2F0%2F0c%2FMu_Sigma_Logo.jpg&imgrefurl=https%3A%2F%2Fen.wikipedia.org%2Fwiki%2FMu_Sigma&docid=mJuVcdd7GTLCoM&tbnid=DhOWaSHZsfYJVM&vet=12ahUKEwjliqKn5vCPAxVR2DgGHcCKNzkQM3oECBUQAA..i&w=180&h=201&hcb=2&ved=2ahUKEwjliqKn5vCPAxVR2DgGHcCKNzkQM3oECBUQAA" width="100">
-    </p>
+    <div style='text-align: left; margin-left: 20px;'>
+        <img src="https://upload.wikimedia.org/wikipedia/en/0/0c/Mu_Sigma_Logo.jpg" width="100">
+    </div>
     """,
     unsafe_allow_html=True
 )
-
 
 # --- Sidebar Filters ---
 st.sidebar.markdown("<br><br>",unsafe_allow_html = True)
