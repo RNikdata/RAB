@@ -93,7 +93,7 @@ with tab1:
     filtered_df_unique["3+_yr_Tenure_Flag"] = filtered_df_unique["Tenure"].apply(lambda x: "Yes" if x > 3 else "No")
         
     # --- KPI Metrics ---
-    total_requests = filtered_df["Request Id"].notna().sum()
+    total_requests = filtered_df_unique["Request Id"].notna().sum()
     total_approved = filtered_df["Status"].eq("Approved").sum()
     total_rejected = filtered_df["Status"].eq("Rejected").sum()
     total_pending = filtered_df["Status"].eq("Pending").sum()
