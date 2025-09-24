@@ -89,9 +89,9 @@ with tab1:
     # --- KPI Metrics ---
     total_requests = filtered_df["Request Id"].notna().sum()
     total_approved = filtered_df["Status"].eq("Approved").sum()
-    total_unallocated = filtered_df_unique[filtered_df_unique["Tag"]=="Unallocated"]["Employee Id"].nunique() if "Tag" in filtered_df_unique.columns else 0
-    total_investments = filtered_df_unique[filtered_df_unique["Billable Status"]=="Investment"]["Employee Id"].nunique() if "Billable Status" in filtered_df_unique.columns else 0
-
+    total_rejected = filtered_df["Status"].eq("Rejected").sum()
+    total_pending = filtered_df["Status"].eq("Pending").sum()
+    
     kpi_style = """
         <style>
         .kpi-container { 
@@ -138,11 +138,11 @@ with tab1:
         </div>
         <div class="kpi-card">
             <h3>Total Rejected Requests</h3>
-            <p>{total_unallocated}</p>
+            <p>{total_rejected}</p>
         </div>
         <div class="kpi-card">
             <h3>Total Pending Requests</h3>
-            <p>{total_investments}</p>
+            <p>{total_pending}</p>
         </div>
     </div>
     """, unsafe_allow_html=True)
