@@ -98,6 +98,8 @@ with tab1:
 
     # List of all managers for summary
     all_managers = pd.concat([summary_df["Manager Name"], summary_df["Interested Manager"]]).dropna().unique()
+    # Create new dataframe with Manager Name and Account Name
+    manager_account_df = summary_df[["Manager Name", "Account Name"]].dropna().drop_duplicates().reset_index(drop=True)
 
     # Prepare summary table
     summary_list = []
@@ -106,6 +108,7 @@ with tab1:
             (summary_df["Manager Name"] == mgr) | 
             (summary_df["Interested Manager"] == mgr)
         ]
+        
         total_requests = temp_df["Request Id"].dropna().nunique()
         # Total Approved (unique Request Ids with status Approved)
         total_approved = (
@@ -136,19 +139,25 @@ with tab1:
 
     grouped_summary = pd.DataFrame(summary_list)
 
+    final_summary = grouped_summary.merge(
+        manager_account_df,
+        on="Manager Name",
+        how="left"
+    )
+
     if account_filter:
-        grouped_summary = grouped_summary[grouped_summary["Account Name"].isin(account_filter)]
+        final_summary = final_summary[final_summary["Account Name"].isin(account_filter)]
     if manager_filter:
-        grouped_summary = grouped_summary[
-            (grouped_summary["Manager Name"].isin(manager_filter)) | 
-            (grouped_summary["Interested Manager"].isin(manager_filter))
+        final_summary = final_summary[
+            (final_summary["Manager Name"].isin(manager_filter)) | 
+            (final_summary["Interested Manager"].isin(manager_filter))
         ]
     if designation_filter:
-        grouped_summary = grouped_summary[grouped_summary["Designation"].isin(designation_filter)]
+        final_summary = final_summary[grouped_summary["Designation"].isin(designation_filter)]
 
     # Display summary table
     st.dataframe(
-        grouped_summary.sort_values(
+        final_summary.sort_values(
             by=["Total Requests Raised", "Manager Name"], 
             ascending=[False, True]   # Requests Descending, then Manager Ascending
         ),
