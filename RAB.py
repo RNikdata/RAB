@@ -149,8 +149,7 @@ with tab1:
         final_summary = final_summary[final_summary["Account Name"].isin(account_filter)]
     if manager_filter:
         final_summary = final_summary[
-            (final_summary["Manager Name"].isin(manager_filter)) | 
-            (final_summary["Interested Manager"].isin(manager_filter))
+            (final_summary["Manager Name"].isin(manager_filter))
         ]
     if designation_filter:
         final_summary = final_summary[grouped_summary["Designation"].isin(designation_filter)]
