@@ -212,8 +212,6 @@ with tab2:
             except Exception as e:
                 st.error(f"❌ Error updating request: {e}")
 
-    st.markdown("---")  # Space before the table
-
     # --- Colored Status Table ---
     def color_status(val):
         if val == "Approved":
