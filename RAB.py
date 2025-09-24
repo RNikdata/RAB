@@ -322,7 +322,7 @@ with tab3:
 
 # --- Tab 3: Employee Transfer Form ---
 with tab4:
-    st.markdown("<br><br>", unsafe_allow_html=True)
+    st.markdown("<br>", unsafe_allow_html=True)
     st.subheader("🔄 Employee Transfer Request")
 
     # Get list of approved employees (either as Interested Employee or Employee to Swap)
@@ -410,7 +410,10 @@ with tab4:
                 st.error(f"Error: {e}")
 
     # --- Remove Transfer Request ---
-    st.markdown("<hr>", unsafe_allow_html=True)
+    st.markdown(
+        "<hr style='margin-top:5px; margin-bottom:5px; border:1px solid gray;'>", 
+        unsafe_allow_html=True
+    )
     st.subheader("❌ Remove Employee Transfer Request")
 
     request_id_remove = st.selectbox(
