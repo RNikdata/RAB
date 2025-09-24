@@ -189,9 +189,6 @@ with tab2:
 
     # --- Row 2: Approve/Reject Form ---
     if not swap_df.empty:
-        # Placeholder for messages
-        msg_placeholder = st.empty()
-
         col1, col2 = st.columns([2, 2])
         with col1:
             request_id_options = ["Select Request ID..."] + swap_df["Request Id"].dropna().unique().astype(int).tolist()
@@ -208,7 +205,10 @@ with tab2:
                 key="decision_radio"
             )
 
-        # Submit button on a separate row below
+        # --- Message placeholder below submit ---
+        msg_placeholder = st.empty()
+
+        # Submit button
         if st.button("Submit", key="submit_decision"):
             if request_id_select == "Select Request ID...":
                 msg_placeholder.warning("⚠️ Please select a Request ID before submitting.")
@@ -248,7 +248,6 @@ with tab2:
         swap_df_filtered["Request Id"] = swap_df_filtered["Request Id"].astype(int)
         styled_swap_df = swap_df_filtered[swap_columns].style.applymap(color_status, subset=["Status"])
         st.dataframe(styled_swap_df, use_container_width=True, hide_index=True)
-
 
 # --- Tab 3: Employee Swap Form ---
 with tab3:
