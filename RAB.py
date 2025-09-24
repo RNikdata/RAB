@@ -259,8 +259,9 @@ with tab3:
     with col3:
         employee_to_swap_add = st.selectbox(
             "Employee to Transfer",
-            options = ["Select Employee to Transfer"] + (df["Employee Id"].astype(str) + " - " + df["Employee Name"]).tolist(),
-            key="employee_to_swap_add"
+            options = (df["Employee Id"].astype(str) + " - " + df["Employee Name"]).tolist(),
+            key="employee_to_swap_add",
+            index = None
         )
 
     if st.button("Submit Transfer Request", key="submit_add"):
