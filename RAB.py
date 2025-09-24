@@ -75,7 +75,7 @@ tab1, tab2, tab3, tab4 = st.tabs(["Transfer Summary","📝 Supply Pool", "🔄 T
 # --- Tab 1: Manager-wise Summary ---
 with tab1:
     st.subheader("📊 Manager-wise Transfer Summary")
-    st.markdown("<br><br>", unsafe_allow_html=True)
+    st.markdown("<br>", unsafe_allow_html=True)
     summary_df = ads_df.copy()
 
     # Remove invalid manager rows
