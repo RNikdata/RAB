@@ -146,9 +146,8 @@ with tab1:
     
 # --- Tab 2: Swap Requests ---
 with tab2:
-    st.markdown("<br><br>", unsafe_allow_html=True)
     st.subheader("🔄 Transfer Requests")
-    
+    st.markdown("<br><br>", unsafe_allow_html=True)
     swap_df = ads_df.copy()
 
     # Ensure Status column exists and default to Pending
@@ -179,6 +178,8 @@ with tab2:
         ]
     if status_filter != "All" and "Status" in swap_df.columns:
         swap_df = swap_df[swap_df["Status"] == status_filter]
+
+    st.markdown("---")
 
     # --- Row 2: Approve/Reject Form ---
     if not swap_df.empty:
