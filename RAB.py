@@ -77,7 +77,7 @@ with tab1:
     total_employees = filtered_df_unique["Employee Id"].nunique()
     total_unbilled = filtered_df_unique[filtered_df_unique["Billable Status"]=="Unbilled"]["Employee Id"].nunique()
     total_unallocated = filtered_df_unique[filtered_df_unique["Tag"]=="Unallocated"]["Employee Id"].nunique() if "Tag" in filtered_df_unique.columns else 0
-    total_snps = filtered_df_unique[filtered_df_unique["SNP"]==1]["Employee Id"].nunique() if "SNP" in filtered_df_unique.columns else 0
+    total_investments = filtered_df_unique[filtered_df_unique["Billable Status"]=="Investment"]["Employee Id"].nunique() if "Billable Status" in filtered_df_unique.columns else 0
 
     kpi_style = """
         <style>
@@ -126,8 +126,8 @@ with tab1:
             <p>{total_unallocated}</p>
         </div>
         <div class="kpi-card">
-            <h3>Total SNPs</h3>
-            <p>{total_snps}</p>
+            <h3>Total Investments</h3>
+            <p>{total_investments}</p>
         </div>
     </div>
     """, unsafe_allow_html=True)
