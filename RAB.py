@@ -252,22 +252,22 @@ with tab2:
         if st.button("Submit", key="submit_decision"):
             current_status = ads_df.loc[ads_df["Request Id"] == request_id_select, "Status"].values[0]
 
-            # Logic: Approved cannot be rejected
-            if current_status == "Approved" and decision == "Reject":
-                msg_placeholder.error(f"❌ Request ID {request_id_select} is already Approved and cannot be Rejected.")
-                time.sleep(1)
+        # Logic: Approved cannot be rejected
+        if current_status == "Approved" and decision == "Reject":
+            msg_placeholder.error(f"❌ Request ID {request_id_select} is already Approved and cannot be Rejected.")
+            time.sleep(1)
+            st.rerun()
+        else:
+            try:
+                status_value = "Approved" if decision == "Approve" else "Rejected"
+                # Update local dataframe
+                ads_df.loc[ads_df["Request Id"] == request_id_select, "Status"] = status_value
+                # Update Google Sheet
+                set_with_dataframe(ads_sheet, ads_df, include_index=False, resize=True)
+                msg_placeholder.success(f"✅ Request ID {request_id_select} marked as {status_value}")
                 st.rerun()
-            else:
-                try:
-                    status_value = "Approved" if decision == "Approve" else "Rejected"
-                    # Update local dataframe
-                    ads_df.loc[ads_df["Request Id"] == request_id_select, "Status"] = status_value
-                    # Update Google Sheet
-                    set_with_dataframe(ads_sheet, ads_df, include_index=False, resize=True)
-                    msg_placeholder.success(f"✅ Request ID {request_id_select} marked as {status_value}")
-                    st.rerun()
-                except Exception as e:
-                    msg_placeholder.error(f"❌ Error updating request: {e}")
+            except Exception as e:
+                msg_placeholder.error(f"❌ Error updating request: {e}")
 
     # --- Colored Status Table ---
     def color_status(val):
