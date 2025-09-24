@@ -47,7 +47,6 @@ st.sidebar.markdown("<hr>", unsafe_allow_html=True)
 # --- Sidebar Filters ---
 st.sidebar.markdown("<br><br>",unsafe_allow_html = True)
 st.sidebar.markdown("<br><br>",unsafe_allow_html = True)
-st.sidebar.markdown("<br><br>",unsafe_allow_html = True)
 st.sidebar.header("⚙️ Filters")
 account_filter = st.sidebar.multiselect("Account Name", options=merged_df["Account Name"].dropna().unique())
 #billability_filter = st.sidebar.multiselect("Billable Status", options=merged_df["Billable Status"].dropna().unique())
