@@ -83,15 +83,11 @@ with tab1:
     summary_df = summary_df[summary_df["Manager Name"].str.strip() != "- - -"]
 
     # Apply sidebar filters
-    if account_filter:
-        summary_df = summary_df[summary_df["Account Name"].isin(account_filter)]
     if manager_filter:
         summary_df = summary_df[
             (summary_df["Manager Name"].isin(manager_filter)) | 
             (summary_df["Interested Manager"].isin(manager_filter))
         ]
-    if designation_filter:
-        summary_df = summary_df[summary_df["Designation"].isin(designation_filter)]
 
     # Ensure Status column exists
     summary_df["Status"] = summary_df["Status"].fillna("Pending")
