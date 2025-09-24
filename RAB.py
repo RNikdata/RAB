@@ -5,7 +5,7 @@ import gspread
 from gspread_dataframe import get_as_dataframe, set_with_dataframe
 from google.oauth2.service_account import Credentials
 import time
-import uuid
+import hashlib
 
 st.set_page_config(layout="wide")
 
