@@ -230,13 +230,12 @@ with tab2:
     if not pending_swap_df.empty:
         col1, col2 = st.columns([2, 2])
         with col1:
+            request_id_options = pending_swap_df["Request Id"].dropna().unique().astype(int).tolist()
             request_id_select = st.selectbox(
                 "Select Request ID",
-                options=pending_swap_df["Request Id"].dropna().unique().astype(int).tolist(),
-                key="request_id_select_tab2",
-                index=None
+                options=request_id_options,
+                key="request_id_select_tab2"
             )
-
         with col2:
             decision = st.radio(
                 "Action",
@@ -245,48 +244,14 @@ with tab2:
                 key="decision_radio"
             )
 
-        # --- Message placeholder below submit ---
+        # --- Message placeholder ---
         msg_placeholder = st.empty()
 
         # Submit button
         if st.button("Submit", key="submit_decision"):
-            current_status = ads_df.loc[ads_df["Request Id"] == request_id_select, "Status"].values[0]
+            if request_id_select not in pending_swap_df["Request Id"].values:
+                msg_placeholder_
 
-        # Logic: Approved cannot be rejected
-        if current_status == "Approved" and decision == "Reject":
-            msg_placeholder.error(f"❌ Request ID {request_id_select} is already Approved and cannot be Rejected.")
-            time.sleep(1)
-            st.rerun()
-        else:
-            try:
-                status_value = "Approved" if decision == "Approve" else "Rejected"
-                # Update local dataframe
-                ads_df.loc[ads_df["Request Id"] == request_id_select, "Status"] = status_value
-                # Update Google Sheet
-                set_with_dataframe(ads_sheet, ads_df, include_index=False, resize=True)
-                msg_placeholder.success(f"✅ Request ID {request_id_select} marked as {status_value}")
-                st.rerun()
-            except Exception as e:
-                msg_placeholder.error(f"❌ Error updating request: {e}")
-
-    # --- Colored Status Table ---
-    def color_status(val):
-        if val == "Approved":
-            return "color: green; font-weight: bold;"
-        elif val == "Rejected":
-            return "color: red; font-weight: bold;"
-        else:  # Pending
-            return "color: orange; font-weight: bold;"
-
-    swap_columns = ["Request Id", "Employee Id", "Employee Name", "Email", 
-                    "Interested Manager", "Employee to Swap", "Status"]
-    swap_columns = [col for col in swap_columns if col in swap_df.columns]
-
-    swap_df_filtered = swap_df[swap_df["Request Id"].notna()] if "Request Id" in swap_df.columns else pd.DataFrame()
-    if not swap_df_filtered.empty:
-        swap_df_filtered["Request Id"] = swap_df_filtered["Request Id"].astype(int)
-        styled_swap_df = swap_df_filtered[swap_columns].style.applymap(color_status, subset=["Status"])
-        st.dataframe(styled_swap_df, use_container_width=True, hide_index=True)
 
 # --- Tab 3: Employee Swap Form ---
 with tab3:
