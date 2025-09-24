@@ -5,6 +5,7 @@ import gspread
 from gspread_dataframe import get_as_dataframe, set_with_dataframe
 from google.oauth2.service_account import Credentials
 import time
+import uuid
 
 st.set_page_config(layout="wide")
 
@@ -317,6 +318,10 @@ with tab3:
             try:
                 interested_emp_id = interested_employee_add.split(" - ")[0]
                 user_id = df[df["Employee Name"] == user_name_add]["Employee Id"].values[0]
+                if user_name_add in df["Employee Name"].values:
+                    user_id = df.loc[df["Employee Name"] == user_name_add, "Employee Id"].values[0]
+                else:
+                    user_id = str(uuid.uuid4())[:8]
                 swap_emp_id = employee_to_swap_add.split(" - ")[0]
                 swap_emp_name = df[df["Employee Id"].astype(str) == swap_emp_id]["Employee Name"].values[0]
 
