@@ -249,11 +249,6 @@ with tab2:
             horizontal=True,
             key="decision_radio"
         )
-        
-    if decision == "Approve":
-        st.markdown('<p style="color:green; font-weight:bold;">✅ Approve selected</p>', unsafe_allow_html=True)
-    elif decision == "Reject":
-        st.markdown('<p style="color:red; font-weight:bold;">❌ Reject selected</p>', unsafe_allow_html=True)
 
     # --- Message placeholder ---
     msg_placeholder = st.empty()
