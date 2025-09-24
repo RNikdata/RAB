@@ -83,34 +83,32 @@ with tab1:
         <style>
         .kpi-container { 
             display: flex; 
-            justify-content: center;  /* center the row */
-            gap: 20px; 
-            margin: 20px 0; 
+            gap: 15px; 
+            margin-bottom: 20px; 
             flex-wrap: wrap; 
+            justify-content: center; /* keep all cards centered */
         }
         .kpi-card { 
-            flex: 0 1 180px;  /* fixed card width but responsive */
-            background: #B0C4DE; /* light steel blue */
-            border-radius: 12px; 
-            padding: 15px 20px; 
-            text-align: center; 
-            box-shadow: 2px 2px 8px rgba(0,0,0,0.15); 
-            transition: transform 0.2s ease-in-out; 
-        }
-        .kpi-card:hover { 
-            transform: scale(1.05); /* subtle hover effect */
+            flex: 0 1 150px; 
+            background: #B0C4DE; 
+            border-radius: 8px; 
+            padding: 15px; 
+            text-align: center; /* center everything inside */
+            box-shadow: 1px 1px 5px rgba(0,0,0,0.1); 
         }
         .kpi-card h3 { 
             margin: 0; 
-            font-size: 15px; 
+            font-size: 14px; 
             font-weight: 500;
-            color: #222; 
+            color: black; 
+            text-align: center; 
         }
         .kpi-card p { 
-            margin: 6px 0 0 0; 
-            font-size: 24px; 
+            margin: 8px 0 0 0; 
+            font-size: 20px; 
             font-weight: bold; 
-            color: #000; 
+            color: black; 
+            text-align: center; 
         }
         </style>
     """
@@ -136,6 +134,7 @@ with tab1:
         </div>
     </div>
     """, unsafe_allow_html=True)
+
 
     # Display table
     columns_to_show = ["Employee Id", "Employee Name", "Email", "Designation",
