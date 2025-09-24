@@ -411,7 +411,7 @@ with tab4:
 
     # --- Remove Transfer Request ---
     st.markdown(
-        "<hr style='margin-top:20px; margin-bottom:5px; border:0,height:1px; solid #d3d3d3;'>", 
+        "<hr style='margin-top:20px; margin-bottom:5px; border:0; solid #d3d3d3;'>", 
         unsafe_allow_html=True
     )
     st.markdown("<br>", unsafe_allow_html=True)
