@@ -317,7 +317,7 @@ with tab3:
         else:
             try:
                 interested_emp_id = interested_employee_add.split(" - ")[0]
-                user_id = df[df["Employee Name"] == user_name_add]["Employee Id"].values[0]
+                #user_id = df[df["Employee Name"] == user_name_add]["Employee Id"].values[0]
                 if user_name_add in df["Employee Name"].values:
                     user_id = df.loc[df["Employee Name"] == user_name_add, "Employee Id"].values[0]
                 else:
