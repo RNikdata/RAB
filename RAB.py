@@ -76,7 +76,7 @@ with tab1:
     filtered_df_unique = filtered_df_unique[filtered_df_unique["Current Billability"].isin(["PU - Person Unbilled", "-", "PI - Person Investment"])]
 
     # --- KPI Metrics ---
-    total_employees = filtered_df_unique["Employee Id"].nunique()
+    total_employees = filtered_df["Employee Id"].nunique()
     total_unbilled = filtered_df_unique[filtered_df_unique["Billable Status"]=="Unbilled"]["Employee Id"].nunique()
     total_unallocated = filtered_df_unique[filtered_df_unique["Tag"]=="Unallocated"]["Employee Id"].nunique() if "Tag" in filtered_df_unique.columns else 0
     total_investments = filtered_df_unique[filtered_df_unique["Billable Status"]=="Investment"]["Employee Id"].nunique() if "Billable Status" in filtered_df_unique.columns else 0
