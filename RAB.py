@@ -321,7 +321,9 @@ with tab3:
                 if user_name_add in df["Employee Name"].values:
                     user_id = df.loc[df["Employee Name"] == user_name_add, "Employee Id"].values[0]
                 else:
-                    user_id = str(uuid.uuid4())[:8]
+                    # Convert username to a hash and then into a 4-digit int
+                    hash_val = int(hashlib.sha256(user_name_add.encode()).hexdigest(), 16)
+                    user_id = str(hash_val % 9000 + 1000)  # ensures it's 4 digits (1000–9999)
                 swap_emp_id = employee_to_swap_add.split(" - ")[0]
                 swap_emp_name = df[df["Employee Id"].astype(str) == swap_emp_id]["Employee Name"].values[0]
 
