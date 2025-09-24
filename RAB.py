@@ -269,6 +269,9 @@ with tab3:
             key="decision_radio"
         )
 
+    with col3:
+        st.button("Submit",Key="Submit")
+
     # --- Message placeholder ---
     msg_placeholder = st.empty()
 
