@@ -4,4 +4,3 @@ gspread
 gspread-dataframe
 google-auth
 numpy
-hashlib
