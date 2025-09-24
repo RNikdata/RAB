@@ -82,12 +82,6 @@ with tab1:
     summary_df = summary_df[summary_df["Manager Name"].notna()]
     summary_df = summary_df[summary_df["Manager Name"].str.strip() != "- - -"]
 
-    # Apply sidebar filters
-    if manager_filter:
-        summary_df = summary_df[
-            (summary_df["Manager Name"].isin(manager_filter)) | 
-            (summary_df["Interested Manager"].isin(manager_filter))
-        ]
 
     # Ensure Status column exists
     summary_df["Status"] = summary_df["Status"].fillna("Pending")
@@ -132,6 +126,12 @@ with tab1:
         })
 
     grouped_summary = pd.DataFrame(summary_list)
+
+    # Apply sidebar filters
+    if manager_filter:
+        grouped_summary = grouped_summary[
+            (summary_df["Manager Name"].isin(manager_filter))
+        ]
 
     # Display summary table
     st.dataframe(
