@@ -40,7 +40,7 @@ merged_df = df.merge(
 #st.sidebar.image("logo.jpeg", width=150)
 st.sidebar.markdown(
     """
-    <div style='text-align: left; margin-left: 20px;'>
+    <div style='text-align: left; margin-left: 80px;'>
         <img src="https://upload.wikimedia.org/wikipedia/en/0/0c/Mu_Sigma_Logo.jpg" width="100">
     </div>
     """,
