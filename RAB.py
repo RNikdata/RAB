@@ -145,7 +145,7 @@ with tab1:
     
     st.markdown(f"""
     <div class="kpi-container">
-        <div class="kpi-card" style="background:#20B2AA;">  <!-- Green -->
+        <div class="kpi-card" style="background:#4682B4;">  <!-- Green -->
             <h3>Total Requests Raised</h3>
             <p>{total_requests}</p>
         </div>
