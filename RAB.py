@@ -144,6 +144,16 @@ with tab1:
         height=500
     )
 
+    # --- Note Section ---
+    st.markdown(
+        """
+        <div style='margin-top:15px; padding:10px; background-color:#f8f9fa; border-left:5px solid #ff9800;'>
+            <b>Note:</b> Account Name and Designation filters are not applicable for this summary view.
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+
 # --- Tab 2: Employee Table & KPIs ---
 with tab2:
     st.subheader("📝 Supply Pool")
