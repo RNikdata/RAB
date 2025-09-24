@@ -40,8 +40,8 @@ st.sidebar.markdown("<br><br>",unsafe_allow_html = True)
 st.sidebar.markdown("<br><br>",unsafe_allow_html = True)
 st.sidebar.header("⚙️ Filters")
 account_filter = st.sidebar.multiselect("Account Name", options=merged_df["Account Name"].dropna().unique())
-billability_filter = st.sidebar.multiselect("Billable Status", options=merged_df["Billable Status"].dropna().unique())
-tag_filter = st.sidebar.multiselect("Tag", options=merged_df["Tag"].dropna().unique()) if "Tag" in merged_df.columns else []
+#billability_filter = st.sidebar.multiselect("Billable Status", options=merged_df["Billable Status"].dropna().unique())
+#tag_filter = st.sidebar.multiselect("Tag", options=merged_df["Tag"].dropna().unique()) if "Tag" in merged_df.columns else []
 st.sidebar.markdown("<br><br>",unsafe_allow_html = True)
 st.sidebar.header("🔎 Search")
 resource_search = st.sidebar.text_input("Search Employee Name or ID")
