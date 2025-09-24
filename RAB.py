@@ -1,4 +1,4 @@
-import streamlit as st
+terimport streamlit as st
 import pandas as pd
 import numpy as np
 import gspread
@@ -63,7 +63,7 @@ resource_search = st.sidebar.text_input("Search Employee Name or ID",placeholder
 # --- Main Heading with Refresh Button ---
 col_title, col_refresh = st.columns([9, 1])  # Title + refresh button
 with col_title:
-    st.markdown("<h1 style='text-align:left'>🧑‍💼 Resource Transfer Board</h1>", unsafe_allow_html=True)
+    st.markdown("<h1 style='text-align:center'>🧑‍💼 Resource Transfer Board</h1>", unsafe_allow_html=True)
 with col_refresh:
     if st.button("🔄 Refresh"):
         st.rerun()
