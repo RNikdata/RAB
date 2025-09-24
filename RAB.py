@@ -218,6 +218,8 @@ with tab2:
                 # Logic: Approved cannot be rejected, Rejected can be approved
                 if current_status == "Approved" and decision == "Reject":
                     msg_placeholder.error(f"❌ Request ID {request_id_select} is already Approved and cannot be Rejected.")
+                    time.sleep(1)
+                    st.rerun()
                 else:
                     try:
                         status_value = "Approved" if decision == "Approve" else "Rejected"
