@@ -244,9 +244,6 @@ with tab2:
                 key="decision_radio"
             )
 
-        # --- Message placeholder ---
-        msg_placeholder = st.empty()
-
         # Submit button
         if st.button("Submit", key="submit_decision"):
             if request_id_select not in pending_swap_df["Request Id"].values:
