@@ -247,7 +247,7 @@ with tab3:
     # Pending requests **after search**
     pending_swap_df_filtered = swap_df[swap_df["Status"] == "Pending"]
     
-    col1, col2, col3= st.columns([2, 1, 2])
+    col1, col4, col2, col3= st.columns([2,0.5, 1, 2])
     
     with col1:
         if not pending_swap_df_filtered.empty:
@@ -260,7 +260,9 @@ with tab3:
             key="request_id_select_tab2",
             index = None
         )
-
+    with col4:
+        pass
+        
     with col2:
         decision = st.radio(
             "Action",
