@@ -148,6 +148,7 @@ with tab1:
 with tab2:
     st.markdown("<br><br>", unsafe_allow_html=True)
     st.subheader("🔄 Transfer Requests")
+    
     swap_df = ads_df.copy()
 
     # Ensure Status column exists and default to Pending for new rows
@@ -193,17 +194,19 @@ with tab2:
         if st.button("Submit Decision", key="submit_decision"):
             try:
                 status_value = "Approved" if decision == "Approve" else "Rejected"
-                swap_df.loc[swap_df["Request Id"] == request_id_select, "Status"] = status_value
 
-                # Update Google Sheet
-                ads_df.update(swap_df)
-                set_with_dataframe(ads_sheet, ads_df)
+                # Update locally
+                ads_df.loc[ads_df["Request Id"] == request_id_select, "Status"] = status_value
+
+                # Push full updated dataframe back to Google Sheet
+                set_with_dataframe(ads_sheet, ads_df, include_index=False, resize=True)
 
                 st.success(f"✅ Request ID {request_id_select} marked as {status_value}")
                 time.sleep(1)
                 st.rerun()
+
             except Exception as e:
-                st.error(f"Error updating request: {e}")
+                st.error(f"❌ Error updating request: {e}")
 
     # --- Colored Status Table ---
     def color_status(val):
