@@ -148,8 +148,7 @@ with tab1:
     """, unsafe_allow_html=True)
 
     # Display table
-    columns_to_show = ["Employee Id", "Employee Name", "Email", "Designation",
-                       "Manager Name", "Account Name", "Current Billability","3+_yr_Tenure_Flag"]
+    columns_to_show = ["Manager Name","Account Name","Employee Id", "Employee Name", "Designation"]
     columns_to_show = [col for col in columns_to_show if col in filtered_df_unique.columns]
     st.dataframe(filtered_df_unique[columns_to_show], use_container_width=True, height=500, hide_index=True)
     
