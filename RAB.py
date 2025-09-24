@@ -92,7 +92,19 @@ with tab1:
     filtered_df_unique = pd.concat([filtered_df_unique1, filtered_df_unique2], ignore_index=True)
     filtered_df_unique = filtered_df_unique.drop_duplicates(subset=["Employee Id"], keep="first")
     filtered_df_unique["3+_yr_Tenure_Flag"] = filtered_df_unique["Tenure"].apply(lambda x: "Yes" if x > 3 else "No")
-        
+
+    # Apply filters
+    if account_filter:
+        filtered_df2 = filtered_df2[filtered_df_unique["Account Name"].isin(account_filter)]
+    if manager_filter:
+        filtered_df2 = filtered_df2[
+        (filtered_df2["Manager Name"].isin(manager_filter))
+    ] 
+    if resource_search:
+        filtered_df2 = filtered_df2[
+            filtered_df2["Employee Name"].str.contains(resource_search, case=False, na=False) |
+            filtered_df2["Employee Id"].astype(str).str.contains(resource_search, na=False)
+        ]
     # --- KPI Metrics ---
     total_requests = filtered_df2["Request Id"].notna().sum()
     total_approved = filtered_df2["Status"].eq("Approved").sum()
