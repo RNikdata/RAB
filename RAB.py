@@ -185,28 +185,9 @@ with tab2:
     filtered_df_unique = filtered_df_unique.drop_duplicates(subset=["Employee Id"], keep="first")
     filtered_df_unique["3+_yr_Tenure_Flag"] = filtered_df_unique["Tenure"].apply(lambda x: "Yes" if x > 3 else "No")
 
-    # Apply filters
-    if account_filter:
-        filtered_df2 = filtered_df2[filtered_df_unique["Account Name"].isin(account_filter)]
-    if manager_filter:
-        filtered_df2 = filtered_df2[
-        (filtered_df["Interested Manager"].isin(manager_filter))
-    ]
-    if designation_filter:
-        filtered_df = filtered_df[filtered_df["Designation"].isin(designation_filter)]
-    if resource_search:
-        filtered_df2 = filtered_df2[
-            filtered_df2["Employee Name"].str.contains(resource_search, case=False, na=False) |
-            filtered_df2["Employee Id"].astype(str).str.contains(resource_search, na=False)
-        ]
-    # --- KPI Metrics ---
-    total_requests = filtered_df2["Request Id"].notna().sum()
-    total_approved = filtered_df2["Status"].eq("Approved").sum()
-    total_rejected = filtered_df2["Status"].eq("Rejected").sum()
-    total_pending = filtered_df2["Status"].eq("Pending").sum()
 
     # Display table
-    columns_to_show = ["Manager Name","Account Name","Employee Id", "Employee Name", "Designation","Tag","Billable Status"]
+    columns_to_show = ["Manager Name","Account Name","Employee Id", "Employee Name", "Designation","Tag","Billable Status","3+_yr_Tenure_Flag"]
     columns_to_show = [col for col in columns_to_show if col in filtered_df_unique.columns]
     # Apply filters
     if account_filter:
