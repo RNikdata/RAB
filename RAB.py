@@ -1,5 +1,6 @@
 import streamlit as st
 import pandas as pd
+import numpy as np
 import gspread
 from gspread_dataframe import get_as_dataframe, set_with_dataframe
 from google.oauth2.service_account import Credentials
@@ -74,6 +75,7 @@ with tab1:
 
     filtered_df_unique = filtered_df.drop_duplicates(subset=["Employee Id"], keep="first")
     filtered_df_unique = filtered_df_unique[filtered_df_unique["Current Billability"].isin(["PU - Person Unbilled", "-", "PI - Person Investment"])]
+    filtered_df_unique["3+_yr_Tenure_Flag"] = np.nan
 
     # --- KPI Metrics ---
     total_employees = filtered_df["Employee Id"].nunique()
@@ -138,7 +140,7 @@ with tab1:
 
     # Display table
     columns_to_show = ["Employee Id", "Employee Name", "Email", "Designation",
-                       "Manager Name", "Account Name", "Current Billability"]
+                       "Manager Name", "Account Name", "Current Billability","3+_yr_Tenure_Flag"]
     columns_to_show = [col for col in columns_to_show if col in filtered_df_unique.columns]
     st.dataframe(filtered_df_unique[columns_to_show], use_container_width=True, height=500, hide_index=True)
     
