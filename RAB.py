@@ -147,12 +147,13 @@ with tab1:
     # --- Note Section ---
     st.markdown(
         """
-        <div style='margin-top:15px; padding:10px; background-color:#f8f9fa; border-left:5px solid #ff9800;'>
-            <b>Note:</b> Account Name and Designation filters are not applicable for this summary view.
-        </div>
+        <p style='margin-top:15px; color:#b0b0b0; font-size:14px; font-style:italic;'>
+            Note: Account Name and Designation filters are not applicable for this summary view.
+        </p>
         """,
         unsafe_allow_html=True
     )
+
 
 # --- Tab 2: Employee Table & KPIs ---
 with tab2:
