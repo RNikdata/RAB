@@ -254,8 +254,6 @@ with tab2:
         styled_swap_df = swap_df_filtered[swap_columns].style.applymap(color_status, subset=["Status"])
         st.dataframe(styled_swap_df, use_container_width=True, hide_index=True)
 
-
-
 # --- Tab 3: Employee Swap Form ---
 with tab3:
     st.markdown("<br><br>",unsafe_allow_html = True)
@@ -295,6 +293,7 @@ with tab3:
                 employee_row = df[df["Employee Id"].astype(str) == interested_emp_id].copy()
                 employee_row["Interested Manager"] = user_name_add
                 employee_row["Employee to Swap"] = swap_emp_name
+                employee_row["Status"] = "Pending"
 
                 # Generate unique request id
                 request_id = f"{user_id}{interested_emp_id}{swap_emp_id}"
