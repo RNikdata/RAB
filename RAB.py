@@ -98,8 +98,6 @@ with tab1:
 
     # List of all managers for summary
     all_managers = pd.concat([summary_df["Manager Name"], summary_df["Interested Manager"]]).dropna().unique()
-    # Create new dataframe with Manager Name and Account Name
-    manager_account_df = summary_df[["Manager Name", "Account Name"]].dropna().drop_duplicates().reset_index(drop=True)
 
     # Prepare summary table
     summary_list = []
@@ -139,24 +137,9 @@ with tab1:
 
     grouped_summary = pd.DataFrame(summary_list)
 
-    final_summary = grouped_summary.merge(
-        manager_account_df,
-        on="Manager Name",
-        how="left"
-    )
-
-    if account_filter:
-        final_summary = final_summary[final_summary["Account Name"].isin(account_filter)]
-    if manager_filter:
-        final_summary = final_summary[
-            (final_summary["Manager Name"].isin(manager_filter))
-        ]
-    if designation_filter:
-        final_summary = final_summary[grouped_summary["Designation"].isin(designation_filter)]
-
     # Display summary table
     st.dataframe(
-        final_summary.sort_values(
+        grouped_summary.sort_values(
             by=["Total Requests Raised", "Manager Name"], 
             ascending=[False, True]   # Requests Descending, then Manager Ascending
         ),
