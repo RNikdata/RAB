@@ -298,7 +298,7 @@ with tab3:
 
     request_id_remove = st.selectbox(
         "Enter Request ID to Remove",
-        options = ads_df["Request Id"].dropna().astype(int).tolist(),
+        options = ["Select Request ID"] + ads_df["Request Id"].dropna().astype(int).tolist(),
         key="request_id_remove"
     )
 
