@@ -70,7 +70,7 @@ with col_refresh:
         st.rerun()
 
 # --- Tabs ---
-tab1, tab2, tab3, tab4 = st.tabs(["📊 Transfer Summary","📝 Supply Pool", "🔄 Transfer Requests", "✏️ Employee Transfer Form"])
+tab1, tab2, tab3, tab4 = st.tabs(["📊 Transfer Summary","📝 Supply Pool", "🔁 Transfer Requests", "✏️ Employee Transfer Form"])
 
 # --- Tab 1: Manager-wise Summary ---
 with tab1:
@@ -209,7 +209,7 @@ with tab2:
     st.dataframe(filtered_df_unique[columns_to_show], use_container_width=True, height=500, hide_index=True)
     
 with tab3:
-    st.subheader("🔄 Transfer Requests")
+    st.subheader("🔁 Transfer Requests")
     
     swap_df = ads_df.copy()
 
