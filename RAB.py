@@ -121,60 +121,6 @@ with tab1:
     total_approved = filtered_df2["Status"].eq("Approved").sum()
     total_rejected = filtered_df2["Status"].eq("Rejected").sum()
     total_pending = filtered_df2["Status"].eq("Pending").sum()
-    
-    kpi_style = """
-    <style>
-    .kpi-container { 
-        display: flex; 
-        gap: 15px; 
-        margin-bottom: 20px; 
-        flex-wrap: wrap; 
-    }
-    .kpi-card { 
-        flex: 1; 
-        border-radius: 8px; 
-        padding: 10px 15px; 
-        text-align: center; 
-        box-shadow: 1px 1px 5px rgba(0,0,0,0.1); 
-        min-width: 120px; 
-        color: white;  /* Text color */
-    }
-    .kpi-card h3 { 
-        margin: 0; 
-        font-size: 14px; 
-        text-align: center; 
-    }
-    .kpi-card p { 
-        margin: 1px 0 0 0; 
-        font-size: 32px; 
-        font-weight: bold; 
-        text-align: center; 
-    }
-    </style>
-    """
-    st.markdown(kpi_style, unsafe_allow_html=True)
-    
-    st.markdown(f"""
-    <div class="kpi-container">
-        <div class="kpi-card" style="background:#4682B4;">  <!-- Green -->
-            <h3>Total Requests Raised</h3>
-            <p>{total_requests}</p>
-        </div>
-        <div class="kpi-card" style="background:#4CAF50;">  <!-- Green -->
-            <h3>Total Approved Requests</h3>
-            <p>{total_approved}</p>
-        </div>
-        <div class="kpi-card" style="background:#F44336;">  <!-- Red -->
-            <h3>Total Rejected Requests</h3>
-            <p>{total_rejected}</p>
-        </div>
-        <div class="kpi-card" style="background:#FFC107;">  <!-- Orange -->
-            <h3>Total Pending Requests</h3>
-            <p>{total_pending}</p>
-        </div>
-    </div>
-    """, unsafe_allow_html=True)
-
 
     # Display table
     columns_to_show = ["Manager Name","Account Name","Employee Id", "Employee Name", "Designation"]
