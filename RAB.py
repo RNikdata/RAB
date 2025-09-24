@@ -158,7 +158,7 @@ with tab1:
 # --- Tab 2: Employee Table & KPIs ---
 with tab2:
     st.subheader("📝 Supply Pool")
-    st.sidebar.markdown("<br>",unsafe_allow_html = True)
+    st.markdown("<br>",unsafe_allow_html = True)
     filtered_df = merged_df.copy()
 
     # Apply filters
