@@ -151,28 +151,35 @@ with tab2:
     
     swap_df = ads_df.copy()
 
-    # Ensure Status column exists and default to Pending for new rows
+    # Ensure Status column exists and default to Pending
     if "Status" not in swap_df.columns:
         swap_df["Status"] = "Pending"
     else:
         swap_df["Status"] = swap_df["Status"].fillna("Pending")
 
-    # Search by Employee Name or ID
-    if resource_search and "Employee Name" in swap_df.columns:
-        swap_df = swap_df[
-            swap_df["Employee Name"].str.contains(resource_search, case=False, na=False) |
-            swap_df["Employee Id"].astype(str).str.contains(resource_search, na=False)
-        ]
+    # --- Filter Inputs in Two Columns ---
+    col1, col2 = st.columns(2)
 
-    # Search by Interested Manager
-    interested_manager_search = st.text_input(
-        "Search by Interested Manager",
-        key="interested_manager_search_box"
-    )
+    with col1:
+        interested_manager_search = st.text_input(
+            "Search by Interested Manager",
+            key="interested_manager_search_box"
+        )
+
+    with col2:
+        status_filter = st.selectbox(
+            "Filter by Status",
+            options=["All", "Pending", "Approved", "Rejected"],
+            key="status_filter_box"
+        )
+
+    # Apply filters
     if interested_manager_search and "Interested Manager" in swap_df.columns:
         swap_df = swap_df[
             swap_df["Interested Manager"].str.contains(interested_manager_search, case=False, na=False)
         ]
+    if status_filter != "All" and "Status" in swap_df.columns:
+        swap_df = swap_df[swap_df["Status"] == status_filter]
 
     # --- Approve/Reject Form ---
     if not swap_df.empty:
@@ -194,17 +201,11 @@ with tab2:
         if st.button("Submit Decision", key="submit_decision"):
             try:
                 status_value = "Approved" if decision == "Approve" else "Rejected"
-
-                # Update locally
                 ads_df.loc[ads_df["Request Id"] == request_id_select, "Status"] = status_value
-
-                # Push full updated dataframe back to Google Sheet
                 set_with_dataframe(ads_sheet, ads_df, include_index=False, resize=True)
-
                 st.success(f"✅ Request ID {request_id_select} marked as {status_value}")
                 time.sleep(1)
                 st.rerun()
-
             except Exception as e:
                 st.error(f"❌ Error updating request: {e}")
 
