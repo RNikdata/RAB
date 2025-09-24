@@ -318,6 +318,21 @@ with tab3:
     swap_columns = [col for col in swap_columns if col in swap_df.columns]
 
     swap_df_filtered = swap_df[swap_df["Request Id"].notna()] if "Request Id" in swap_df.columns else pd.DataFrame()
+    
+    if account_filter:
+        swap_df_filtered = swap_df_filtered[swap_df_filtered["Account Name"].isin(account_filter)]
+    if manager_filter:
+        swap_df_filtered = swap_df_filtered[
+        (swap_df_filtered["Manager Name"].isin(manager_filter))
+    ]
+    if designation_filter:
+        swap_df_filtered = swap_df_filtered[swap_df_filtered["Designation"].isin(designation_filter)]
+    if resource_search:
+        swap_df_filtered = swap_df_filtered[
+            swap_df_filtered["Employee Name"].str.contains(resource_search, case=False, na=False) |
+            swap_df_filtered["Employee Id"].astype(str).str.contains(resource_search, na=False)
+        ]
+
     if not swap_df_filtered.empty:
         swap_df_filtered["Request Id"] = swap_df_filtered["Request Id"].astype(int)
         styled_swap_df = swap_df_filtered[swap_columns].style.applymap(color_status, subset=["Status"])
