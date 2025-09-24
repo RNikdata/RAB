@@ -242,7 +242,7 @@ with tab3:
     if status_filter != "All" and "Status" in swap_df.columns:
         swap_df = swap_df[swap_df["Status"] == status_filter]
     st.markdown(
-        "<hr style='margin-top:5px; margin-bottom:5px; border:0; solid #d3d3d3;'>", 
+        "<hr style='margin-top:5px; margin-bottom:2px; border:0; solid #d3d3d3;'>", 
         unsafe_allow_html=True
     )
 
