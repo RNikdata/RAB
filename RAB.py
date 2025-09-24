@@ -60,10 +60,10 @@ with tab1:
     # Apply filters
     if account_filter:
         filtered_df = filtered_df[filtered_df["Account Name"].isin(account_filter)]
-    if billability_filter:
-        filtered_df = filtered_df[filtered_df["Billable Status"].isin(billability_filter)]
-    if tag_filter and "Tag" in filtered_df.columns:
-        filtered_df = filtered_df[filtered_df["Tag"].isin(tag_filter)]
+    #if billability_filter:
+        #filtered_df = filtered_df[filtered_df["Billable Status"].isin(billability_filter)]
+    #if tag_filter and "Tag" in filtered_df.columns:
+        #filtered_df = filtered_df[filtered_df["Tag"].isin(tag_filter)]
     if resource_search:
         filtered_df = filtered_df[
             filtered_df["Employee Name"].str.contains(resource_search, case=False, na=False) |
