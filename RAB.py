@@ -195,7 +195,8 @@ with tab2:
             request_id_select = st.selectbox(
                 "Select Request ID",
                 options=swap_df["Request Id"].dropna().unique().astype(int).tolist(),
-                key="request_id_select_tab2"
+                key="request_id_select_tab2",
+                index = None
             )
         with col2:
             decision = st.radio(
