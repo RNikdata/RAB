@@ -52,7 +52,7 @@ resource_search = st.sidebar.text_input("Search Employee Name or ID")
 st.markdown("<h1 style='text-align:center'>🧑‍💼 Resource Transfer Board</h2>", unsafe_allow_html=True)
 
 # --- Tabs ---
-tab1, tab2, tab3 = st.tabs(["📋 Supply Pool", "🔄 Swap Requests", "✏️ Employee Swap Form"])
+tab1, tab2, tab3 = st.tabs(["📋 Supply Pool", "🔄 Transfer Requests", "✏️ Employee Transfer Form"])
 
 # --- Tab 1: Employee Table & KPIs ---
 with tab1:
@@ -179,30 +179,30 @@ with tab2:
 # --- Tab 3: Employee Swap Form ---
 with tab3:
     st.markdown("<br><br>",unsafe_allow_html = True)
-    st.subheader("🔄 Employee Swap Request")
+    st.subheader("🔄 Employee Transfer Request")
 
     # --- Add Swap Request ---
     col1, col2, col3 = st.columns([1, 2, 2])
     with col1:
         user_name_add = st.selectbox(
-            "User Name (Add)",
+            "User Name",
             options=["Select Your Name"] + df["Employee Name"].tolist(),
             key="user_name_add"
         )
     with col2:
         interested_employee_add = st.selectbox(
-            "Interested Employee (Add)",
+            "Interested Employee",
             options=["Select Interested Employee"] + (df["Employee Id"].astype(str) + " - " + df["Employee Name"]).tolist(),
             key="interested_employee_add"
         )
     with col3:
         employee_to_swap_add = st.selectbox(
-            "Employee to Swap (Add)",
-            options = ["Select Employee to Swap"] + (df["Employee Id"].astype(str) + " - " + df["Employee Name"]).tolist(),
+            "Employee to Transfer",
+            options = ["Select Employee to Transfer"] + (df["Employee Id"].astype(str) + " - " + df["Employee Name"]).tolist(),
             key="employee_to_swap_add"
         )
 
-    if st.button("Submit Swap Request", key="submit_add"):
+    if st.button("Submit Transfer Request", key="submit_add"):
         if not user_name_add or not interested_employee_add or not employee_to_swap_add:
             st.warning("⚠️ Please fill all fields before submitting.")
         else:
@@ -226,14 +226,14 @@ with tab3:
                 # Update Google Sheet
                 set_with_dataframe(ads_sheet, ads_df)
 
-                st.success(f"✅ Swap request added for Employee ID {interested_emp_id}. The Request ID is {request_id}")
+                st.success(f"✅ Transfer request added for Employee ID {interested_emp_id}. The Request ID is {request_id}")
                 time.sleep(1)
                 st.rerun()
             except Exception as e:
                 st.error(f"Error: {e}")
 
     st.markdown("<hr>", unsafe_allow_html=True)
-    st.subheader("❌ Remove Employee Swap Request")
+    st.subheader("❌ Remove Employee Transfer Request")
 
     request_id_remove = st.selectbox(
         "Enter Request ID to Remove",
@@ -241,7 +241,7 @@ with tab3:
         key="request_id_remove"
     )
 
-    if st.button("Remove Swap Request", key="submit_remove"):
+    if st.button("Remove Transfer Request", key="submit_remove"):
         if not request_id_remove:
             st.warning("⚠️ Please enter a Request ID before submitting.")
         else:
