@@ -272,11 +272,11 @@ with tab3:
         )
 
     with col3:
-    st.markdown("<br>", unsafe_allow_html=True)
-    if st.button("Submit", key="submit_decision"):
-        submit_clicked = True
-    else:
-        submit_clicked = False
+        st.markdown("<br>", unsafe_allow_html=True)
+        if st.button("Submit", key="submit_decision"):
+            submit_clicked = True
+        else:
+            submit_clicked = False
 
     # --- Message placeholder below the row ---
     msg_placeholder = st.empty()
