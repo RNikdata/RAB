@@ -205,17 +205,17 @@ with tab2:
                 key="decision_radio"
             )
 
-        # Submit button on a separate row below
+       # Submit button on a separate row below
         if st.button("Submit", key="submit_decision"):
             if request_id_select == "Select Request ID...":
-                st.warning("⚠️ Please select a Request ID before submitting.")
+                msg_placeholder.warning("⚠️ Please select a Request ID before submitting.")
             else:
                 current_status = ads_df.loc[ads_df["Request Id"] == request_id_select, "Status"].values[0]
-
+    
                 if current_status == "Approved" and decision == "Reject":
-                    st.error(f"❌ Request ID {request_id_select} is already Approved and cannot be Rejected.")
+                    msg_placeholder.error(f"❌ Request ID {request_id_select} is already Approved and cannot be Rejected.")
                     # Clear the message after 2 seconds
-                     time.sleep(2)
+                    time.sleep(2)
                     msg_placeholder.empty()
                 else:
                     try:
@@ -224,12 +224,12 @@ with tab2:
                         ads_df.loc[ads_df["Request Id"] == request_id_select, "Status"] = status_value
                         # Update Google Sheet
                         set_with_dataframe(ads_sheet, ads_df, include_index=False, resize=True)
-                        st.success(f"✅ Request ID {request_id_select} marked as {status_value}")
+                        msg_placeholder.success(f"✅ Request ID {request_id_select} marked as {status_value}")
                         time.sleep(1)
                         st.rerun()
                     except Exception as e:
-                        st.error(f"❌ Error updating request: {e}")
-
+                        msg_placeholder.error(f"❌ Error updating request: {e}")
+                        
     # --- Colored Status Table ---
     def color_status(val):
         if val == "Approved":
