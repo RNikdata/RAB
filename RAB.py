@@ -305,7 +305,7 @@ with tab2:
         else:  # Pending
             return "color: orange; font-weight: bold;"
 
-    swap_columns = ["Request Id", "Employee Id", "Employee Name", "Email", 
+    swap_columns = ["Request Id", "Employee Id", "Employee Name", "Manager Name","Account Name", "Designation", 
                     "Interested Manager", "Employee to Swap", "Status"]
     swap_columns = [col for col in swap_columns if col in swap_df.columns]
 
