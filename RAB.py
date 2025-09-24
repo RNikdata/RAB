@@ -147,7 +147,6 @@ with tab1:
 # --- Tab 2: Swap Requests ---
 with tab2:
     st.subheader("🔄 Transfer Requests")
-    st.markdown("<br><br>", unsafe_allow_html=True)
     swap_df = ads_df.copy()
 
     # Ensure Status column exists and default to Pending
