@@ -295,7 +295,7 @@ with tab3:
     with col1:
         user_name_add = st.selectbox(
             "User Name",
-            options=["Select Your Name"] + df["Manager Name"].tolist(),
+            options=["Select Your Name"] + df["Manager Name"].dropna().unique().tolist(),
             key="user_name_add"
         )
     with col2:
