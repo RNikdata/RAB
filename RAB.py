@@ -350,21 +350,31 @@ with tab3:
         st.dataframe(styled_swap_df, use_container_width=True, hide_index=True)
 
 # --- Tab 4: Employee Transfer Form ---
+# --- Tab 4: Employee Transfer Form ---
 with tab4:
     st.markdown("<br>", unsafe_allow_html=True)
     st.subheader("🔄 Employee Transfer Request")
 
-    # --- Filter approved requests ---
+    # --- Compute approved requests ---
     approved_requests = ads_df[ads_df["Status"] == "Approved"]
     approved_interested = approved_requests["Employee Id"].astype(str).tolist()
     approved_swap = approved_requests["Employee to Swap"].tolist()
 
-    # --- Available employees: only unbilled/unallocated & not already approved ---
-    available_employees = df[
-        (df["Current Billability"].isin(["PU - Person Unbilled", "-", "PI - Person Investment"])) &
-        (~df["Employee Id"].astype(str).isin(approved_interested)) &
-        (~df["Employee Name"].isin(approved_swap))
-    ]
+    # --- Base available employees ---
+    available_employees = df[~df["Employee Id"].astype(str).isin(approved_interested) & 
+                             ~df["Employee Name"].isin(approved_swap)]
+
+    # --- Include preselected employee if it exists ---
+    preselected = st.session_state.get("preselect_interested_employee", None)
+    if preselected:
+        emp_id = preselected.split(" - ")[0]
+        emp_name = preselected.split(" - ")[1]
+        # Append only if not already in available_employees
+        if emp_id not in available_employees["Employee Id"].astype(str).tolist():
+            available_employees = pd.concat([
+                available_employees,
+                pd.DataFrame([{"Employee Id": emp_id, "Employee Name": emp_name}])
+            ], ignore_index=True)
 
     # --- Dropdown options ---
     options_interested = ["Select Interested Employee"] + (
@@ -374,11 +384,10 @@ with tab4:
         available_employees["Employee Id"].astype(str) + " - " + available_employees["Employee Name"]
     ).tolist()
 
-    # --- Preselection for Interested Employee ---
-    preselected = st.session_state.get("preselect_interested_employee", None)
+    # --- Default index for preselected ---
     default_idx = options_interested.index(preselected) if preselected in options_interested else 0
 
-    # --- Form layout ---
+    # --- Form Columns ---
     col1, col2, col3 = st.columns([1, 2, 2])
     with col1:
         user_name_add = st.selectbox(
@@ -400,15 +409,13 @@ with tab4:
             key="employee_to_swap_add"
         )
 
-    # Clear preselection after rendering
+    # Remove session_state after use
     if "preselect_interested_employee" in st.session_state:
         del st.session_state["preselect_interested_employee"]
 
     # --- Submit Transfer Request ---
     if st.button("Submit Transfer Request", key="submit_add"):
-        if (not user_name_add or
-            interested_employee_add == "Select Interested Employee" or
-            employee_to_swap_add == "Select Employee to Swap"):
+        if not user_name_add or not interested_employee_add or not employee_to_swap_add:
             st.warning("⚠️ Please fill all fields before submitting.")
         else:
             try:
@@ -416,19 +423,19 @@ with tab4:
                 swap_emp_id = employee_to_swap_add.split(" - ")[0]
                 swap_emp_name = df[df["Employee Id"].astype(str) == swap_emp_id]["Employee Name"].values[0]
 
-                # Generate user_id
                 if user_name_add in df["Employee Name"].values:
                     user_id = df.loc[df["Employee Name"] == user_name_add, "Employee Id"].values[0]
                 else:
                     hash_val = int(hashlib.sha256(user_name_add.encode()).hexdigest(), 16)
                     user_id = str(hash_val % 9000 + 1000)
 
-                # Check for existing request
+                # Check if request already exists
                 existing_request = ads_df[
                     (ads_df["Employee Id"].astype(str) == interested_emp_id) &
                     (ads_df["Interested Manager"] == user_name_add) &
                     (ads_df["Employee to Swap"] == swap_emp_name)
                 ]
+
                 if not existing_request.empty:
                     st.warning(f"⚠️ Transfer request for Employee ID {interested_emp_id} with this combination already exists!")
                 else:
