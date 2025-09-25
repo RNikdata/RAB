@@ -413,7 +413,7 @@ elif st.session_state["active_page"] == "Employee Transfer Form":
     approved_interested = approved_requests["Employee Id"].astype(str).tolist()
     approved_swap = approved_requests["Employee to Swap"].tolist()
 
-    # --- Base available employees (exclude unbilled/unallocated and ALs) ---
+    # --- Base available employees ---
     available_employees = df[
         (~df["Employee Id"].astype(str).isin(approved_interested)) &
         (~df["Employee Name"].isin(approved_swap)) &
@@ -441,38 +441,32 @@ elif st.session_state["active_page"] == "Employee Transfer Form":
     interested_exclude = st.session_state["employee_to_swap_add"]
     swap_exclude = st.session_state["interested_employee_add"]
 
-    # Interested Employee options
+    preselected_id = preselected.split(" - ")[0] if preselected else None
+
     options_interested = ["Select Interested Employee"] + (
         available_employees[
             ~available_employees["Employee Id"].astype(str).isin(
-                [interested_exclude.split(" - ")[0]] 
-                if interested_exclude != "Select Employee to Swap" and 
-                   (preselected is None or interested_exclude.split(" - ")[0] != preselected.split(" - ")[0]) 
-                else []
+                [interested_exclude.split(" - ")[0]] if interested_exclude not in ["Select Employee to Swap", preselected] else []
             )
         ]["Employee Id"].astype(str) + " - " +
         available_employees[
             ~available_employees["Employee Id"].astype(str).isin(
-                [interested_exclude.split(" - ")[0]] 
-                if interested_exclude != "Select Employee to Swap" and 
-                   (preselected is None or interested_exclude.split(" - ")[0] != preselected.split(" - ")[0]) 
-                else []
+                [interested_exclude.split(" - ")[0]] if interested_exclude not in ["Select Employee to Swap", preselected] else []
             )
         ]["Employee Name"]
     ).tolist()
+    if preselected and preselected not in options_interested:
+        options_interested.insert(1, preselected)
 
-    # Swap Employee options
     options_swap = ["Select Employee to Swap"] + (
         available_employees[
             ~available_employees["Employee Id"].astype(str).isin(
-                [swap_exclude.split(" - ")[0]] 
-                if swap_exclude != "Select Interested Employee" else []
+                [swap_exclude.split(" - ")[0]] if swap_exclude not in ["Select Interested Employee", preselected] else []
             )
         ]["Employee Id"].astype(str) + " - " +
         available_employees[
             ~available_employees["Employee Id"].astype(str).isin(
-                [swap_exclude.split(" - ")[0]] 
-                if swap_exclude != "Select Interested Employee" else []
+                [swap_exclude.split(" - ")[0]] if swap_exclude not in ["Select Interested Employee", preselected] else []
             )
         ]["Employee Name"]
     ).tolist()
