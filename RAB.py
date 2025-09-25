@@ -7,7 +7,11 @@ from google.oauth2.service_account import Credentials
 import time
 import hashlib
 
-st.set_page_config(layout="wide")
+st.set_page_config(
+    page_title="Resource Transfer Board",  # <-- Browser tab name
+    page_icon="🧑‍💼",                            # <-- Favicon in browser tab
+    layout="wide"                              # optional
+)
 
 #######################################
 # --- Deployed version code snipper ---
