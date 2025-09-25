@@ -307,9 +307,35 @@ with tab3:
             else:
                 try:
                     status_value = "Approved" if decision == "Approve" else "Rejected"
+                    
+                    # Update the selected request
                     ads_df.loc[ads_df["Request Id"] == request_id_select, "Status"] = status_value
+    
+                    # If approved, reject all other pending requests for the same Employee or Swap Employee
+                    if status_value == "Approved":
+                        approved_row = ads_df[ads_df["Request Id"] == request_id_select].iloc[0]
+                        emp_id = approved_row["Employee Id"]
+                        swap_emp_name = approved_row["Employee to Swap"]
+    
+                        # Reject other pending requests for the same Employee
+                        ads_df.loc[
+                            (ads_df["Employee Id"] == emp_id) & 
+                            (ads_df["Request Id"] != request_id_select) &
+                            (ads_df["Status"] == "Pending"),
+                            "Status"
+                        ] = "Rejected"
+    
+                        # Reject other pending requests for the same Swap Employee
+                        ads_df.loc[
+                            (ads_df["Employee to Swap"] == swap_emp_name) &
+                            (ads_df["Request Id"] != request_id_select) &
+                            (ads_df["Status"] == "Pending"),
+                            "Status"
+                        ] = "Rejected"
+    
+                    # Save updates to Google Sheet
                     set_with_dataframe(ads_sheet, ads_df, include_index=False, resize=True)
-                    msg_placeholder.success(f"✅ Request ID {request_id_select} marked as {status_value}")
+                    msg_placeholder.success(f"✅ Request ID {request_id_select} marked as {status_value}, related pending requests updated accordingly.")
                     time.sleep(1)
                     st.rerun()
                 except Exception as e:
