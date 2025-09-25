@@ -232,12 +232,25 @@ elif st.session_state["active_page"] == "Supply Pool":
                                 unsafe_allow_html=True
                             )
 
-                            # --- Interest Button ---
+                            dum_ads_df = ads_df.copy()
+                            dum_ads_df = dum_ads_df[dum_ads_df["Request Id"].notna()]
+                            # Buttons inside card
                             if st.button("Interest in Employee", key=f"interested_{row['Employee Id']}"):
-                                st.session_state["preselect_interested_employee"] = f"{row['Employee Id']} - {row['Employee Name']}"
-                                st.session_state["active_page"] = "Employee Transfer Form"
-                                st.rerun()
-
+                                emp_name = row['Employee Name']
+                                # Store the full dropdown value in session state
+                                if "Employee Name" in dum_ads_df.columns and "Employee to Swap" in dum_ads_df.columns and "Status" in dum_ads_df.columns:
+                                    approved_check = dum_ads_df[dum_ads_df["Status"] == "Approved"]
+                                    approved_check = dum_ads_df[(dum_ads_df[Employee Name] == emp_name) | (dum_ads_df[Employee to Swap] == emp_name)]
+                                else :
+                                    approved_check = pd.DataFrame()
+                                    
+                                if not approved_check.empty:                                    
+                                    st.session_state["preselect_interested_employee"] = f"{row['Employee Id']} - {row['Employee Name']}"
+                                    st.session_state["active_tab"] = "Employee Transfer Form"   # Switch to Tab 4
+                                    st.rerun()
+                                else:
+                                    st.warning(f"⚠️ The employee {row['Employee Name']} is already involved in an approved transfer request.")
+                                    
                             st.markdown("<hr style='margin-top:1px; margin-bottom:5px; border:0; solid #d3d3d3;'>", unsafe_allow_html=True)
     else:
         st.warning("⚠️ No employees found for the selected filters.")
