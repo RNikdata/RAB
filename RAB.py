@@ -437,6 +437,8 @@ elif st.session_state["active_page"] == "Employee Transfer Form":
     if "employee_to_swap_add" not in st.session_state:
         st.session_state["employee_to_swap_add"] = "Select Employee to Swap"
 
+   
+
     # --- Dropdowns ---
     col1, col2, col3 = st.columns([1, 2, 2])
     with col1:
@@ -448,13 +450,13 @@ elif st.session_state["active_page"] == "Employee Transfer Form":
     with col2:
         interested_employee_add = st.selectbox(
             "Interested Employee",
-            options=options_interested,
+            options=["Select Interested Employee"] + avaialble_employees[avilable_employee["Employee Id"].dropna().tolist()
             key="interested_employee_add"
         )
     with col3:
         employee_to_swap_add = st.selectbox(
             "Employee to Transfer",
-            options=options_swap,
+            options=["Select Employee to Swap"] + avaialble_employees[avilable_employee["Employee Id"].dropna().tolist(),
             key="employee_to_swap_add"
         )
 
