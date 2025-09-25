@@ -432,8 +432,8 @@ with tab4:
                     st.success(f"✅ Transfer request added for Employee ID {interested_emp_id}. The Request ID is {request_id}")
                     time.sleep(1)
                     st.rerun()
-                except Exception as e:
-                    st.error(f"Error: {e}")
+            except Exception as e:
+                st.error(f"Error: {e}")
 
     # --- Remove Transfer Request ---
     st.markdown("<hr style='margin-top:20px; margin-bottom:5px; border:0; solid #d3d3d3;'>", unsafe_allow_html=True)
