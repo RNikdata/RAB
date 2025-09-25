@@ -437,36 +437,6 @@ elif st.session_state["active_page"] == "Employee Transfer Form":
     if "employee_to_swap_add" not in st.session_state:
         st.session_state["employee_to_swap_add"] = "Select Employee to Swap"
 
-    # --- Mutually exclusive dropdowns ---
-    interested_exclude = st.session_state["employee_to_swap_add"]
-    swap_exclude = st.session_state["interested_employee_add"]
-
-    options_interested = ["Select Interested Employee"] + (
-        available_employees[
-            ~available_employees["Employee Id"].astype(str).isin(
-                [interested_exclude.split(" - ")[0]] if interested_exclude != "Select Employee to Swap" else []
-            )
-        ]["Employee Id"].astype(str) + " - " +
-        available_employees[
-            ~available_employees["Employee Id"].astype(str).isin(
-                [interested_exclude.split(" - ")[0]] if interested_exclude != "Select Employee to Swap" else []
-            )
-        ]["Employee Name"]
-    ).tolist()
-
-    options_swap = ["Select Employee to Swap"] + (
-        available_employees[
-            ~available_employees["Employee Id"].astype(str).isin(
-                [swap_exclude.split(" - ")[0]] if swap_exclude != "Select Interested Employee" else []
-            )
-        ]["Employee Id"].astype(str) + " - " +
-        available_employees[
-            ~available_employees["Employee Id"].astype(str).isin(
-                [swap_exclude.split(" - ")[0]] if swap_exclude != "Select Interested Employee" else []
-            )
-        ]["Employee Name"]
-    ).tolist()
-
     # --- Dropdowns ---
     col1, col2, col3 = st.columns([1, 2, 2])
     with col1:
