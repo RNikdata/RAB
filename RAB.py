@@ -280,7 +280,8 @@ with tab3:
         request_id_select = st.selectbox(
             "Select Request ID",
             options=request_id_options,
-            key="request_id_select_tab2"
+            key="request_id_select_tab2",
+            index = None
         )
     with col4:
         pass
