@@ -425,11 +425,6 @@ elif st.session_state["active_page"] == "Employee Transfer Form":
     preselected = st.session_state.get("preselect_interested_employee", None)
     if preselected:
         emp_id, emp_name = preselected.split(" - ")
-        if emp_id not in available_employees["Employee Id"].astype(str).tolist():
-            available_employees = pd.concat([
-                available_employees,
-                pd.DataFrame([{"Employee Id": emp_id, "Employee Name": emp_name}])
-            ], ignore_index=True)
 
     # --- Handle session state for dropdowns ---
     if "interested_employee_add" not in st.session_state:
@@ -486,8 +481,8 @@ elif st.session_state["active_page"] == "Employee Transfer Form":
         )
 
     # Remove preselect after use
-    if "preselect_interested_employee" in st.session_state:
-        del st.session_state["preselect_interested_employee"]
+    #if "preselect_interested_employee" in st.session_state:
+        #del st.session_state["preselect_interested_employee"]
 
     # --- Submit Transfer Request ---
     if st.button("Submit Transfer Request", key="submit_add"):
