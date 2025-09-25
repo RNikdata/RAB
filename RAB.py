@@ -413,7 +413,7 @@ elif st.session_state["active_page"] == "Employee Transfer Form":
     approved_interested = approved_requests["Employee Id"].astype(str).tolist()
     approved_swap = approved_requests["Employee to Swap"].tolist()
 
-    # --- Base available employees ---
+    # --- Base available employees (exclude unbilled/unallocated and ALs) ---
     available_employees = df[
         (~df["Employee Id"].astype(str).isin(approved_interested)) &
         (~df["Employee Name"].isin(approved_swap)) &
@@ -421,23 +421,27 @@ elif st.session_state["active_page"] == "Employee Transfer Form":
         (~df["Designation"].isin(["AL"]))
     ].copy()
 
-    # --- Preselected employee from Supply Pool ---
+    # --- Preselected Interested Employee ---
     preselected = st.session_state.get("preselect_interested_employee", None)
     if preselected:
         emp_id, emp_name = preselected.split(" - ")
+        if emp_id not in available_employees["Employee Id"].astype(str).tolist():
+            available_employees = pd.concat([
+                available_employees,
+                pd.DataFrame([{"Employee Id": emp_id, "Employee Name": emp_name}])
+            ], ignore_index=True)
 
-    # --- Handle session state for dropdowns ---
+    # --- Initialize session state for dropdowns ---
     if "interested_employee_add" not in st.session_state:
         st.session_state["interested_employee_add"] = preselected if preselected else "Select Interested Employee"
     if "employee_to_swap_add" not in st.session_state:
         st.session_state["employee_to_swap_add"] = "Select Employee to Swap"
 
-    # --- Mutually exclusive dropdowns, keep preselected ---
+    # --- Mutually exclusive dropdowns ---
     interested_exclude = st.session_state["employee_to_swap_add"]
     swap_exclude = st.session_state["interested_employee_add"]
-    preselected_id = preselected.split(" - ")[0] if preselected else None
 
-    # Interested Employee options
+    # --- Interested Employee options ---
     options_interested_df = available_employees.copy()
     if interested_exclude not in ["Select Employee to Swap", preselected]:
         exclude_id = interested_exclude.split(" - ")[0]
@@ -446,14 +450,24 @@ elif st.session_state["active_page"] == "Employee Transfer Form":
     options_interested = ["Select Interested Employee"] + (
         options_interested_df["Employee Id"].astype(str) + " - " + options_interested_df["Employee Name"]
     ).tolist()
-    if preselected and preselected not in options_interested:
-        options_interested.insert(1, preselected)  # Keep preselected on top
 
-    # Employee to Swap options
+    # Keep preselected employee at top
+    if preselected and preselected not in options_interested:
+        options_interested.insert(1, preselected)
+
+    # --- Employee to Swap options ---
+    current_swap = st.session_state.get("employee_to_swap_add", "Select Employee to Swap")
     options_swap_df = available_employees.copy()
     if swap_exclude not in ["Select Interested Employee", preselected]:
         exclude_id = swap_exclude.split(" - ")[0]
         options_swap_df = options_swap_df[options_swap_df["Employee Id"].astype(str) != exclude_id]
+
+    # Keep currently selected swap employee in the list
+    if current_swap not in ["Select Employee to Swap"] and current_swap not in (
+        options_swap_df["Employee Id"].astype(str) + " - " + options_swap_df["Employee Name"]
+    ).tolist():
+        emp_id, emp_name = current_swap.split(" - ")
+        options_swap_df = pd.concat([options_swap_df, pd.DataFrame([{"Employee Id": emp_id, "Employee Name": emp_name}])])
 
     options_swap = ["Select Employee to Swap"] + (
         options_swap_df["Employee Id"].astype(str) + " - " + options_swap_df["Employee Name"]
@@ -480,9 +494,9 @@ elif st.session_state["active_page"] == "Employee Transfer Form":
             key="employee_to_swap_add"
         )
 
-    # Remove preselect after use
-    #if "preselect_interested_employee" in st.session_state:
-        #del st.session_state["preselect_interested_employee"]
+    # Remove session_state preselection after use
+    if "preselect_interested_employee" in st.session_state:
+        del st.session_state["preselect_interested_employee"]
 
     # --- Submit Transfer Request ---
     if st.button("Submit Transfer Request", key="submit_add"):
