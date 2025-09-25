@@ -350,7 +350,6 @@ with tab3:
         st.dataframe(styled_swap_df, use_container_width=True, hide_index=True)
 
 # --- Tab 4: Employee Transfer Form ---
-# --- Tab 4: Employee Transfer Form ---
 with tab4:
     st.markdown("<br>", unsafe_allow_html=True)
     st.subheader("🔄 Employee Transfer Request")
@@ -360,16 +359,16 @@ with tab4:
     approved_interested = approved_requests["Employee Id"].astype(str).tolist()
     approved_swap = approved_requests["Employee to Swap"].tolist()
 
-    # --- Base available employees ---
+    # --- Base available employees (unbilled/unallocated) ---
     available_employees = df[~df["Employee Id"].astype(str).isin(approved_interested) & 
                              ~df["Employee Name"].isin(approved_swap)]
 
-    # --- Include preselected employee if it exists ---
+    # --- Preselected employee ---
     preselected = st.session_state.get("preselect_interested_employee", None)
+
+    # Add preselected to available_employees if missing
     if preselected:
-        emp_id = preselected.split(" - ")[0]
-        emp_name = preselected.split(" - ")[1]
-        # Append only if not already in available_employees
+        emp_id, emp_name = preselected.split(" - ")
         if emp_id not in available_employees["Employee Id"].astype(str).tolist():
             available_employees = pd.concat([
                 available_employees,
@@ -384,10 +383,10 @@ with tab4:
         available_employees["Employee Id"].astype(str) + " - " + available_employees["Employee Name"]
     ).tolist()
 
-    # --- Default index for preselected ---
-    default_idx = options_interested.index(preselected) if preselected in options_interested else 0
+    # --- Handle preselection properly ---
+    if "interested_employee_add" not in st.session_state:
+        st.session_state["interested_employee_add"] = preselected if preselected else "Select Interested Employee"
 
-    # --- Form Columns ---
     col1, col2, col3 = st.columns([1, 2, 2])
     with col1:
         user_name_add = st.selectbox(
@@ -399,7 +398,6 @@ with tab4:
         interested_employee_add = st.selectbox(
             "Interested Employee",
             options=options_interested,
-            index=default_idx,
             key="interested_employee_add"
         )
     with col3:
@@ -415,7 +413,9 @@ with tab4:
 
     # --- Submit Transfer Request ---
     if st.button("Submit Transfer Request", key="submit_add"):
-        if not user_name_add or not interested_employee_add or not employee_to_swap_add:
+        if (user_name_add == "Select Your Name" or 
+            interested_employee_add == "Select Interested Employee" or 
+            employee_to_swap_add == "Select Employee to Swap"):
             st.warning("⚠️ Please fill all fields before submitting.")
         else:
             try:
@@ -443,14 +443,17 @@ with tab4:
                     employee_row["Interested Manager"] = user_name_add
                     employee_row["Employee to Swap"] = swap_emp_name
                     employee_row["Status"] = "Pending"
-
+    
                     request_id = f"{user_id}{interested_emp_id}{swap_emp_id}"
                     employee_row["Request Id"] = int(request_id)
-
+    
                     ads_df = pd.concat([ads_df, employee_row], ignore_index=True)
                     ads_df = ads_df.drop_duplicates(subset=["Employee Id","Interested Manager","Employee to Swap"], keep="last")
-
+    
                     set_with_dataframe(ads_sheet, ads_df)
+    
+                    # Preselect this employee on rerun
+                    st.session_state["preselect_interested_employee"] = f"{interested_emp_id} - {interested_employee_add.split(' - ')[1]}"
 
                     st.success(f"✅ Transfer request added for Employee ID {interested_emp_id}. The Request ID is {request_id}")
                     time.sleep(1)
@@ -467,7 +470,7 @@ with tab4:
         "Enter Request ID to Remove",
         options=ads_df["Request Id"].dropna().astype(int).tolist(),
         key="request_id_remove",
-        index=None
+        index = None
     )
 
     if st.button("Remove Transfer Request", key="submit_remove"):
