@@ -361,9 +361,13 @@ with tab4:
     approved_interested = approved_requests["Employee Id"].astype(str).tolist()
     approved_swap = approved_requests["Employee to Swap"].tolist()
 
-    # --- Base available employees (unbilled/unallocated) ---
-    available_employees = df[~df["Employee Id"].astype(str).isin(approved_interested) & 
-                             ~df["Employee Name"].isin(approved_swap)]
+   # --- Base available employees (exclude unbilled/unallocated and ALs) ---
+    available_employees = df[
+        (~df["Employee Id"].astype(str).isin(approved_interested)) &
+        (~df["Employee Name"].isin(approved_swap)) &
+        (~df["Current Billability"].isin(["PU - Person Unbilled", "-", "PI - Person Investment"])) &
+        (~df["Designation"].isin(["AL"]))
+    ].copy()
 
     # --- Preselected employee ---
     preselected = st.session_state.get("preselect_interested_employee", None)
