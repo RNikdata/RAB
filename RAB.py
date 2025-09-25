@@ -406,24 +406,34 @@ with tab4:
                     hash_val = int(hashlib.sha256(user_name_add.encode()).hexdigest(), 16)
                     user_id = str(hash_val % 9000 + 1000)
 
-                employee_row = df[df["Employee Id"].astype(str) == interested_emp_id].copy()
-                employee_row["Interested Manager"] = user_name_add
-                employee_row["Employee to Swap"] = swap_emp_name
-                employee_row["Status"] = "Pending"
+                # Check if the request already exists
+                existing_request = ads_df[
+                    (ads_df["Employee Id"].astype(str) == interested_emp_id) &
+                    (ads_df["Interested Manager"] == user_name_add) &
+                    (ads_df["Employee to Swap"] == swap_emp_name)
+                ]
 
-                request_id = f"{user_id}{interested_emp_id}{swap_emp_id}"
-                employee_row["Request Id"] = int(request_id)
-
-                ads_df = pd.concat([ads_df, employee_row], ignore_index=True)
-                ads_df = ads_df.drop_duplicates(subset=["Employee Id","Interested Manager","Employee to Swap"], keep="last")
-
-                set_with_dataframe(ads_sheet, ads_df)
-
-                st.success(f"✅ Transfer request added for Employee ID {interested_emp_id}. The Request ID is {request_id}")
-                time.sleep(1)
-                st.rerun()
-            except Exception as e:
-                st.error(f"Error: {e}")
+                if not existing_request.empty:
+                    st.warning(f"⚠️ Transfer request for Employee ID {interested_emp_id} with this combination already exists!")
+                else:
+                    employee_row = df[df["Employee Id"].astype(str) == interested_emp_id].copy()
+                    employee_row["Interested Manager"] = user_name_add
+                    employee_row["Employee to Swap"] = swap_emp_name
+                    employee_row["Status"] = "Pending"
+    
+                    request_id = f"{user_id}{interested_emp_id}{swap_emp_id}"
+                    employee_row["Request Id"] = int(request_id)
+    
+                    ads_df = pd.concat([ads_df, employee_row], ignore_index=True)
+                    ads_df = ads_df.drop_duplicates(subset=["Employee Id","Interested Manager","Employee to Swap"], keep="last")
+    
+                    set_with_dataframe(ads_sheet, ads_df)
+    
+                    st.success(f"✅ Transfer request added for Employee ID {interested_emp_id}. The Request ID is {request_id}")
+                    time.sleep(1)
+                    st.rerun()
+                except Exception as e:
+                    st.error(f"Error: {e}")
 
     # --- Remove Transfer Request ---
     st.markdown("<hr style='margin-top:20px; margin-bottom:5px; border:0; solid #d3d3d3;'>", unsafe_allow_html=True)
