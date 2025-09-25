@@ -240,7 +240,7 @@ elif st.session_state["active_page"] == "Supply Pool":
                                 # Store the full dropdown value in session state
                                 if "Employee Name" in dum_ads_df.columns and "Employee to Swap" in dum_ads_df.columns and "Status" in dum_ads_df.columns:
                                     approved_check = dum_ads_df[dum_ads_df["Status"] == "Approved"]
-                                    approved_check = dum_ads_df[(dum_ads_df[Employee Name] == emp_name) | (dum_ads_df[Employee to Swap] == emp_name)]
+                                    approved_check = dum_ads_df[(dum_ads_df["Employee Name"] == emp_name) | (dum_ads_df["Employee to Swap"] == emp_name)]
                                 else :
                                     approved_check = pd.DataFrame()
                                     
