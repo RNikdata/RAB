@@ -212,22 +212,22 @@ elif st.session_state["active_page"] == "Supply Pool":
                         with st.container():
                             st.markdown(
                                 f"""
-                                    <div style='display:flex; align-items:center; gap:15px; padding:8px; border:1px solid #e0e0e0; border-radius:8px; margin-bottom:5px;'>
+                                <div style='display:flex; align-items:center; gap:15px; padding:8px; border:1px solid #e0e0e0; border-radius:8px; margin-bottom:5px;'>
                                     <div style='flex-shrink:0;'>
-                                    <img src="https://static.vecteezy.com/system/resources/previews/008/442/086/original/illustration-of-human-icon.jpg" 
-                                         style='width:110px; height:120px; border-radius:4px; object-fit:cover;'>
+                                        <img src="https://static.vecteezy.com/system/resources/previews/008/442/086/original/illustration-of-human-icon-user-symbol-icon-modern-design-on-blank-background-free-vector.jpg" 
+                                             style='width:110px; height:120px; border-radius:4px; object-fit:cover;'>
                                     </div>
                                     <div style='flex-grow:1;'>
-                                    <div style='font-size:20px; font-weight:bold;'>{row['Employee Name']}</div>
-                                    <div style='font-size:14px; margin-top:5px; line-height:1.4;'>
-                                        👤 ID: {row['Employee Id']}<br>
-                                        🧑‍💼 Manager: {row['Manager Name']}<br>
-                                        📌 Designation: {row['Designation']}<br>
-                                        📂 Account: {row['Account Name']}<br>
-                                        🏷️ Rank: {row['Rank']}
+                                        <div style='font-size:20px; font-weight:bold;'>{row['Employee Name']}</div>
+                                        <div style='font-size:14px; margin-top:5px; line-height:1.4;'>
+                                            👤 ID: {row['Employee Id']}<br>
+                                            🧑‍💼 Manager: {row['Manager Name']}<br>
+                                            📌 Designation: {row['Designation']}<br>
+                                            📂 Account: {row['Account Name']}<br>
+                                            🏷️ Rank: {row['Rank']}
+                                        </div>
                                     </div>
-                                    </div>
-                                    </div>
+                                </div>
                                 """,
                                 unsafe_allow_html=True
                             )
