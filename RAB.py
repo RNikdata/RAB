@@ -47,6 +47,44 @@ merged_df = df.merge(
     how="left"
 )
 
+#######################################
+# --- Page Navigation Setup ---
+#######################################
+if "active_page" not in st.session_state:
+    st.session_state["active_page"] = "Transfer Summary"
+
+# --- Common Title & Refresh ---
+header_col1, header_col2 = st.columns([6, 1])
+
+with header_col1:
+    st.markdown("<h1 style='text-align:center'>🧑‍💼 Resource Transfer Board</h1>", unsafe_allow_html=True)
+
+with header_col2:
+    st.markdown("<br>", unsafe_allow_html=True)
+    if st.button("🔄 Refresh"):
+        st.rerun()
+        
+
+# --- Top Navigation Buttons (Navbar Style) ---
+nav_cols = st.columns([1, 1, 1, 1])  # equal spacing for 4 buttons
+
+with nav_cols[0]:
+    if st.button("📊 Transfer Summary", use_container_width=True):
+        st.session_state["active_page"] = "Transfer Summary"
+
+with nav_cols[1]:
+    if st.button("📝 Supply Pool", use_container_width=True):
+        st.session_state["active_page"] = "Supply Pool"
+
+with nav_cols[2]:
+    if st.button("🔁 Transfer Requests", use_container_width=True):
+        st.session_state["active_page"] = "Transfer Requests"
+
+with nav_cols[3]:
+    if st.button("✏️ Employee Transfer Form", use_container_width=True):
+        st.session_state["active_page"] = "Employee Transfer Form"
+st.markdown("---")
+
 # --- Sidebar: Logo & Company Name ---
 st.sidebar.markdown(
     """
@@ -68,22 +106,9 @@ st.sidebar.markdown("<br><br>",unsafe_allow_html = True)
 st.sidebar.header("🔎 Search")
 resource_search = st.sidebar.text_input("Search Employee Name or ID",placeholder = "Employe ID/Name")
 
-# --- Main Heading with Refresh Button ---
-col_title, col_refresh = st.columns([9, 1])
-with col_title:
-    st.markdown("<h1 style='text-align:center'>🧑‍💼 Resource Transfer Board</h1>", unsafe_allow_html=True)
-with col_refresh:
-    if st.button("🔄 Refresh"):
-        st.rerun()
-
-# --- Tabs ---
-tab1, tab2, tab3, tab4 = st.tabs(
-    ["📊 Transfer Summary","📝 Supply Pool", "🔁 Transfer Requests", "✏️ Employee Transfer Form"]
-)
-
 # --- Tab 1: Manager-wise Summary ---
             
-with tab1:
+if st.session_state["active_page"] == "Transfer Summary":
     st.subheader("📊 Manager Transfer Summary")
     st.markdown("<br>", unsafe_allow_html=True)
     summary_df = ads_df.copy()
@@ -140,11 +165,10 @@ with tab1:
     )
 
 # --- Tab 2: Supply Pool ---
-df_unique = df.drop_duplicates(subset=["Employee Id"]).copy()
-with tab2:
+elif st.session_state["active_page"] == "Supply Pool":
     st.subheader("📝 Supply Pool")
     st.markdown("<br>", unsafe_allow_html=True)
-
+    df_unique = df.drop_duplicates(subset=["Employee Id"]).copy()
     if account_filter:
         df_unique = df_unique[df_unique["Account Name"].isin(account_filter)]
     if manager_filter:
@@ -203,26 +227,6 @@ with tab2:
                                 """,
                                 unsafe_allow_html=True
                             )
-
-                            # Add custom CSS for button colors
-                            st.markdown(f"""
-                                <style>
-                                /* Interested Employee button */
-                                div.stButton > button[key="interested_{row['Employee Id']}"] {{
-                                    background-color: #1976d2;   /* Blue */
-                                    color: white;
-                                    padding: 6px 14px;
-                                    border-radius: 5px;
-                                }}
-                                /* Transfer Employee button */
-                                div.stButton > button[key="transfer_{row['Employee Id']}"] {{
-                                    background-color: #388e3c;   /* Green */
-                                    color: white;
-                                    padding: 6px 14px;
-                                    border-radius: 5px;
-                                }}
-                                </style>
-                            """, unsafe_allow_html=True)
     
                             # Buttons inside card
                             if st.button("Interest in Employee", key=f"interested_{row['Employee Id']}"):
@@ -237,7 +241,7 @@ with tab2:
         st.warning("⚠️ No employees found for the selected filters.")
 
 # --- Tab 3: Transfer Requests ---
-with tab3:
+elif st.session_state["active_page"] == "Transfer Requests":
     st.subheader("🔁 Transfer Requests")
     
     swap_df = ads_df.copy()
@@ -379,8 +383,7 @@ with tab3:
     st.dataframe(styled_swap_df, use_container_width=True, hide_index=True)
 
 # --- Tab 4: Employee Transfer Form ---
-# --- Tab 4: Employee Transfer Form ---
-with tab4:
+elif st.session_state["active_page"] == "Employee Transfer Form":
     st.markdown("<br>", unsafe_allow_html=True)
     st.subheader("🔄 Employee Transfer Request")
 
