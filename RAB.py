@@ -171,6 +171,8 @@ if st.session_state["active_page"] == "Transfer Summary":
 elif st.session_state["active_page"] == "Supply Pool":
     st.subheader("📝 Supply Pool")
     st.markdown("<br>", unsafe_allow_html=True)
+
+    # --- Filter DataFrame based on filters ---
     df_unique = df.drop_duplicates(subset=["Employee Id"]).copy()
     if account_filter:
         df_unique = df_unique[df_unique["Account Name"].isin(account_filter)]
@@ -183,8 +185,8 @@ elif st.session_state["active_page"] == "Supply Pool":
             df_unique["Employee Name"].str.contains(resource_search, case=False, na=False) |
             df_unique["Employee Id"].astype(str).str.contains(resource_search, na=False)
         ]
- 
- 
+
+    # --- Tenure & Billability filters ---
     filtered_df_unique = df_unique.drop_duplicates(subset=["Employee Id"], keep="first")
     filtered_df_unique = filtered_df_unique[~filtered_df_unique["Designation"].isin(["AL"])]
     filtered_df_unique1 = filtered_df_unique[filtered_df_unique["Current Billability"].isin(["PU - Person Unbilled", "-", "PI - Person Investment"])]
@@ -193,54 +195,53 @@ elif st.session_state["active_page"] == "Supply Pool":
     filtered_df_unique = pd.concat([filtered_df_unique1, filtered_df_unique2], ignore_index=True)
     filtered_df_unique = filtered_df_unique.drop_duplicates(subset=["Employee Id"], keep="first")
     filtered_df_unique["3+_yr_Tenure_Flag"] = filtered_df_unique["Tenure"].apply(lambda x: "Yes" if x > 3 else "No")
+
     columns_to_show = ["Manager Name", "Account Name", "Employee Id", "Employee Name", "Designation", "Rank"]
     columns_to_show = [col for col in columns_to_show if col in filtered_df_unique.columns]
- 
+
+    # --- Display Employee Cards ---
     if not filtered_df_unique.empty:
         sorted_df = filtered_df_unique[columns_to_show].sort_values(by="Employee Name").reset_index(drop=True)
         n = len(sorted_df)
-    
         for i in range(0, n, 3):
             cols = st.columns([1, 1, 1])
             for j, col in enumerate(cols):
                 if i + j < n:
                     row = sorted_df.iloc[i + j]
                     with col:
-                        # Card container
                         with st.container():
                             st.markdown(
                                 f"""
-                                <div style='display:flex; align-items:center; gap:15px; padding:8px; border:1px solid #e0e0e0; border-radius:8px; margin-bottom:5px;'>
-                                    <div style='flex-shrink:0;'>
-                                        <img src="https://static.vecteezy.com/system/resources/previews/008/442/086/original/illustration-of-human-icon-user-symbol-icon-modern-design-on-blank-background-free-vector.jpg" 
-                                             style='width:110px; height:120px; border-radius:4px; object-fit:cover;'>
-                                    </div>
-                                    <div style='flex-grow:1;'>
-                                        <div style='font-size:20px; font-weight:bold;'>{row['Employee Name']}</div>
-                                        <div style='font-size:14px; margin-top:5px; line-height:1.4;'>
-                                            👤 ID: {row['Employee Id']}<br>
-                                            🧑‍💼 Manager: {row['Manager Name']}<br>
-                                            📌 Designation: {row['Designation']}<br>
-                                            📂 Account: {row['Account Name']}<br>
-                                            🏷️ Rank: {row['Rank']}
-                                        </div>
-                                    </div>
-                                </div>
+<div style='display:flex; align-items:center; gap:15px; padding:8px; border:1px solid #e0e0e0; border-radius:8px; margin-bottom:5px;'>
+<div style='flex-shrink:0;'>
+<img src="https://static.vecteezy.com/system/resources/previews/008/442/086/original/illustration-of-human-icon.jpg" 
+     style='width:110px; height:120px; border-radius:4px; object-fit:cover;'>
+</div>
+<div style='flex-grow:1;'>
+<div style='font-size:20px; font-weight:bold;'>{row['Employee Name']}</div>
+<div style='font-size:14px; margin-top:5px; line-height:1.4;'>
+    👤 ID: {row['Employee Id']}<br>
+    🧑‍💼 Manager: {row['Manager Name']}<br>
+    📌 Designation: {row['Designation']}<br>
+    📂 Account: {row['Account Name']}<br>
+    🏷️ Rank: {row['Rank']}
+</div>
+</div>
+</div>
                                 """,
                                 unsafe_allow_html=True
                             )
-    
-                            # Buttons inside card
-                            if st.button("Interest in Employee", key=f"interested_{row['Employee Id']}"):
-                                # Store the full dropdown value in session state
-                                st.session_state["preselect_interested_employee"] = f"{row['Employee Id']} - {row['Employee Name']}"
-                                st.session_state["active_tab"] = "Employee Transfer Form"   # Switch to Tab 4
-                                st.rerun()
 
+                            # --- Interest Button ---
+                            if st.button("Interest in Employee", key=f"interested_{row['Employee Id']}"):
+                                st.session_state["preselect_interested_employee"] = f"{row['Employee Id']} - {row['Employee Name']}"
+                                st.session_state["active_page"] = "Employee Transfer Form"
+                                st.rerun()
 
                             st.markdown("<hr style='margin-top:1px; margin-bottom:5px; border:0; solid #d3d3d3;'>", unsafe_allow_html=True)
     else:
         st.warning("⚠️ No employees found for the selected filters.")
+
 
 # --- Tab 3: Transfer Requests ---
 elif st.session_state["active_page"] == "Transfer Requests":
