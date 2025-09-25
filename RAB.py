@@ -410,14 +410,18 @@ elif st.session_state["active_page"] == "Employee Transfer Form":
 
     # --- Compute approved requests ---
     approved_requests = ads_df[ads_df["Status"] == "Approved"]
+    approved_interested = approved_requests["Employee Id"].astype(str).tolist()
+    approved_swap = approved_requests["Employee to Swap"].tolist()
 
-    # --- Base available employees ---
+    # --- Base available employees (exclude unbilled/unallocated and ALs) ---
     available_employees = df[
+        (~df["Employee Id"].astype(str).isin(approved_interested)) &
+        (~df["Employee Name"].isin(approved_swap)) &
         (df["Current Billability"].isin(["PU - Person Unbilled", "-", "PI - Person Investment"])) &
         (~df["Designation"].isin(["AL"]))
     ].copy()
 
-    # --- Preselected Interested Employee from Supply Pool ---
+    # --- Preselected employee ---
     preselected = st.session_state.get("preselect_interested_employee", None)
     if preselected:
         emp_id, emp_name = preselected.split(" - ")
@@ -427,19 +431,40 @@ elif st.session_state["active_page"] == "Employee Transfer Form":
                 pd.DataFrame([{"Employee Id": emp_id, "Employee Name": emp_name}])
             ], ignore_index=True)
 
-    # --- Initialize session state for dropdowns ---
+    # --- Handle session state for dropdowns ---
     if "interested_employee_add" not in st.session_state:
         st.session_state["interested_employee_add"] = preselected if preselected else "Select Interested Employee"
     if "employee_to_swap_add" not in st.session_state:
         st.session_state["employee_to_swap_add"] = "Select Employee to Swap"
 
-    # --- Dropdown options ---
+    # --- Mutually exclusive dropdowns ---
+    interested_exclude = st.session_state["employee_to_swap_add"]
+    swap_exclude = st.session_state["interested_employee_add"]
+
     options_interested = ["Select Interested Employee"] + (
-        available_employees["Employee Id"].astype(str) + " - " + available_employees["Employee Name"]
+        available_employees[
+            ~available_employees["Employee Id"].astype(str).isin(
+                [interested_exclude.split(" - ")[0]] if interested_exclude != "Select Employee to Swap" else []
+            )
+        ]["Employee Id"].astype(str) + " - " +
+        available_employees[
+            ~available_employees["Employee Id"].astype(str).isin(
+                [interested_exclude.split(" - ")[0]] if interested_exclude != "Select Employee to Swap" else []
+            )
+        ]["Employee Name"]
     ).tolist()
 
     options_swap = ["Select Employee to Swap"] + (
-        available_employees["Employee Id"].astype(str) + " - " + available_employees["Employee Name"]
+        available_employees[
+            ~available_employees["Employee Id"].astype(str).isin(
+                [swap_exclude.split(" - ")[0]] if swap_exclude != "Select Interested Employee" else []
+            )
+        ]["Employee Id"].astype(str) + " - " +
+        available_employees[
+            ~available_employees["Employee Id"].astype(str).isin(
+                [swap_exclude.split(" - ")[0]] if swap_exclude != "Select Interested Employee" else []
+            )
+        ]["Employee Name"]
     ).tolist()
 
     # --- Dropdowns ---
@@ -463,7 +488,7 @@ elif st.session_state["active_page"] == "Employee Transfer Form":
             key="employee_to_swap_add"
         )
 
-    # Remove preselection after displaying
+    # Remove session_state preselection after use
     if "preselect_interested_employee" in st.session_state:
         del st.session_state["preselect_interested_employee"]
 
@@ -508,6 +533,9 @@ elif st.session_state["active_page"] == "Employee Transfer Form":
 
                     set_with_dataframe(ads_sheet, ads_df)
 
+                    # Preselect this employee on rerun
+                    st.session_state["preselect_interested_employee"] = f"{interested_emp_id} - {interested_employee_add.split(' - ')[1]}"
+
                     st.success(f"✅ Transfer request added for Employee ID {interested_emp_id}. The Request ID is {request_id}")
                     time.sleep(1)
                     st.rerun()
@@ -516,12 +544,16 @@ elif st.session_state["active_page"] == "Employee Transfer Form":
 
     # --- Remove Transfer Request ---
     st.markdown("<hr style='margin-top:20px; margin-bottom:5px; border:0; solid #d3d3d3;'>", unsafe_allow_html=True)
+    st.markdown("<br>", unsafe_allow_html=True)
     st.subheader("❌ Remove Employee Transfer Request")
+
     request_id_remove = st.selectbox(
         "Enter Request ID to Remove",
         options=ads_df["Request Id"].dropna().astype(int).tolist(),
-        key="request_id_remove"
+        key="request_id_remove",
+        index=None
     )
+
     if st.button("Remove Transfer Request", key="submit_remove"):
         if not request_id_remove:
             st.warning("⚠️ Please enter a Request ID before submitting.")
@@ -542,3 +574,4 @@ elif st.session_state["active_page"] == "Employee Transfer Form":
         "</p>",
         unsafe_allow_html=True
     )
+
