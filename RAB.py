@@ -404,7 +404,6 @@ elif st.session_state["active_page"] == "Transfer Requests":
     styled_swap_df = swap_df_filtered[swap_columns].style.applymap(color_status, subset=["Status"])
     st.dataframe(styled_swap_df, use_container_width=True, hide_index=True)
 
-# --- Tab 4: Employee Transfer Form ---
 elif st.session_state["active_page"] == "Employee Transfer Form":
     st.markdown("<br>", unsafe_allow_html=True)
     st.subheader("🔄 Employee Transfer Request")
@@ -438,32 +437,42 @@ elif st.session_state["active_page"] == "Employee Transfer Form":
     if "employee_to_swap_add" not in st.session_state:
         st.session_state["employee_to_swap_add"] = "Select Employee to Swap"
 
-    # --- Mutually exclusive dropdowns ---
+    # --- Mutually exclusive dropdowns, keep preselected ---
     interested_exclude = st.session_state["employee_to_swap_add"]
     swap_exclude = st.session_state["interested_employee_add"]
 
+    # Interested Employee options
     options_interested = ["Select Interested Employee"] + (
         available_employees[
             ~available_employees["Employee Id"].astype(str).isin(
-                [interested_exclude.split(" - ")[0]] if interested_exclude != "Select Employee to Swap" else []
+                [interested_exclude.split(" - ")[0]] 
+                if interested_exclude != "Select Employee to Swap" and 
+                   (preselected is None or interested_exclude.split(" - ")[0] != preselected.split(" - ")[0]) 
+                else []
             )
         ]["Employee Id"].astype(str) + " - " +
         available_employees[
             ~available_employees["Employee Id"].astype(str).isin(
-                [interested_exclude.split(" - ")[0]] if interested_exclude != "Select Employee to Swap" else []
+                [interested_exclude.split(" - ")[0]] 
+                if interested_exclude != "Select Employee to Swap" and 
+                   (preselected is None or interested_exclude.split(" - ")[0] != preselected.split(" - ")[0]) 
+                else []
             )
         ]["Employee Name"]
     ).tolist()
 
+    # Swap Employee options
     options_swap = ["Select Employee to Swap"] + (
         available_employees[
             ~available_employees["Employee Id"].astype(str).isin(
-                [swap_exclude.split(" - ")[0]] if swap_exclude != "Select Interested Employee" else []
+                [swap_exclude.split(" - ")[0]] 
+                if swap_exclude != "Select Interested Employee" else []
             )
         ]["Employee Id"].astype(str) + " - " +
         available_employees[
             ~available_employees["Employee Id"].astype(str).isin(
-                [swap_exclude.split(" - ")[0]] if swap_exclude != "Select Interested Employee" else []
+                [swap_exclude.split(" - ")[0]] 
+                if swap_exclude != "Select Interested Employee" else []
             )
         ]["Employee Name"]
     ).tolist()
@@ -575,4 +584,3 @@ elif st.session_state["active_page"] == "Employee Transfer Form":
         "</p>",
         unsafe_allow_html=True
     )
-
