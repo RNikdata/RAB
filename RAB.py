@@ -379,6 +379,7 @@ with tab3:
     st.dataframe(styled_swap_df, use_container_width=True, hide_index=True)
 
 # --- Tab 4: Employee Transfer Form ---
+# --- Tab 4: Employee Transfer Form ---
 with tab4:
     st.markdown("<br>", unsafe_allow_html=True)
     st.subheader("🔄 Employee Transfer Request")
@@ -388,7 +389,7 @@ with tab4:
     approved_interested = approved_requests["Employee Id"].astype(str).tolist()
     approved_swap = approved_requests["Employee to Swap"].tolist()
 
-   # --- Base available employees (exclude unbilled/unallocated and ALs) ---
+    # --- Base available employees (exclude unbilled/unallocated and ALs) ---
     available_employees = df[
         (~df["Employee Id"].astype(str).isin(approved_interested)) &
         (~df["Employee Name"].isin(approved_swap)) &
@@ -398,8 +399,6 @@ with tab4:
 
     # --- Preselected employee ---
     preselected = st.session_state.get("preselect_interested_employee", None)
-
-    # Add preselected to available_employees if missing
     if preselected:
         emp_id, emp_name = preselected.split(" - ")
         if emp_id not in available_employees["Employee Id"].astype(str).tolist():
@@ -408,18 +407,43 @@ with tab4:
                 pd.DataFrame([{"Employee Id": emp_id, "Employee Name": emp_name}])
             ], ignore_index=True)
 
-    # --- Dropdown options ---
-    options_interested = ["Select Interested Employee"] + (
-        available_employees["Employee Id"].astype(str) + " - " + available_employees["Employee Name"]
-    ).tolist()
-    options_swap = ["Select Employee to Swap"] + (
-        available_employees["Employee Id"].astype(str) + " - " + available_employees["Employee Name"]
-    ).tolist()
-
-    # --- Handle preselection properly ---
+    # --- Handle session state for dropdowns ---
     if "interested_employee_add" not in st.session_state:
         st.session_state["interested_employee_add"] = preselected if preselected else "Select Interested Employee"
+    if "employee_to_swap_add" not in st.session_state:
+        st.session_state["employee_to_swap_add"] = "Select Employee to Swap"
 
+    # --- Mutually exclusive dropdowns ---
+    interested_exclude = st.session_state["employee_to_swap_add"]
+    swap_exclude = st.session_state["interested_employee_add"]
+
+    options_interested = ["Select Interested Employee"] + (
+        available_employees[
+            ~available_employees["Employee Id"].astype(str).isin(
+                [interested_exclude.split(" - ")[0]] if interested_exclude != "Select Employee to Swap" else []
+            )
+        ]["Employee Id"].astype(str) + " - " +
+        available_employees[
+            ~available_employees["Employee Id"].astype(str).isin(
+                [interested_exclude.split(" - ")[0]] if interested_exclude != "Select Employee to Swap" else []
+            )
+        ]["Employee Name"]
+    ).tolist()
+
+    options_swap = ["Select Employee to Swap"] + (
+        available_employees[
+            ~available_employees["Employee Id"].astype(str).isin(
+                [swap_exclude.split(" - ")[0]] if swap_exclude != "Select Interested Employee" else []
+            )
+        ]["Employee Id"].astype(str) + " - " +
+        available_employees[
+            ~available_employees["Employee Id"].astype(str).isin(
+                [swap_exclude.split(" - ")[0]] if swap_exclude != "Select Interested Employee" else []
+            )
+        ]["Employee Name"]
+    ).tolist()
+
+    # --- Dropdowns ---
     col1, col2, col3 = st.columns([1, 2, 2])
     with col1:
         user_name_add = st.selectbox(
@@ -440,7 +464,7 @@ with tab4:
             key="employee_to_swap_add"
         )
 
-    # Remove session_state after use
+    # Remove session_state preselection after use
     if "preselect_interested_employee" in st.session_state:
         del st.session_state["preselect_interested_employee"]
 
@@ -476,15 +500,15 @@ with tab4:
                     employee_row["Interested Manager"] = user_name_add
                     employee_row["Employee to Swap"] = swap_emp_name
                     employee_row["Status"] = "Pending"
-    
+
                     request_id = f"{user_id}{interested_emp_id}{swap_emp_id}"
                     employee_row["Request Id"] = int(request_id)
-    
+
                     ads_df = pd.concat([ads_df, employee_row], ignore_index=True)
                     ads_df = ads_df.drop_duplicates(subset=["Employee Id","Interested Manager","Employee to Swap"], keep="last")
-    
+
                     set_with_dataframe(ads_sheet, ads_df)
-    
+
                     # Preselect this employee on rerun
                     st.session_state["preselect_interested_employee"] = f"{interested_emp_id} - {interested_employee_add.split(' - ')[1]}"
 
@@ -503,7 +527,7 @@ with tab4:
         "Enter Request ID to Remove",
         options=ads_df["Request Id"].dropna().astype(int).tolist(),
         key="request_id_remove",
-        index = None
+        index=None
     )
 
     if st.button("Remove Transfer Request", key="submit_remove"):
@@ -526,3 +550,4 @@ with tab4:
         "</p>",
         unsafe_allow_html=True
     )
+
