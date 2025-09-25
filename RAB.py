@@ -421,7 +421,7 @@ elif st.session_state["active_page"] == "Employee Transfer Form":
         (~df["Designation"].isin(["AL"]))
     ].copy()
 
-    # --- Preselected employee ---
+    # --- Preselected employee from Supply Pool ---
     preselected = st.session_state.get("preselect_interested_employee", None)
     if preselected:
         emp_id, emp_name = preselected.split(" - ")
@@ -440,35 +440,28 @@ elif st.session_state["active_page"] == "Employee Transfer Form":
     # --- Mutually exclusive dropdowns, keep preselected ---
     interested_exclude = st.session_state["employee_to_swap_add"]
     swap_exclude = st.session_state["interested_employee_add"]
-
     preselected_id = preselected.split(" - ")[0] if preselected else None
 
+    # Interested Employee options
+    options_interested_df = available_employees.copy()
+    if interested_exclude not in ["Select Employee to Swap", preselected]:
+        exclude_id = interested_exclude.split(" - ")[0]
+        options_interested_df = options_interested_df[options_interested_df["Employee Id"].astype(str) != exclude_id]
+
     options_interested = ["Select Interested Employee"] + (
-        available_employees[
-            ~available_employees["Employee Id"].astype(str).isin(
-                [interested_exclude.split(" - ")[0]] if interested_exclude not in ["Select Employee to Swap", preselected] else []
-            )
-        ]["Employee Id"].astype(str) + " - " +
-        available_employees[
-            ~available_employees["Employee Id"].astype(str).isin(
-                [interested_exclude.split(" - ")[0]] if interested_exclude not in ["Select Employee to Swap", preselected] else []
-            )
-        ]["Employee Name"]
+        options_interested_df["Employee Id"].astype(str) + " - " + options_interested_df["Employee Name"]
     ).tolist()
     if preselected and preselected not in options_interested:
-        options_interested.insert(1, preselected)
+        options_interested.insert(1, preselected)  # Keep preselected on top
+
+    # Employee to Swap options
+    options_swap_df = available_employees.copy()
+    if swap_exclude not in ["Select Interested Employee", preselected]:
+        exclude_id = swap_exclude.split(" - ")[0]
+        options_swap_df = options_swap_df[options_swap_df["Employee Id"].astype(str) != exclude_id]
 
     options_swap = ["Select Employee to Swap"] + (
-        available_employees[
-            ~available_employees["Employee Id"].astype(str).isin(
-                [swap_exclude.split(" - ")[0]] if swap_exclude not in ["Select Interested Employee", preselected] else []
-            )
-        ]["Employee Id"].astype(str) + " - " +
-        available_employees[
-            ~available_employees["Employee Id"].astype(str).isin(
-                [swap_exclude.split(" - ")[0]] if swap_exclude not in ["Select Interested Employee", preselected] else []
-            )
-        ]["Employee Name"]
+        options_swap_df["Employee Id"].astype(str) + " - " + options_swap_df["Employee Name"]
     ).tolist()
 
     # --- Dropdowns ---
@@ -492,7 +485,7 @@ elif st.session_state["active_page"] == "Employee Transfer Form":
             key="employee_to_swap_add"
         )
 
-    # Remove session_state preselection after use
+    # Remove preselect after use
     if "preselect_interested_employee" in st.session_state:
         del st.session_state["preselect_interested_employee"]
 
