@@ -450,7 +450,7 @@ elif st.session_state["active_page"] == "Employee Transfer Form":
     with col2:
         interested_employee_add = st.selectbox(
             "Interested Employee",
-            options=["Select Interested Employee"] + avaialble_employees[avilable_employee["Employee Id"].dropna().tolist()
+            options=["Select Interested Employee"] + avaialble_employees[avilable_employee["Employee Id"].dropna().tolist(),
             key="interested_employee_add"
         )
     with col3:
