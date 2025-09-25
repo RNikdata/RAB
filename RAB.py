@@ -450,13 +450,13 @@ elif st.session_state["active_page"] == "Employee Transfer Form":
     with col2:
         interested_employee_add = st.selectbox(
             "Interested Employee",
-            options=["Select Interested Employee"] + (available_employees["Employee Id"] + "-" + available_employees["Employee Name"]).dropna().tolist(),
+            options=["Select Interested Employee"] + (available_employees["Employee Id"].astype(str) + " - " + available_employees["Employee Name"]).dropna().tolist(),
             key="interested_employee_add"
         )
     with col3:
         employee_to_swap_add = st.selectbox(
             "Employee to Transfer",
-            options=["Select Employee to Swap"] + available_employees["Employee Id"].dropna().tolist(),
+            options=["Select Employee to Swap"] + (available_employees["Employee Id"].astype(str) + " - " + available_employees["Employee Name"]).dropna().tolist(),
             key="employee_to_swap_add"
         )
 
