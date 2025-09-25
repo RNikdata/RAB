@@ -420,24 +420,19 @@ elif st.session_state["active_page"] == "Employee Transfer Form":
         (df["Current Billability"].isin(["PU - Person Unbilled", "-", "PI - Person Investment"])) &
         (~df["Designation"].isin(["AL"]))
     ].copy()
+    options_interested = ["Select Interested Employee"] + (available_employees["Employee Id"].astype(str) + " - " + available_employees["Employee Name"]).tolist()
+    options_swap = ["Select Employee to Swap"] + (available_employees["Employee Id"].astype(str) + " - " + available_employees["Employee Name"]).tolist()
 
-    # --- Preselected employee ---
+    # Pre-fill if selected from Tab 1
     preselected = st.session_state.get("preselect_interested_employee", None)
-    if preselected:
-        emp_id, emp_name = preselected.split(" - ")
-        if emp_id not in available_employees["Employee Id"].astype(str).tolist():
-            available_employees = pd.concat([
-                available_employees,
-                pd.DataFrame([{"Employee Id": emp_id, "Employee Name": emp_name}])
-            ], ignore_index=True)
+    default_idx = options_interested.index(preselected) if preselected in options_interested else 0
+
 
     # --- Handle session state for dropdowns ---
     if "interested_employee_add" not in st.session_state:
         st.session_state["interested_employee_add"] = preselected if preselected else "Select Interested Employee"
     if "employee_to_swap_add" not in st.session_state:
-        st.session_state["employee_to_swap_add"] = "Select Employee to Swap"
-
-   
+        st.session_state["employee_to_swap_add"] = "Select Employee to Swap"   
 
     # --- Dropdowns ---
     col1, col2, col3 = st.columns([1, 2, 2])
@@ -451,7 +446,8 @@ elif st.session_state["active_page"] == "Employee Transfer Form":
         interested_employee_add = st.selectbox(
             "Interested Employee",
             options=["Select Interested Employee"] + (available_employees["Employee Id"].astype(str) + " - " + available_employees["Employee Name"]).dropna().tolist(),
-            key="interested_employee_add"
+            key="interested_employee_add",
+            index = default_idx
         )
     with col3:
         employee_to_swap_add = st.selectbox(
