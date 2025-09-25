@@ -236,9 +236,6 @@ with tab2:
     else:
         st.warning("⚠️ No employees found for the selected filters.")
 
-
-
-
 # --- Tab 3: Transfer Requests ---
 with tab3:
     st.subheader("🔁 Transfer Requests")
@@ -344,10 +341,15 @@ with tab3:
             swap_df_filtered["Employee Id"].astype(str).str.contains(resource_search, na=False)
         ]
 
-    if not swap_df_filtered.empty:
+    # Ensure empty table still has columns
+    if swap_df_filtered.empty:
+        swap_df_filtered = pd.DataFrame(columns=swap_columns)
+    # Convert Request Id to int if column exists
+    if "Request Id" in swap_df_filtered.columns and not swap_df_filtered.empty:
         swap_df_filtered["Request Id"] = swap_df_filtered["Request Id"].astype(int)
-        styled_swap_df = swap_df_filtered[swap_columns].style.applymap(color_status, subset=["Status"])
-        st.dataframe(styled_swap_df, use_container_width=True, hide_index=True)
+    # Display the table
+    styled_swap_df = swap_df_filtered[swap_columns].style.applymap(color_status, subset=["Status"])
+    st.dataframe(styled_swap_df, use_container_width=True, hide_index=True)
 
 # --- Tab 4: Employee Transfer Form ---
 with tab4:
