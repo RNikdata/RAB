@@ -254,7 +254,7 @@ with tab3:
             "Search by Interested Manager",
             options=swap_df["Manager Name"].dropna().unique().tolist(),
             key="interested_manager_search_box",
-            Index = None
+            index = None
         )
     with col2:
         status_filter = st.selectbox(
