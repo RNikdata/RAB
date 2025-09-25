@@ -365,7 +365,7 @@ with tab4:
     available_employees = df[
         (~df["Employee Id"].astype(str).isin(approved_interested)) &
         (~df["Employee Name"].isin(approved_swap)) &
-        (~df["Current Billability"].isin(["PU - Person Unbilled", "-", "PI - Person Investment"])) &
+        (df["Current Billability"].isin(["PU - Person Unbilled", "-", "PI - Person Investment"])) &
         (~df["Designation"].isin(["AL"]))
     ].copy()
 
