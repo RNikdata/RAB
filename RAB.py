@@ -173,40 +173,69 @@ with tab2:
     if not filtered_df_unique.empty:
         sorted_df = filtered_df_unique[columns_to_show].sort_values(by="Employee Name").reset_index(drop=True)
         n = len(sorted_df)
+    
         for i in range(0, n, 3):
-            cols = st.columns([1,1,1])
+            cols = st.columns([1, 1, 1])
             for j, col in enumerate(cols):
-                if i+j < n:
-                    row = sorted_df.iloc[i+j]
+                if i + j < n:
+                    row = sorted_df.iloc[i + j]
                     with col:
-                        st.markdown(
-                            f"""
-                            <div style='display:flex; align-items:center; padding:8px; border:1px solid #e0e0e0; border-radius:8px; margin-bottom:5px;'>
-                                <div style='flex-shrink:0;'>
-                                    <img src="https://upload.wikimedia.org/wikipedia/en/0/0c/Mu_Sigma_Logo.jpg" style='width:110px;margin-left:20px; height:120px; border-radius:4px; object-fit:cover;'>
-                                </div>
-                                <div style='margin-left:15px;'>
-                                    <div style='font-size:20px;margin-left:40px; font-weight:bold;'>{row['Employee Name']}</div>
-                                    <div style='font-size:14px; margin-left:50px; margin-top:5px;'>
-                                        👤 ID: {row['Employee Id']}<br>
-                                        🧑‍💼 Manager: {row['Manager Name']}<br>
-                                        📌 Designation: {row['Designation']}<br>
-                                        📂 Account: {row['Account Name']}<br>
-                                        🏷️ Rank: {row['Rank']}
+                        # Card container
+                        with st.container():
+                            st.markdown(
+                                f"""
+                                <div style='display:flex; align-items:center; gap:15px; padding:8px; border:1px solid #e0e0e0; border-radius:8px; margin-bottom:5px;'>
+                                    <div style='flex-shrink:0;'>
+                                        <img src="https://static.vecteezy.com/system/resources/previews/008/442/086/original/illustration-of-human-icon-user-symbol-icon-modern-design-on-blank-background-free-vector.jpg" 
+                                             style='width:110px; height:120px; border-radius:4px; object-fit:cover;'>
+                                    </div>
+                                    <div style='flex-grow:1;'>
+                                        <div style='font-size:20px; font-weight:bold;'>{row['Employee Name']}</div>
+                                        <div style='font-size:14px; margin-top:5px; line-height:1.4;'>
+                                            👤 ID: {row['Employee Id']}<br>
+                                            🧑‍💼 Manager: {row['Manager Name']}<br>
+                                            📌 Designation: {row['Designation']}<br>
+                                            📂 Account: {row['Account Name']}<br>
+                                            🏷️ Rank: {row['Rank']}
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                            """,
-                            unsafe_allow_html=True
-                        )
-                        inner_col1, inner_col2= st.columns([2.32,1])
-                        with inner_col2:
-                            if st.button("Request Transfer", key=f"btn_{row['Employee Id']}"):
+                                """,
+                                unsafe_allow_html=True
+                            )
+
+                            # Add custom CSS for button colors
+                            st.markdown(f"""
+                                <style>
+                                /* Interested Employee button */
+                                div.stButton > button[key="interested_{row['Employee Id']}"] {{
+                                    background-color: #1976d2;   /* Blue */
+                                    color: white;
+                                    padding: 6px 14px;
+                                    border-radius: 5px;
+                                }}
+                                /* Transfer Employee button */
+                                div.stButton > button[key="transfer_{row['Employee Id']}"] {{
+                                    background-color: #388e3c;   /* Green */
+                                    color: white;
+                                    padding: 6px 14px;
+                                    border-radius: 5px;
+                                }}
+                                </style>
+                            """, unsafe_allow_html=True)
+    
+                            # Buttons inside card
+                            if st.button("Interested Employee", key=f"interested_{row['Employee Id']}"):
                                 st.session_state["preselect_interested_employee"] = f"{row['Employee Id']} - {row['Employee Name']}"
-                                st.session_state["active_tab"] = 3  # Go to Tab 4
+                                st.session_state["active_tab"] = 3
                                 st.rerun()
+
+                            st.markdown("<hr style='margin-top:1px; margin-bottom:5px; border:0; solid #d3d3d3;'>", unsafe_allow_html=True)
     else:
         st.warning("⚠️ No employees found for the selected filters.")
+
+
+
 
 # --- Tab 3: Transfer Requests ---
 with tab3:
@@ -333,7 +362,9 @@ with tab4:
     options_swap = ["Select Employee to Swap"] + (available_employees["Employee Id"].astype(str) + " - " + available_employees["Employee Name"]).tolist()
 
     preselected = st.session_state.get("preselect_interested_employee", None)
+    
     default_idx = options_interested.index(preselected) if preselected in options_interested else 0
+
 
     col1, col2, col3 = st.columns([1, 2, 2])
     with col1:
