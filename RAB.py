@@ -246,7 +246,7 @@ elif st.session_state["active_page"] == "Supply Pool":
                                     
                                 if not approved_check.empty:                                    
                                     st.session_state["preselect_interested_employee"] = f"{row['Employee Id']} - {row['Employee Name']}"
-                                    st.session_state["active_tab"] = "Employee Transfer Form"   # Switch to Tab 4
+                                    st.session_state["active_page"] = "Employee Transfer Form"   # Switch to Tab 4
                                     st.rerun()
                                 else:
                                     st.warning(f"⚠️ The employee {row['Employee Name']} is already involved in an approved transfer request.")
