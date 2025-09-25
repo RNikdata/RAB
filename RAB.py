@@ -225,10 +225,12 @@ with tab2:
                             """, unsafe_allow_html=True)
     
                             # Buttons inside card
-                            if st.button("Interested Employee", key=f"interested_{row['Employee Id']}"):
+                            if st.button("Interest in Employee", key=f"interested_{row['Employee Id']}"):
+                                # Store the full dropdown value in session state
                                 st.session_state["preselect_interested_employee"] = f"{row['Employee Id']} - {row['Employee Name']}"
-                                st.session_state["active_tab"] = 3
+                                st.session_state["active_tab"] = 3   # Switch to Tab 4
                                 st.rerun()
+
 
                             st.markdown("<hr style='margin-top:1px; margin-bottom:5px; border:0; solid #d3d3d3;'>", unsafe_allow_html=True)
     else:
