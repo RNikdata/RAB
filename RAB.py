@@ -252,7 +252,7 @@ with tab3:
     with col1:
         interested_manager_search = st.selectbox(
             "Search by Interested Manager",
-            options=["Select Your Name"] + df["Manager Name"].dropna().unique().tolist(),
+            options=["Select Your Name"] + swap_df["Manager Name"].dropna().unique().tolist(),
             key="interested_manager_search_box",
             Index = None
         )
