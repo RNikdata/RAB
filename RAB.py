@@ -250,10 +250,11 @@ with tab3:
     # --- Filters ---
     col1, col2 = st.columns([2, 2])
     with col1:
-        interested_manager_search = st.text_input(
+        interested_manager_search = st.selectbox(
             "Search by Interested Manager",
+            options=["Select Your Name"] + df["Manager Name"].dropna().unique().tolist(),
             key="interested_manager_search_box",
-            placeholder="Type manager name..."
+            Index = None
         )
     with col2:
         status_filter = st.selectbox(
@@ -261,7 +262,6 @@ with tab3:
             options=["All", "Pending", "Approved", "Rejected"],
             key="status_filter_box"
         )
-
     if interested_manager_search and "Interested Manager" in swap_df.columns:
         swap_df = swap_df[
             swap_df["Interested Manager"].str.contains(interested_manager_search, case=False, na=False)
