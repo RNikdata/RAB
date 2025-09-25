@@ -422,16 +422,12 @@ elif st.session_state["active_page"] == "Employee Transfer Form":
     ].copy()
     
     options_interested = ["Select Interested Employee"] + (available_employees["Employee Id"].astype(str) + " - " + available_employees["Employee Name"]).tolist()
-
+    # Create options for swap, removing the preselected employee
+    options_swap = ["Select Employee to Swap"] + (available_employees["Employee Id"].astype(str) + " - " + available_employees["Employee Name"]).tolist()
+       
     # Pre-fill if selected from Tab 1
     preselected = st.session_state.get("preselect_interested_employee", None)
     default_idx = options_interested.index(preselected) if preselected in options_interested else 0
-
-    # Create options for swap, removing the preselected employee
-    options_swap = ["Select Employee to Swap"] + [
-        emp for emp in (available_employees["Employee Id"].astype(str) + " - " + available_employees["Employee Name"]).tolist()
-        if emp != preselected
-    ]    
 
     # --- Handle session state for dropdowns ---
     if "interested_employee_add" not in st.session_state:
