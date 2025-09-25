@@ -171,6 +171,7 @@ if st.session_state["active_page"] == "Transfer Summary":
 elif st.session_state["active_page"] == "Supply Pool":
     st.subheader("📝 Supply Pool")
     st.markdown("<br>", unsafe_allow_html=True)
+    warning_placeholder = st.empty()
 
     # --- Filter DataFrame based on filters ---
     df_unique = df.drop_duplicates(subset=["Employee Id"]).copy()
@@ -252,7 +253,8 @@ elif st.session_state["active_page"] == "Supply Pool":
                                     st.session_state["active_page"] = "Employee Transfer Form"  
                                     st.rerun()
                                 else:
-                                    st.warning(f"⚠️ The employee {row['Employee Name']} is already involved in an approved transfer request.")
+                                    warning_placeholder.warning(f"⚠️ The employee {row['Employee Name']} is already involved in an approved transfer request.")
+                                    
 
                                     
                             st.markdown("<hr style='margin-top:1px; margin-bottom:5px; border:0; solid #d3d3d3;'>", unsafe_allow_html=True)
