@@ -237,16 +237,20 @@ elif st.session_state["active_page"] == "Supply Pool":
                                     <div style='flex-grow:1;'>
                                         <div style='font-size:20px; font-weight:bold;'>{row['Employee Name']}</div>
                                         <div style='font-size:14px; margin-top:5px; line-height:1.6;'>
-                                            <div style='display:flex;'>
-                                                <div style='width:50%;'>👤 ID: {row['Employee Id']}</div>
-                                                <div style='width:50%;'>📌 Designation: {row['Designation']}</div>
+                                            <div style='display:flex; gap:25px;'>
+                                                <div><b>👤 ID:</b> {row['Employee Id']}</div>
+                                                <div><b>📌 Band:</b> {row['Designation']}</div>
+                                                <div><b>🏷️ Rank:</b> {row['Rank']}</div>
                                             </div>
-                                            <div style='display:flex;'>
-                                                <div style='width:50%;'>📂 Account: {row['Account Name']}</div>
-                                                <div style='width:50%;'>🏷️ Rank: {row['Rank']}</div>
-                                            </div>
+                                            
+                                            <!-- Second row: Account -->
                                             <div style='margin-top:4px;'>
-                                                🧑‍💼 Manager: {row['Manager Name']}
+                                                <b>📂 Account:</b> {row['Account Name']}
+                                            </div>
+                                            
+                                            <!-- Third row: Manager -->
+                                            <div style='margin-top:4px;'>
+                                                <b>🧑‍💼 Manager:</b> {row['Manager Name']}
                                             </div>
                                         </div>
                                     </div>
