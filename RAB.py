@@ -235,7 +235,7 @@ elif st.session_state["active_page"] == "Supply Pool":
                                              style='width:110px; height:140px; border-radius:4px; object-fit:cover;'>
                                     </div>
                                     <div style='flex-grow:1;'>
-                                        <div style='font-size:30px; padding-left:20px; font-weight:bold;'>{row['Employee Name']}</div>
+                                        <div style='font-size:30px; font-weight:bold;'>{row['Employee Name']}</div>
                                         <div style='font-size:14px; margin-top:5px; line-height:1.6; padding-left:20px'>
                                             <div style='display:flex; gap:25px;'>
                                                 <div>👤 ID: {row['Employee Id']}</div>
