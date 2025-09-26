@@ -229,7 +229,7 @@ elif st.session_state["active_page"] == "Supply Pool":
                         with st.container():
                             st.markdown(
                                 f"""
-                                <div style= 'display:flex; align-items:center; gap:15px; padding:8px; border:3px solid #e0e0e0; border-radius:8px; margin-bottom:5px;'>
+                                <div style='display:flex; align-items:center; gap:15px; padding:8px; border:3px solid #e0e0e0; border-radius:8px; margin-bottom:5px;'>
                                     <div style='flex-shrink:0;'>
                                         <img src="https://static.vecteezy.com/system/resources/previews/008/442/086/original/illustration-of-human-icon-user-symbol-icon-modern-design-on-blank-background-free-vector.jpg" 
                                              style='width:110px; height:120px; border-radius:4px; object-fit:cover;'>
@@ -237,30 +237,31 @@ elif st.session_state["active_page"] == "Supply Pool":
                                     <div style='flex-grow:1;'>
                                         <div style='font-size:20px; font-weight:bold;'>{row['Employee Name']}</div>
                                         <div style='font-size:14px; margin-top:5px; line-height:1.6;'>
-                
-                                        <!-- First row: ID, Designation, Rank -->
-                                        <div style='display:flex; gap:25px;'>
-                                            <div style='width:33%;'><b>👤 ID:</b> {row['Employee Id']}</div>
-                                            <div style='width:33%;'><b>📌 Designation:</b> {row['Designation']}</div>
-                                            <div style='width:33%;'><b>🏷️ Rank:</b> {row['Rank']}</div>
+                                            
+                                            <!-- First row: ID, Designation, Rank -->
+                                            <div style='display:flex; gap:25px;'>
+                                                <div style='width:33%;'><b>👤 ID:</b> {row['Employee Id']}</div>
+                                                <div style='width:33%;'><b>📌 Designation:</b> {row['Designation']}</div>
+                                                <div style='width:33%;'><b>🏷️ Rank:</b> {row['Rank']}</div>
+                                            </div>
+                                            
+                                            <!-- Second row: Account -->
+                                            <div style='margin-top:4px;'>
+                                                <b>📂 Account:</b> {row['Account Name']}
+                                            </div>
+                                            
+                                            <!-- Third row: Manager -->
+                                            <div style='margin-top:4px;'>
+                                                <b>🧑‍💼 Manager:</b> {row['Manager Name']}
+                                            </div>
+                                            
                                         </div>
-                                        
-                                        <!-- Second row: Account -->
-                                        <div style='margin-top:4px;'>
-                                            <b>📂 Account:</b> {row['Account Name']}
-                                        </div>
-                                        
-                                        <!-- Third row: Manager -->
-                                        <div style='margin-top:4px;'>
-                                            <b>🧑‍💼 Manager:</b> {row['Manager Name']}
-                                        </div>
-                                        
-                                    </div>
                                     </div>
                                 </div>
                                 """,
                                 unsafe_allow_html=True
                             )
+
 
                             dum_ads_df = ads_df.copy()
                             dum_ads_df = dum_ads_df[dum_ads_df["Request Id"].notna()]
