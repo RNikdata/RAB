@@ -235,13 +235,19 @@ elif st.session_state["active_page"] == "Supply Pool":
                                              style='width:110px; height:140px; border-radius:4px; object-fit:cover;'>
                                     </div>
                                     <div style='flex-grow:1;'>
-                                        <div style='font-size:30px; font-weight:bold;'>{row['Employee Name']}</div>
-                                        <div style='font-size:14px; margin-top:5px; line-height:1.4; padding-left:20px;'>
-                                            👤 ID: {row['Employee Id']}<br>
-                                            🧑‍💼 Manager: {row['Manager Name']}<br>
-                                            📌 Designation: {row['Designation']}<br>
-                                            📂 Account: {row['Account Name']}<br>
-                                            🏷️ Rank: {row['Rank']}
+                                        <div style='font-size:30px; padding-left:20px; font-weight:bold;'>{row['Employee Name']}</div>
+                                        <div style='font-size:14px; margin-top:5px; line-height:1.6; padding-left:20px'>
+                                            <div style='display:flex; gap:25px;'>
+                                                <div>👤 ID: {row['Employee Id']}</div>
+                                                <div>📌 Designation: {row['Designation']}</div>
+                                            </div>
+                                            <div style='display:flex; gap:25px;'>
+                                                <div>📂 Account: {row['Account Name']}</div>
+                                                <div>🏷️ Rank: {row['Rank']}</div>
+                                            </div>
+                                            <div style='margin-top:4px;'>
+                                                🧑‍💼 Manager: {row['Manager Name']}
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
