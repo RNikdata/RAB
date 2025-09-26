@@ -237,24 +237,15 @@ elif st.session_state["active_page"] == "Supply Pool":
                                     <div style='flex-grow:1;'>
                                         <div style='font-size:20px; font-weight:bold;'>{row['Employee Name']}</div>
                                         <div style='font-size:14px; margin-top:5px; line-height:1.6;'>
-                                            
-                                            <!-- First row: ID, Designation, Rank -->
-                                            <div style='display:flex; gap:25px;'>
-                                                <div style='width:33%;'><b>👤 ID:</b> {row['Employee Id']}</div>
-                                                <div style='width:33%;'><b>📌 Designation:</b> {row['Designation']}</div>
-                                                <div style='width:33%;'><b>🏷️ Rank:</b> {row['Rank']}</div>
+                                            <div style='display:flex;'>
+                                                <div style='width:50%;'><b>👤 ID:</b> {row['Employee Id']}</div>
+                                                <div style='width:50%;'><b>📌 Designation:</b> {row['Designation']}</div>
                                             </div>
-                                            
-                                            <!-- Second row: Account -->
-                                            <div style='margin-top:4px;'>
-                                                <b>📂 Account:</b> {row['Account Name']}
+                                            <div style='display:flex;'>
+                                                <div style='width:50%;'><b>📂 Account:</b> {row['Account Name']}</div>
+                                                <div style='width:50%;'><b>🏷️ Rank:</b> {row['Rank']}</div>
                                             </div>
-                                            
-                                            <!-- Third row: Manager -->
-                                            <div style='margin-top:4px;'>
-                                                <b>🧑‍💼 Manager:</b> {row['Manager Name']}
-                                            </div>
-                                            
+                                            <div style='margin-top:4px;'><b>🧑‍💼 Manager:</b> {row['Manager Name']}</div>
                                         </div>
                                     </div>
                                 </div>
