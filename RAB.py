@@ -220,8 +220,8 @@ elif st.session_state["active_page"] == "Supply Pool":
     if not filtered_df_unique.empty:
         sorted_df = filtered_df_unique[columns_to_show].sort_values(by="Employee Name").reset_index(drop=True)
         n = len(sorted_df)
-        for i in range(0, n, 3):
-            cols = st.columns([1, 1, 1])
+        for i in range(0, n, 2):
+            cols = st.columns([1, 1])
             for j, col in enumerate(cols):
                 if i + j < n:
                     row = sorted_df.iloc[i + j]
