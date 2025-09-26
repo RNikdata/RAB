@@ -257,7 +257,7 @@ elif st.session_state["active_page"] == "Supply Pool":
                             dum_ads_df = ads_df.copy()
                             dum_ads_df = dum_ads_df[dum_ads_df["Request Id"].notna()]
                             
-                            if st.button("Interest in Employee", key=f"interested_{row['Employee Id']}"):
+                            if st.button("Interested in Employee", key=f"interested_{row['Employee Id']}"):
                                 emp_name = row['Employee Name']
                                 
                                 if {"Employee Name", "Employee to Swap", "Status"}.issubset(dum_ads_df.columns):
