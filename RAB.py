@@ -236,14 +236,14 @@ elif st.session_state["active_page"] == "Supply Pool":
                                     </div>
                                     <div style='flex-grow:1;'>
                                         <div style='font-size:30px; font-weight:bold;'>{row['Employee Name']}</div>
-                                        <div style='font-size:14px; margin-top:5px; line-height:1.6; padding-left:20px'>
-                                            <div style='display:flex; gap:25px;'>
-                                                <div>👤 ID: {row['Employee Id']}</div>
-                                                <div>📌 Designation: {row['Designation']}</div>
+                                        <div style='font-size:14px; margin-top:5px; line-height:1.6;'>
+                                            <div style='display:flex;'>
+                                                <div style='width:50%;'>👤 ID: {row['Employee Id']}</div>
+                                                <div style='width:50%;'>📌 Designation: {row['Designation']}</div>
                                             </div>
-                                            <div style='display:flex; gap:25px;'>
-                                                <div>📂 Account: {row['Account Name']}</div>
-                                                <div>🏷️ Rank: {row['Rank']}</div>
+                                            <div style='display:flex;'>
+                                                <div style='width:50%;'>📂 Account: {row['Account Name']}</div>
+                                                <div style='width:50%;'>🏷️ Rank: {row['Rank']}</div>
                                             </div>
                                             <div style='margin-top:4px;'>
                                                 🧑‍💼 Manager: {row['Manager Name']}
