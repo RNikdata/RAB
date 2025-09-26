@@ -116,7 +116,16 @@ if st.session_state["active_page"] == "Transfer Summary":
     st.subheader("📊 Manager Transfer Summary")
     st.markdown("<br>", unsafe_allow_html=True)
     summary_df = ads_df.copy()
-
+    summary_df1 = df.copy()
+    
+    summary_df1 = summary_df1.drop_duplicates(subset=["Employee Id"], keep="first")
+    summary_df1 = summary_df1[~summary_df1["Designation"].isin(["AL"])]
+    summary_df11 = summary_df1[summary_df1["Current Billability"].isin(["PU - Person Unbilled", "-", "PI - Person Investment"])]
+    summary_df1["Tenure"] = pd.to_numeric(summary_df1["Tenure"], errors='coerce')
+    summary_df12 = summary_df1[summary_df1["Tenure"] > 3]
+    summary_df1 = pd.concat([summary_df11, summary_df12], ignore_index=True)
+    summary_df1 = summary_df1.drop_duplicates(subset=["Employee Id"], keep="first")
+    
     # Remove invalid manager rows
     summary_df = summary_df[summary_df["Manager Name"].notna()]
     summary_df = summary_df[summary_df["Manager Name"].str.strip() != "- - -"]
@@ -134,12 +143,19 @@ if st.session_state["active_page"] == "Transfer Summary":
             (summary_df["Manager Name"] == mgr) | 
             (summary_df["Interested Manager"] == mgr)
         ]
+        temp_df1 = summary_df1[summary_df1["Manager Name"] == mgr]
+        
         total_requests = temp_df["Request Id"].dropna().nunique()
         total_approved = (temp_df[temp_df["Status"] == "Approved"]["Request Id"].dropna().nunique())
         total_rejected = (temp_df[temp_df["Status"] == "Rejected"]["Request Id"].dropna().nunique())
         total_pending = (temp_df[temp_df["Status"] == "Pending"]["Request Id"].dropna().nunique())
+
+        unique_employees = temp_df1["Employee Id"].astype(str).dropna().unique()
+        total_employees = len(unique_employees)
+        
         summary_list.append({
             "Manager Name": mgr,
+            "Total Available Employee": total_employees,
             "Total Requests Raised": total_requests,
             "Total Approved": total_approved,
             "Total Rejected": total_rejected,
