@@ -99,13 +99,28 @@ st.sidebar.markdown(
     """,
     unsafe_allow_html=True
 )
+top_managers = [
+        "Nivedhan Narasimhan",
+        "Rajdeep Roy Choudhury",
+        "Riyas Mohammed Abdul Razak",
+        "Sabyasachi Mondal",
+        "Satyananda Palui",
+        "Shilpa P Bhat",
+        "Siddharth Chhottray",
+        "Tanmay Sengupta",
+        "Samanvitha A Bhagavath",
+        "Aviral Bhargava"
+    ]
 
 # --- Sidebar Filters ---
 st.sidebar.markdown("<br><br>",unsafe_allow_html = True)
 st.sidebar.markdown("<br><br>",unsafe_allow_html = True)
 st.sidebar.header("⚙️ Filters")
 account_filter = st.sidebar.multiselect("Account Name", options=merged_df["Account Name"].dropna().unique())
-manager_filter = st.sidebar.multiselect("Manager Name", options=merged_df["Manager Name"].dropna().unique())
+manager_filter = st.sidebar.multiselect(
+    "Manager Name",
+    options=[mgr for mgr in merged_df["Manager Name"].dropna().unique() if mgr in top_managers]
+)
 designation_filter = st.sidebar.multiselect("Designation", options=merged_df["Designation"].dropna().unique())
 st.sidebar.markdown("<br><br>",unsafe_allow_html = True)
 st.sidebar.header("🔎 Search")
