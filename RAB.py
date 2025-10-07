@@ -190,7 +190,7 @@ if st.session_state["active_page"] == "Transfer Summary":
         ),
         use_container_width=True,
         hide_index=True,
-        height=300
+        height=100
     )
 
     st.markdown(
