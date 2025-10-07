@@ -248,6 +248,34 @@ elif st.session_state["active_page"] == "Supply Pool":
     st.markdown("<br>", unsafe_allow_html=True)
     warning_placeholder = st.empty()
 
+    # Define top-level managers
+    top_managers = [
+        "Nivedhan Narasimhan",
+        "Rajdeep Roy Choudhury",
+        "Riyas Mohammed Abdul Razak",
+        "Sabyasachi Mondal",
+        "Satyananda Palui",
+        "Shilpa P Bhat",
+        "Siddharth Chhottray",
+        "Tanmay Sengupta",
+        "Samanvitha A Bhagavath",
+        "Aviral Bhargava"
+    ]
+
+    # Dictionary to store manager: [list of employee names]
+    manager_employees = {}
+    
+    for mgr in top_managers:
+        # Filter employees under this manager
+        emp_names = df.loc[
+            df["Manager Name"] == mgr, "Employee Name"
+        ].dropna().unique().tolist()
+        
+        # Store in dictionary
+        manager_employees[mgr] = emp_names
+
+    mgr_to_mgr = dict(zip(df["Employee Name"], df["Manager Name"]))
+
     # --- Filter DataFrame based on filters ---
     df_unique = df.drop_duplicates(subset=["Employee Id"]).copy()
     if account_filter:
@@ -261,8 +289,6 @@ elif st.session_state["active_page"] == "Supply Pool":
             df_unique["Employee Name"].str.contains(resource_search, case=False, na=False) |
             df_unique["Employee Id"].astype(str).str.contains(resource_search, na=False)
         ]
-
-    mgr_to_mgr = dict(zip(df["Employee Name"], df["Manager Name"]))
 
     # --- Tenure & Billability filters ---
     filtered_df_unique = df_unique.drop_duplicates(subset=["Employee Id"], keep="first")
