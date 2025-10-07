@@ -429,7 +429,7 @@ elif st.session_state["active_page"] == "Supply Pool":
 elif st.session_state["active_page"] == "Transfer Requests":
 
     # --- Sidebar: Logo & Company Name ---
-    st.sidebar.markdown(
+    st.markdown(
         """
         <div style='text-align: left; margin-left: 43px;'>
             <img src="https://upload.wikimedia.org/wikipedia/en/0/0c/Mu_Sigma_Logo.jpg" width="100">
@@ -437,6 +437,7 @@ elif st.session_state["active_page"] == "Transfer Requests":
         """,
         unsafe_allow_html=True
     )
+    
     top_managers = [
         "Nivedhan Narasimhan",
         "Rajdeep Roy Choudhury",
