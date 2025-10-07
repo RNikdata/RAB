@@ -262,6 +262,8 @@ elif st.session_state["active_page"] == "Supply Pool":
             df_unique["Employee Id"].astype(str).str.contains(resource_search, na=False)
         ]
 
+    mgr_to_mgr = dict(zip(df["Employee Name"], df["Manager Name"]))
+
     # --- Tenure & Billability filters ---
     filtered_df_unique = df_unique.drop_duplicates(subset=["Employee Id"], keep="first")
     filtered_df_unique = filtered_df_unique[~filtered_df_unique["Designation"].isin(["AL"])]
@@ -272,10 +274,18 @@ elif st.session_state["active_page"] == "Supply Pool":
     filtered_df_unique = filtered_df_unique.drop_duplicates(subset=["Employee Id"], keep="first")
     filtered_df_unique["3+_yr_Tenure_Flag"] = filtered_df_unique["Tenure"].apply(lambda x: "Yes" if x > 3 else "No")
 
-    filtered_df_unique = filtered_df_unique.merge(
-        summary_df[["Employee Id", "Final Manager"]] if not summary_df.empty else pd.DataFrame(),
-        on="Employee Id",
-        how="left"
+    def get_final_manager(mgr_name):
+        visited = set()
+        while mgr_name and mgr_name not in top_managers:
+            if mgr_name in visited:
+                return None
+            visited.add(mgr_name)
+            mgr_name = mgr_to_mgr.get(mgr_name)
+        return mgr_name if mgr_name in top_managers else None
+    
+    # Create Final Manager column
+    filtered_df_unique["Final Manager"] = filtered_df_unique["Manager Name"].apply(
+        lambda x: x if x in top_managers else get_final_manager(x)
     )
     
     columns_to_show = ["Manager Name", "Account Name", "Employee Id", "Employee Name", "Designation", "Rank"]
