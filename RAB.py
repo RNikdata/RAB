@@ -262,7 +262,7 @@ elif st.session_state["active_page"] == "Supply Pool":
         "Samanvitha A Bhagavath",
         "Aviral Bhargava"
     ]
-    # designation = ["TDS1","TDS2","TDS3","TDS4","-"]
+    designation = ["TDS1","TDS2","TDS3","TDS4","-"]
     
     # --- Sidebar Filters ---
     st.sidebar.markdown("<br><br>",unsafe_allow_html = True)
