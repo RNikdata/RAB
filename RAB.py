@@ -228,7 +228,7 @@ if st.session_state["active_page"] == "Transfer Summary":
 
     st.dataframe(
         grouped_summary.sort_values(
-            by=["Total Requests Raised", "Final Manager"], 
+            by=["Total Requests Raised", "Manager Name"], 
             ascending=[False, True]
         ),
         use_container_width=True,
