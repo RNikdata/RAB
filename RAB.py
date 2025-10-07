@@ -313,7 +313,7 @@ elif st.session_state["active_page"] == "Supply Pool":
     filtered_df_unique = pd.concat([filtered_df_unique1, filtered_df_unique2], ignore_index=True)
     filtered_df_unique = filtered_df_unique.drop_duplicates(subset=["Employee Id"], keep="first")
     filtered_df_unique["3+_yr_Tenure_Flag"] = filtered_df_unique["Tenure"].apply(lambda x: "Yes" if x > 3 else "No")
-    filtered_df_unique = filtered_df_unique[filtered_df_unique["Final Manager"]].notna()
+    filtered_df_unique = filtered_df_unique[filtered_df_unique["Final Manager"].notna()]
     
     columns_to_show = ["Manager Name", "Account Name", "Employee Id", "Employee Name", "Designation", "Rank","Final Manager"]
     columns_to_show = [col for col in columns_to_show if col in filtered_df_unique.columns]
