@@ -138,14 +138,14 @@ if st.session_state["active_page"] == "Transfer Summary":
     
     for mgr in top_managers:
         # Filter employees under this manager
-        emp_names = summary_df1.loc[
-            summary_df1["Manager Name"] == mgr, "Employee Name"
+        emp_names = summary_df.loc[
+            summary_df["Manager Name"] == mgr, "Employee Name"
         ].dropna().unique().tolist()
         
         # Store in dictionary
         manager_employees[mgr] = emp_names
 
-    mgr_to_mgr = dict(zip(summary_df1["Employee Name"], summary_df1["Manager Name"]))
+    mgr_to_mgr = dict(zip(summary_df["Employee Name"], summary_df["Manager Name"]))
     
     summary_df1 = summary_df1.drop_duplicates(subset=["Employee Id"], keep="first")
     summary_df1 = summary_df1[~summary_df1["Designation"].isin(["AL"])]
@@ -177,7 +177,7 @@ if st.session_state["active_page"] == "Transfer Summary":
         return mgr_name if mgr_name in top_managers else None
     
     # Create Final Manager column
-    summary_df1["Final Manager"] = summary_df1["Manager Name"].apply(
+    summary_df["Final Manager"] = summary_df["Manager Name"].apply(
         lambda x: x if x in top_managers else get_final_manager(x)
     )
 
@@ -189,6 +189,12 @@ if st.session_state["active_page"] == "Transfer Summary":
     # all_managers is a NumPy array — so filter it using np.isin
     all_managers = [mgr for mgr in all_managers if mgr in top_managers]
 
+    summary_df1 = summary_df1.merge(
+        summary_df[["Employee Id", "Final Manager"]] if not summary_df.empty else pd.DataFrame(),
+        on="Employee Id",
+        how="left"
+    )
+    
     # Prepare summary table
     summary_list = []
     for mgr in all_managers:
