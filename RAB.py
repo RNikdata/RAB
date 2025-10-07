@@ -247,6 +247,7 @@ elif st.session_state["active_page"] == "Supply Pool":
     st.subheader("📝 Supply Pool")
     st.markdown("<br>", unsafe_allow_html=True)
     warning_placeholder = st.empty()
+    df_unique = df.drop_duplicates(subset=["Employee Id"]).copy()
 
     # Define top-level managers
     top_managers = [
@@ -267,21 +268,35 @@ elif st.session_state["active_page"] == "Supply Pool":
     
     for mgr in top_managers:
         # Filter employees under this manager
-        emp_names = df.loc[
-            df["Manager Name"] == mgr, "Employee Name"
+        emp_names = df_unique.loc[
+            df_unique["Manager Name"] == mgr, "Employee Name"
         ].dropna().unique().tolist()
         
         # Store in dictionary
         manager_employees[mgr] = emp_names
 
-    mgr_to_mgr = dict(zip(df["Employee Name"], df["Manager Name"]))
+    mgr_to_mgr = dict(zip(df_unique["Employee Name"], df_unique["Manager Name"]))
+
+    def get_final_manager(mgr_name):
+        visited = set()
+        while mgr_name and mgr_name not in top_managers:
+            if mgr_name in visited:
+                return None
+            visited.add(mgr_name)
+            mgr_name = mgr_to_mgr.get(mgr_name)
+        return mgr_name if mgr_name in top_managers else None
+    
+    # Create Final Manager column
+    df_unique["Final Manager"] = df_unique["Manager Name"].apply(
+        lambda x: x if x in top_managers else get_final_manager(x)
+    )
 
     # --- Filter DataFrame based on filters ---
     df_unique = df.drop_duplicates(subset=["Employee Id"]).copy()
     if account_filter:
         df_unique = df_unique[df_unique["Account Name"].isin(account_filter)]
     if manager_filter:
-        df_unique = df_unique[df_unique["Manager Name"].isin(manager_filter)]
+        df_unique = df_unique[df_unique["Final Manager"].isin(manager_filter)]
     if designation_filter:
         df_unique = df_unique[df_unique["Designation"].isin(designation_filter)]
     if resource_search:
@@ -299,20 +314,6 @@ elif st.session_state["active_page"] == "Supply Pool":
     filtered_df_unique = pd.concat([filtered_df_unique1, filtered_df_unique2], ignore_index=True)
     filtered_df_unique = filtered_df_unique.drop_duplicates(subset=["Employee Id"], keep="first")
     filtered_df_unique["3+_yr_Tenure_Flag"] = filtered_df_unique["Tenure"].apply(lambda x: "Yes" if x > 3 else "No")
-
-    def get_final_manager(mgr_name):
-        visited = set()
-        while mgr_name and mgr_name not in top_managers:
-            if mgr_name in visited:
-                return None
-            visited.add(mgr_name)
-            mgr_name = mgr_to_mgr.get(mgr_name)
-        return mgr_name if mgr_name in top_managers else None
-    
-    # Create Final Manager column
-    filtered_df_unique["Final Manager"] = filtered_df_unique["Manager Name"].apply(
-        lambda x: x if x in top_managers else get_final_manager(x)
-    )
     
     columns_to_show = ["Manager Name", "Account Name", "Employee Id", "Employee Name", "Designation", "Rank","Final Manager"]
     columns_to_show = [col for col in columns_to_show if col in filtered_df_unique.columns]
