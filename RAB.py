@@ -17,26 +17,12 @@ st.set_page_config(
 #######################################
 # --- Deployed version code snipper ---
 #######################################
-SERVICE_ACCOUNT_FILE = r"C:\Users\nikhil.r\OneDrive - Mu Sigma Business Solutions Pvt. Ltd\Desktop\Jupyter\Resource Transfer Board\resource-allocation-board-80173e106da2.json"
-
-# Check if the file exists
-if not os.path.exists(SERVICE_ACCOUNT_FILE):
-    st.error(f"Service account JSON not found at: {SERVICE_ACCOUNT_FILE}")
-    st.stop()
-
-try:
-    scopes = ["https://www.googleapis.com/auth/spreadsheets", "https://www.googleapis.com/auth/drive"]
-    credentials = Credentials.from_service_account_file(SERVICE_ACCOUNT_FILE, scopes=scopes)
-    gc = gspread.authorize(credentials)
-except Exception as e:
-    st.error(f"Failed to authorize Google Sheets: {e}")
-    st.stop()
 
 # --- Connect to Google Sheets using Streamlit secrets ---
-# service_account_info = st.secrets["google_service_account"]
-# scopes = ["https://www.googleapis.com/auth/spreadsheets", "https://www.googleapis.com/auth/drive"]
-# credentials = Credentials.from_service_account_info(service_account_info, scopes=scopes)
-# gc = gspread.authorize(credentials)
+service_account_info = st.secrets["google_service_account"]
+scopes = ["https://www.googleapis.com/auth/spreadsheets", "https://www.googleapis.com/auth/drive"]
+credentials = Credentials.from_service_account_info(service_account_info, scopes=scopes)
+gc = gspread.authorize(credentials)
 
 # # --- Google Sheet ID & Sheet Names ---
 SHEET_ID = "1yagvN3JhJtml0CMX4Lch7_LdPeUzvPcl1VEfyy8RvC4"
