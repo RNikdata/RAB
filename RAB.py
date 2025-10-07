@@ -148,6 +148,8 @@ if st.session_state["active_page"] == "Transfer Summary":
         "Samanvitha A Bhagavath",
         "Aviral Bhargava"
     ]
+
+    no_of_managers = len(top_managers)
     
     # all_managers is a NumPy array — so filter it using np.isin
     all_managers = [mgr for mgr in all_managers if mgr in top_managers]
@@ -190,7 +192,7 @@ if st.session_state["active_page"] == "Transfer Summary":
         ),
         use_container_width=True,
         hide_index=True,
-        height=100
+        height=no_of_managers*55
     )
 
     st.markdown(
