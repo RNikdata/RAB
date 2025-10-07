@@ -272,6 +272,12 @@ elif st.session_state["active_page"] == "Supply Pool":
     filtered_df_unique = filtered_df_unique.drop_duplicates(subset=["Employee Id"], keep="first")
     filtered_df_unique["3+_yr_Tenure_Flag"] = filtered_df_unique["Tenure"].apply(lambda x: "Yes" if x > 3 else "No")
 
+    filtered_df_unique = filtered_df_unique.merge(
+        summary_df[["Employee Id", "Final Manager"]] if not summary_df.empty else pd.DataFrame(),
+        on="Employee Id",
+        how="left"
+    )
+    
     columns_to_show = ["Manager Name", "Account Name", "Employee Id", "Employee Name", "Designation", "Rank"]
     columns_to_show = [col for col in columns_to_show if col in filtered_df_unique.columns]
 
@@ -304,7 +310,9 @@ elif st.session_state["active_page"] == "Supply Pool":
                                             <div style='display:flex;'>
                                                 <div style='margin-top:4px;'><b>📂 Account:</b> {row['Account Name']}</div>
                                             </div>
-                                            <div style='margin-top:4px;'><b>🧑‍💼 Manager:</b> {row['Manager Name']}</div>
+                                            <div style='margin-top:4px;'><b>🧑‍💼 Mapped to:</b> {row['Manager Name']}</div>
+                                            </div>
+                                            <div style='margin-top:4px;'><b>🧑‍💼 Manager to:</b> {row['Final Manager']}</div>
                                         </div>
                                     </div>
                                 </div>
