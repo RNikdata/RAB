@@ -122,7 +122,7 @@ manager_filter = st.sidebar.multiselect(
     "Manager Name",
     options=[mgr for mgr in merged_df["Manager Name"].dropna().unique() if mgr in top_managers]
 )
-st.sidebar.multiselect(
+designation_filter = st.sidebar.multiselect(
     "Designation",
     options=[d for d in merged_df["Designation"].dropna().unique() if d in designation]
 )
