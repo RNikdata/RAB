@@ -314,7 +314,7 @@ elif st.session_state["active_page"] == "Supply Pool":
         lambda x: x if x in top_managers else get_final_manager(x)
     )
     
-    columns_to_show = ["Manager Name", "Account Name", "Employee Id", "Employee Name", "Designation", "Rank"]
+    columns_to_show = ["Manager Name", "Account Name", "Employee Id", "Employee Name", "Designation", "Rank","Final Manager"]
     columns_to_show = [col for col in columns_to_show if col in filtered_df_unique.columns]
 
     # --- Display Employee Cards ---
