@@ -111,6 +111,7 @@ top_managers = [
         "Samanvitha A Bhagavath",
         "Aviral Bhargava"
     ]
+designation = ["TDS1","TDS2","TDS3","TDS4","-"]
 
 # --- Sidebar Filters ---
 st.sidebar.markdown("<br><br>",unsafe_allow_html = True)
@@ -121,7 +122,10 @@ manager_filter = st.sidebar.multiselect(
     "Manager Name",
     options=[mgr for mgr in merged_df["Manager Name"].dropna().unique() if mgr in top_managers]
 )
-designation_filter = st.sidebar.multiselect("Designation", options=merged_df["Designation"].dropna().unique())
+st.sidebar.multiselect(
+    "Designation",
+    options=[d for d in merged_df["Designation"].dropna().unique() if d in designation]
+)
 st.sidebar.markdown("<br><br>",unsafe_allow_html = True)
 st.sidebar.header("🔎 Search")
 resource_search = st.sidebar.text_input("Search Employee Name or ID",placeholder = "Employe ID/Name")
