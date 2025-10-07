@@ -131,7 +131,6 @@ if st.session_state["active_page"] == "Transfer Summary":
     #     "Designation",
     #     options=[d for d in merged_df["Designation"].dropna().unique() if d in designation]
     # )
-    st.sidebar.markdown("<br><br>",unsafe_allow_html = True)
     st.sidebar.header("🔎 Search")
     resource_search = st.sidebar.text_input("Search Employee Name or ID",placeholder = "Employe ID/Name")
     st.subheader("📊 Manager Transfer Summary")
