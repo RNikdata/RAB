@@ -99,46 +99,11 @@ st.sidebar.markdown(
     """,
     unsafe_allow_html=True
 )
-top_managers = [
-        "Nivedhan Narasimhan",
-        "Rajdeep Roy Choudhury",
-        "Riyas Mohammed Abdul Razak",
-        "Sabyasachi Mondal",
-        "Satyananda Palui",
-        "Shilpa P Bhat",
-        "Siddharth Chhottray",
-        "Tanmay Sengupta",
-        "Samanvitha A Bhagavath",
-        "Aviral Bhargava"
-    ]
-designation = ["TDS1","TDS2","TDS3","TDS4","-"]
-
-# --- Sidebar Filters ---
-st.sidebar.markdown("<br><br>",unsafe_allow_html = True)
-st.sidebar.markdown("<br><br>",unsafe_allow_html = True)
-st.sidebar.header("⚙️ Filters")
-account_filter = st.sidebar.multiselect("Account Name", options=merged_df["Account Name"].dropna().unique())
-manager_filter = st.sidebar.multiselect(
-    "Manager Name",
-    options=[mgr for mgr in merged_df["Manager Name"].dropna().unique() if mgr in top_managers]
-)
-designation_filter = st.sidebar.multiselect(
-    "Designation",
-    options=[d for d in merged_df["Designation"].dropna().unique() if d in designation]
-)
-st.sidebar.markdown("<br><br>",unsafe_allow_html = True)
-st.sidebar.header("🔎 Search")
-resource_search = st.sidebar.text_input("Search Employee Name or ID",placeholder = "Employe ID/Name")
 
 # --- Tab 1: Manager-wise Summary ---
             
 if st.session_state["active_page"] == "Transfer Summary":
-    st.subheader("📊 Manager Transfer Summary")
-    st.markdown("<br>", unsafe_allow_html=True)
-    summary_df = ads_df.copy()
-    summary_df1 = df.copy()
 
-    # Define top-level managers
     top_managers = [
         "Nivedhan Narasimhan",
         "Rajdeep Roy Choudhury",
@@ -151,6 +116,28 @@ if st.session_state["active_page"] == "Transfer Summary":
         "Samanvitha A Bhagavath",
         "Aviral Bhargava"
     ]
+    # designation = ["TDS1","TDS2","TDS3","TDS4","-"]
+    
+    # --- Sidebar Filters ---
+    st.sidebar.markdown("<br><br>",unsafe_allow_html = True)
+    st.sidebar.markdown("<br><br>",unsafe_allow_html = True)
+    st.sidebar.header("⚙️ Filters")
+    # account_filter = st.sidebar.multiselect("Account Name", options=merged_df["Account Name"].dropna().unique())
+    manager_filter = st.sidebar.multiselect(
+        "Manager Name",
+        options=[mgr for mgr in merged_df["Manager Name"].dropna().unique() if mgr in top_managers]
+    )
+    # designation_filter = st.sidebar.multiselect(
+    #     "Designation",
+    #     options=[d for d in merged_df["Designation"].dropna().unique() if d in designation]
+    # )
+    st.sidebar.markdown("<br><br>",unsafe_allow_html = True)
+    st.sidebar.header("🔎 Search")
+    resource_search = st.sidebar.text_input("Search Employee Name or ID",placeholder = "Employe ID/Name")
+    st.subheader("📊 Manager Transfer Summary")
+    st.markdown("<br>", unsafe_allow_html=True)
+    summary_df = ads_df.copy()
+    summary_df1 = df.copy()
 
     # Dictionary to store manager: [list of employee names]
     manager_employees = {}
@@ -263,6 +250,36 @@ if st.session_state["active_page"] == "Transfer Summary":
     )
 
 elif st.session_state["active_page"] == "Supply Pool":
+     top_managers = [
+        "Nivedhan Narasimhan",
+        "Rajdeep Roy Choudhury",
+        "Riyas Mohammed Abdul Razak",
+        "Sabyasachi Mondal",
+        "Satyananda Palui",
+        "Shilpa P Bhat",
+        "Siddharth Chhottray",
+        "Tanmay Sengupta",
+        "Samanvitha A Bhagavath",
+        "Aviral Bhargava"
+    ]
+    # designation = ["TDS1","TDS2","TDS3","TDS4","-"]
+    
+    # --- Sidebar Filters ---
+    st.sidebar.markdown("<br><br>",unsafe_allow_html = True)
+    st.sidebar.markdown("<br><br>",unsafe_allow_html = True)
+    st.sidebar.header("⚙️ Filters")
+    account_filter = st.sidebar.multiselect("Account Name", options=merged_df["Account Name"].dropna().unique())
+    manager_filter = st.sidebar.multiselect(
+        "Manager Name",
+        options=[mgr for mgr in merged_df["Manager Name"].dropna().unique() if mgr in top_managers]
+    )
+    designation_filter = st.sidebar.multiselect(
+        "Designation",
+        options=[d for d in merged_df["Designation"].dropna().unique() if d in designation]
+    )
+    st.sidebar.markdown("<br><br>",unsafe_allow_html = True)
+    st.sidebar.header("🔎 Search")
+    resource_search = st.sidebar.text_input("Search Employee Name or ID",placeholder = "Employe ID/Name")
     st.subheader("📝 Supply Pool")
     st.markdown("<br>", unsafe_allow_html=True)
     warning_placeholder = st.empty()
