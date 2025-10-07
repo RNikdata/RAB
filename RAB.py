@@ -429,7 +429,7 @@ elif st.session_state["active_page"] == "Supply Pool":
 elif st.session_state["active_page"] == "Transfer Requests":
 
     # --- Sidebar: Logo & Company Name ---
-    st.markdown(
+    st.sidebar.markdown(
         """
         <div style='text-align: left; margin-left: 43px;'>
             <img src="https://upload.wikimedia.org/wikipedia/en/0/0c/Mu_Sigma_Logo.jpg" width="100">
@@ -616,6 +616,15 @@ elif st.session_state["active_page"] == "Transfer Requests":
     st.dataframe(styled_swap_df, use_container_width=True, hide_index=True)
 
 elif st.session_state["active_page"] == "Employee Transfer Form":
+     # --- Sidebar: Logo & Company Name ---
+    st.markdown(
+        """
+        <div style='text-align: left; margin-left: 43px;'>
+            <img src="https://upload.wikimedia.org/wikipedia/en/0/0c/Mu_Sigma_Logo.jpg" width="100">
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
     st.markdown("<br>", unsafe_allow_html=True)
     st.subheader("🔄 Employee Transfer Request")
 
