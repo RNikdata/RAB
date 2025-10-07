@@ -135,6 +135,7 @@ if st.session_state["active_page"] == "Transfer Summary":
 
     # List of all managers for summary
     all_managers = pd.concat([summary_df["Manager Name"], summary_df["Interested Manager"]]).dropna().unique()
+    all_managers = all_managers[all_managers["Manager Name"].isin(["Nivedhan Narasimhan","Rajdeep Roy Choudhury","Riyas Mohammed Abdul Razak", "Sabyasachi Mondal", "Satyananda Palui", "Shilpa P Bhat","Siddharth Chhottray","Tanmay Sengupta","Samanvitha A Bhagavath","Aviral Bhargava"])]
 
     # Prepare summary table
     summary_list = []
