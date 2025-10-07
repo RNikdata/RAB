@@ -347,8 +347,8 @@ elif st.session_state["active_page"] == "Supply Pool":
                                                 <div style='margin-top:4px;'><b>📂 Account:</b> {row['Account Name']}</div>
                                             </div>
                                             <div style='margin-top:4px;'><b>🧑‍💼 Mapped to:</b> {row['Manager Name']}</div>
+                                            <div style='margin-top:4px;'><b>🧑‍💼 Manager:</b> {row['Final Manager']}</div>
                                             </div>
-                                            <div style='margin-top:4px;'><b>🧑‍💼 Manager to:</b> {row['Final Manager']}</div>
                                         </div>
                                     </div>
                                 </div>
