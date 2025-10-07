@@ -135,7 +135,22 @@ if st.session_state["active_page"] == "Transfer Summary":
 
     # List of all managers for summary
     all_managers = pd.concat([summary_df["Manager Name"], summary_df["Interested Manager"]]).dropna().unique()
-    all_managers = all_managers[all_managers["Manager Name"].isin(["Nivedhan Narasimhan","Rajdeep Roy Choudhury","Riyas Mohammed Abdul Razak", "Sabyasachi Mondal", "Satyananda Palui", "Shilpa P Bhat","Siddharth Chhottray","Tanmay Sengupta","Samanvitha A Bhagavath","Aviral Bhargava"])]
+    # Define top-level managers
+    top_managers = [
+        "Nivedhan Narasimhan",
+        "Rajdeep Roy Choudhury",
+        "Riyas Mohammed Abdul Razak",
+        "Sabyasachi Mondal",
+        "Satyananda Palui",
+        "Shilpa P Bhat",
+        "Siddharth Chhottray",
+        "Tanmay Sengupta",
+        "Samanvitha A Bhagavath",
+        "Aviral Bhargava"
+    ]
+    
+    # all_managers is a NumPy array — so filter it using np.isin
+    all_managers = [mgr for mgr in all_managers if mgr in top_managers]
 
     # Prepare summary table
     summary_list = []
