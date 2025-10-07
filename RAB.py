@@ -292,7 +292,6 @@ elif st.session_state["active_page"] == "Supply Pool":
     )
 
     # --- Filter DataFrame based on filters ---
-    df_unique = df.drop_duplicates(subset=["Employee Id"]).copy()
     if account_filter:
         df_unique = df_unique[df_unique["Account Name"].isin(account_filter)]
     if manager_filter:
