@@ -6,6 +6,7 @@ from gspread_dataframe import get_as_dataframe, set_with_dataframe
 from google.oauth2.service_account import Credentials
 import time
 import hashlib
+import os
 
 st.set_page_config(
     page_title="Resource Transfer Board",  # <-- Browser tab name
@@ -16,14 +17,28 @@ st.set_page_config(
 #######################################
 # --- Deployed version code snipper ---
 #######################################
+SERVICE_ACCOUNT_FILE = r"C:\Users\nikhil.r\OneDrive - Mu Sigma Business Solutions Pvt. Ltd\Desktop\Jupyter\Resource Transfer Board\resource-allocation-board-80173e106da2.json"
+
+# Check if the file exists
+if not os.path.exists(SERVICE_ACCOUNT_FILE):
+    st.error(f"Service account JSON not found at: {SERVICE_ACCOUNT_FILE}")
+    st.stop()
+
+try:
+    scopes = ["https://www.googleapis.com/auth/spreadsheets", "https://www.googleapis.com/auth/drive"]
+    credentials = Credentials.from_service_account_file(SERVICE_ACCOUNT_FILE, scopes=scopes)
+    gc = gspread.authorize(credentials)
+except Exception as e:
+    st.error(f"Failed to authorize Google Sheets: {e}")
+    st.stop()
 
 # --- Connect to Google Sheets using Streamlit secrets ---
-service_account_info = st.secrets["google_service_account"]
-scopes = ["https://www.googleapis.com/auth/spreadsheets", "https://www.googleapis.com/auth/drive"]
-credentials = Credentials.from_service_account_info(service_account_info, scopes=scopes)
-gc = gspread.authorize(credentials)
+# service_account_info = st.secrets["google_service_account"]
+# scopes = ["https://www.googleapis.com/auth/spreadsheets", "https://www.googleapis.com/auth/drive"]
+# credentials = Credentials.from_service_account_info(service_account_info, scopes=scopes)
+# gc = gspread.authorize(credentials)
 
-# --- Google Sheet ID & Sheet Names ---
+# # --- Google Sheet ID & Sheet Names ---
 SHEET_ID = "1yagvN3JhJtml0CMX4Lch7_LdPeUzvPcl1VEfyy8RvC4"
 EMPLOYEE_SHEET_NAME = "Employee Data"
 ADS_SHEET_NAME = "Employee ADS"
@@ -117,6 +132,34 @@ if st.session_state["active_page"] == "Transfer Summary":
     st.markdown("<br>", unsafe_allow_html=True)
     summary_df = ads_df.copy()
     summary_df1 = df.copy()
+
+    # Define top-level managers
+    top_managers = [
+        "Nivedhan Narasimhan",
+        "Rajdeep Roy Choudhury",
+        "Riyas Mohammed Abdul Razak",
+        "Sabyasachi Mondal",
+        "Satyananda Palui",
+        "Shilpa P Bhat",
+        "Siddharth Chhottray",
+        "Tanmay Sengupta",
+        "Samanvitha A Bhagavath",
+        "Aviral Bhargava"
+    ]
+
+    # Dictionary to store manager: [list of employee names]
+    manager_employees = {}
+    
+    for mgr in top_managers:
+        # Filter employees under this manager
+        emp_names = summary_df1.loc[
+            summary_df1["Manager Name"] == mgr, "Employee Name"
+        ].dropna().unique().tolist()
+        
+        # Store in dictionary
+        manager_employees[mgr] = emp_names
+
+    mgr_to_mgr = dict(zip(summary_df1["Employee Name"], summary_df1["Manager Name"]))
     
     summary_df1 = summary_df1.drop_duplicates(subset=["Employee Id"], keep="first")
     summary_df1 = summary_df1[~summary_df1["Designation"].isin(["AL"])]
@@ -133,22 +176,28 @@ if st.session_state["active_page"] == "Transfer Summary":
     # Ensure Status column exists
     summary_df["Status"] = summary_df["Status"].fillna("Pending")
 
+    # Build manager-to-manager map
+    #display(mgr_to_mgr)
+    
+    # Recursive lookup for top-level manager
+    def get_final_manager(mgr_name):
+        a=mgr_name
+        visited = set()
+        while mgr_name and mgr_name not in top_managers:
+            if mgr_name in visited:
+                return None
+            visited.add(mgr_name)
+            mgr_name = mgr_to_mgr.get(mgr_name)
+        return mgr_name if mgr_name in top_managers else None
+    
+    # Create Final Manager column
+    summary_df1["Final Manager"] = summary_df1["Manager Name"].apply(
+        lambda x: x if x in top_managers else get_final_manager(x)
+    )
+
     # List of all managers for summary
     all_managers = pd.concat([summary_df["Manager Name"], summary_df["Interested Manager"]]).dropna().unique()
-    # Define top-level managers
-    top_managers = [
-        "Nivedhan Narasimhan",
-        "Rajdeep Roy Choudhury",
-        "Riyas Mohammed Abdul Razak",
-        "Sabyasachi Mondal",
-        "Satyananda Palui",
-        "Shilpa P Bhat",
-        "Siddharth Chhottray",
-        "Tanmay Sengupta",
-        "Samanvitha A Bhagavath",
-        "Aviral Bhargava"
-    ]
-
+    
     no_of_managers = len(top_managers)
     
     # all_managers is a NumPy array — so filter it using np.isin
@@ -158,10 +207,10 @@ if st.session_state["active_page"] == "Transfer Summary":
     summary_list = []
     for mgr in all_managers:
         temp_df = summary_df[
-            (summary_df["Manager Name"] == mgr) | 
+            (summary_df["Final Manager"] == mgr) | 
             (summary_df["Interested Manager"] == mgr)
         ]
-        temp_df1 = summary_df1[summary_df1["Manager Name"] == mgr]
+        temp_df1 = summary_df1[summary_df1["Final Manager"] == mgr]
         
         total_requests = temp_df["Request Id"].dropna().nunique()
         total_approved = (temp_df[temp_df["Status"] == "Approved"]["Request Id"].dropna().nunique())
@@ -183,11 +232,11 @@ if st.session_state["active_page"] == "Transfer Summary":
     grouped_summary = pd.DataFrame(summary_list)
 
     if manager_filter:
-        grouped_summary = grouped_summary[grouped_summary["Manager Name"].isin(manager_filter)]
+        grouped_summary = grouped_summary[grouped_summary["Final Manager"].isin(manager_filter)]
 
     st.dataframe(
         grouped_summary.sort_values(
-            by=["Total Requests Raised", "Manager Name"], 
+            by=["Total Requests Raised", "Final Manager"], 
             ascending=[False, True]
         ),
         use_container_width=True,
