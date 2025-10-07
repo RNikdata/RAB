@@ -90,19 +90,19 @@ with nav_cols[3]:
         st.session_state["active_page"] = "Employee Transfer Form"
 st.markdown("---")
 
-# --- Sidebar: Logo & Company Name ---
-st.sidebar.markdown(
-    """
-    <div style='text-align: left; margin-left: 43px;'>
-        <img src="https://upload.wikimedia.org/wikipedia/en/0/0c/Mu_Sigma_Logo.jpg" width="100">
-    </div>
-    """,
-    unsafe_allow_html=True
-)
-
 # --- Tab 1: Manager-wise Summary ---
             
 if st.session_state["active_page"] == "Transfer Summary":
+
+    # --- Sidebar: Logo & Company Name ---
+    st.sidebar.markdown(
+        """
+        <div style='text-align: left; margin-left: 43px;'>
+            <img src="https://upload.wikimedia.org/wikipedia/en/0/0c/Mu_Sigma_Logo.jpg" width="100">
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
 
     top_managers = [
         "Nivedhan Narasimhan",
@@ -249,6 +249,16 @@ if st.session_state["active_page"] == "Transfer Summary":
     # )
 
 elif st.session_state["active_page"] == "Supply Pool":
+
+    # --- Sidebar: Logo & Company Name ---
+    st.sidebar.markdown(
+        """
+        <div style='text-align: left; margin-left: 43px;'>
+            <img src="https://upload.wikimedia.org/wikipedia/en/0/0c/Mu_Sigma_Logo.jpg" width="100">
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
     top_managers = [
         "Nivedhan Narasimhan",
         "Rajdeep Roy Choudhury",
@@ -417,6 +427,16 @@ elif st.session_state["active_page"] == "Supply Pool":
 
 # --- Tab 3: Transfer Requests ---
 elif st.session_state["active_page"] == "Transfer Requests":
+
+    # --- Sidebar: Logo & Company Name ---
+    st.sidebar.markdown(
+        """
+        <div style='text-align: left; margin-left: 43px;'>
+            <img src="https://upload.wikimedia.org/wikipedia/en/0/0c/Mu_Sigma_Logo.jpg" width="100">
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
     top_managers = [
         "Nivedhan Narasimhan",
         "Rajdeep Roy Choudhury",
