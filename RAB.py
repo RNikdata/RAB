@@ -617,7 +617,7 @@ elif st.session_state["active_page"] == "Transfer Requests":
 
 elif st.session_state["active_page"] == "Employee Transfer Form":
      # --- Sidebar: Logo & Company Name ---
-    st.markdown(
+    st.sidebar.markdown(
         """
         <div style='text-align: left; margin-left: 43px;'>
             <img src="https://upload.wikimedia.org/wikipedia/en/0/0c/Mu_Sigma_Logo.jpg" width="100">
