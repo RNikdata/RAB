@@ -250,6 +250,7 @@ if st.session_state["active_page"] == "Transfer Summary":
     )
 
 elif st.session_state["active_page"] == "Supply Pool":
+    
      top_managers = [
         "Nivedhan Narasimhan",
         "Rajdeep Roy Choudhury",
@@ -262,6 +263,7 @@ elif st.session_state["active_page"] == "Supply Pool":
         "Samanvitha A Bhagavath",
         "Aviral Bhargava"
     ]
+    
     designation = ["TDS1","TDS2","TDS3","TDS4","-"]
     
     # --- Sidebar Filters ---
