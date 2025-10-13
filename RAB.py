@@ -1,4 +1,4 @@
-import streamlit as st
+wimport streamlit as st
 import pandas as pd
 import numpy as np
 import gspread
@@ -59,30 +59,42 @@ merged_df = df.merge(
 #######################################
 # --- API Authentication ---
 #######################################
-API_USERNAME = st.secrets["api_auth"]["username"]
-API_PASSWORD = st.secrets["api_auth"]["password"]
-BASE_URL = st.secrets["api_auth"]["base_url"]
+API_USERNAME = "streamlit_user"
+API_PASSWORD = "streamlitadmin@mu-sigma25"
+BASE_URL = "https://muerp.mu-sigma.com/dmsRest/getEmployeeImage"
 
 DEFAULT_IMAGE_URL = "https://static.vecteezy.com/system/resources/previews/008/442/086/original/illustration-of-human-icon-user-symbol-icon-modern-design-on-blank-background-free-vector.jpg"
-headers = {"userid": API_USERNAME, "password": API_PASSWORD}
+headers = {
+    "userid": API_USERNAME, 
+    "password": API_PASSWORD
+}
 
 @st.cache_data
 def fetch_employee_url(emp_id):
     """
-    Fetch employee image from API and return a base64 data URL for HTML <img src>.
+    Fetch employee image from API and return a PIL Image object.
     """
     try:
         response = requests.get(BASE_URL, headers=headers, params={"id": emp_id}, timeout=10)
+        print(f"Response status for {emp_id}: {response.status_code}")
         if response.status_code == 200:
             img = Image.open(BytesIO(response.content))
-            img = img.resize((110, 120))  # optional: uniform size
-            buffered = BytesIO()
-            img.save(buffered, format="PNG")
-            img_base64 = base64.b64encode(buffered.getvalue()).decode("utf-8")
-            return f"data:image/png;base64,{img_base64}"
+            #img = img.resize((110, 120))  # optional: uniform size
+            #return img
         else:
-            return DEFAULT_IMAGE_URL
-    except:
+            # Fallback to default image from URL
+            response = requests.get(DEFAULT_IMAGE_URL)
+            img = Image.open(BytesIO(response.content))
+            #img = img.resize((110, 120))
+            #return img
+    
+        img = img.resize((110, 120)) 
+        buffered = BytesIO()
+        img.save(buffered, format="PNG")
+        img_base64 = base64.b64encode(buffered.getvalue()).decode("utf-8")
+        return f"data:image/png;base64,{img_base64}"
+    
+    except Exception as e:
         return DEFAULT_IMAGE_URL
         
 #######################################
@@ -400,14 +412,15 @@ elif st.session_state["active_page"] == "Supply Pool":
                 if i + j < n:
                     row = sorted_df.iloc[i + j]
                     emp_id = row['Employee Id']
-                    img_url = fetch_employee_url(emp_id)  # get PIL image or default URL
+                    img = fetch_employee_url(emp_id) 
+                    html_img_tag = f'<img src="{img}" style="width:110px; height:120px; border-radius:4px; object-fit:cover;">' # get PIL image or default URL
                     with col:
                         with st.container():
                             st.markdown(
                                 f"""
                                 <div style='display:flex; align-items:center; gap:15px; padding:8px; border:3px solid #e0e0e0; border-radius:8px; margin-bottom:5px;'>
                                     <div style='flex-shrink:0;'>
-                                        <img src = "{img_url}" style='width:110px; height:120px; border-radius:4px; object-fit:cover;'>
+                                        {html_img_tag}
                                     </div>
                                     <div style='flex-grow:1;'>
                                         <div style='font-size:20px; font-weight:bold;'>{row['Employee Name']}</div>
