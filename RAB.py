@@ -399,7 +399,7 @@ elif st.session_state["active_page"] == "Supply Pool":
     # Add a new column "Image URL"
     # Ensure the URL column exists in the DataFrame that will be displayed
     
-    columns_to_show = ["Manager Name", "Account Name", "Employee Id", "Employee Name", "Designation", "Rank","Final Manager","Image URL"]
+    columns_to_show = ["Manager Name", "Account Name", "Employee Id", "Employee Name", "Designation", "Rank","Final Manager","Skillset"]
     columns_to_show = [col for col in columns_to_show if col in filtered_df_unique.columns]
 
     # --- Display Employee Cards ---
@@ -434,7 +434,8 @@ elif st.session_state["active_page"] == "Supply Pool":
                                                 <div style='margin-top:4px;'><b>📂 Account:</b> {row['Account Name']}</div>
                                             </div>
                                             <div style='margin-top:4px;'><b>🧑‍💼 Mapped to:</b> {row['Manager Name']}</div>
-                                            <div style='margin-top:4px;'><b>🧑‍💼 Manager:</b> {row['Final Manager']}</div>
+                                            <div style='margin-top:4px;'><b>👔 Manager:</b> {row['Final Manager']}</div>
+                                            <div style='margin-top:4px;'><b>👨‍💻 Skillset:</b> {row['Skillset']}</div>
                                             </div>
                                         </div>
                                     </div>
