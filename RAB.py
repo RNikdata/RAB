@@ -63,31 +63,31 @@ API_USERNAME = st.secrets.get("api_auth", {}).get("username", "streamlit_user")
 API_PASSWORD = st.secrets.get("api_auth", {}).get("password", "streamlitadmin@mu-sigma25")
 BASE_URL = st.secrets.get("api_auth", {}).get("base_url", "https://muerp.mu-sigma.com/dmsRest/getEmployeeImage")
 
-def get_employee_image(employee_id):
-    """Fetch employee image from API and return PIL image or default image."""
-    url = BASE_URL
-    headers = {
-        "userid": API_USERNAME,
-        "password": API_PASSWORD
-    }
-    params = {"id": employee_id}
+DEFAULT_IMAGE_URL = "https://static.vecteezy.com/system/resources/previews/008/442/086/original/illustration-of-human-icon-user-symbol-icon-modern-design-on-blank-background-free-vector.jpg"
 
+def get_employee_image(employee_id):
+    """Return a URL for employee image (API or default placeholder)."""
     try:
-        response = requests.get(url, headers=headers, params=params, timeout=5)
+        headers = {
+            "userid": API_USERNAME,
+            "password": API_PASSWORD
+        }
+        response = requests.get(BASE_URL, headers=headers, params={"id": employee_id}, timeout=5)
         if response.status_code == 200:
-            # Return image object for Streamlit
-            img = Image.open(BytesIO(response.content))
-            return img
+            # Some APIs return actual image bytes, some return redirect URL
+            # If it's an image bytes, save to BytesIO and convert to data URI:
+            content_type = response.headers.get('Content-Type', '')
+            if "image" in content_type:
+                import base64
+                b64_img = base64.b64encode(response.content).decode()
+                return f"data:{content_type};base64,{b64_img}"
+            else:
+                # If API returns URL, just return it
+                return response.url
         else:
-            st.warning(f"⚠️ API returned status code: {response.status_code} for Employee ID {employee_id}")
-            return Image.open(BytesIO(requests.get(
-                "https://static.vecteezy.com/system/resources/previews/008/442/086/original/illustration-of-human-icon-user-symbol-icon-modern-design-on-blank-background-free-vector.jpg"
-            ).content))
+            return DEFAULT_IMAGE_URL
     except Exception as e:
-        st.error(f"❌ Error fetching image for Employee ID {employee_id}: {e}")
-        return Image.open(BytesIO(requests.get(
-            "https://static.vecteezy.com/system/resources/previews/008/442/086/original/illustration-of-human-icon-user-symbol-icon-modern-design-on-blank-background-free-vector.jpg"
-        ).content))
+        return DEFAULT_IMAGE_URL
 #######################################
 # --- Page Navigation Setup ---
 #######################################
@@ -387,8 +387,6 @@ elif st.session_state["active_page"] == "Supply Pool":
     filtered_df_unique = filtered_df_unique.drop_duplicates(subset=["Employee Id"], keep="first")
     filtered_df_unique["3+_yr_Tenure_Flag"] = filtered_df_unique["Tenure"].apply(lambda x: "Yes" if x > 3 else "No")
     filtered_df_unique = filtered_df_unique[filtered_df_unique["Final Manager"].notna()]
-    filtered_df_unique["Image URL"] = filtered_df_unique["Employee Id"].apply(get_employee_image)
-
     
     columns_to_show = ["Manager Name", "Account Name", "Employee Id", "Employee Name", "Designation", "Rank","Final Manager"]
     columns_to_show = [col for col in columns_to_show if col in filtered_df_unique.columns]
