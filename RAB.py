@@ -8,6 +8,7 @@ import time
 import hashlib
 import os
 import requests
+import base64
 from PIL import Image
 from io import BytesIO
 
@@ -71,14 +72,14 @@ def fetch_employee_url(emp_id):
         if response.status_code == 200:
             img = Image.open(BytesIO(response.content))
             buffered = BytesIO()
-            img.save(buffered,format = "PNG")
+            img.save(buffered, format="PNG")
             img_base64 = base64.b64encode(buffered.getvalue()).decode("utf-8")
-            return img_base64
+            return f"data:image/png;base64,{img_base64}"  # return ready-to-use data URL
         else:
             return DEFAULT_IMAGE_URL
     except:
         return DEFAULT_IMAGE_URL
-
+        
 #######################################
 # --- Page Navigation Setup ---
 #######################################
@@ -394,8 +395,7 @@ elif st.session_state["active_page"] == "Supply Pool":
                 if i + j < n:
                     row = sorted_df.iloc[i + j]
                     emp_id = row['Employee Id']
-                    img_base64 = fetch_employee_url(emp_id)
-                    img_url = f"data:image/png;base64,{img_base64}"
+                    img_url = fetch_employee_url(emp_id)
                     with col:
                         with st.container():
                             st.markdown(
