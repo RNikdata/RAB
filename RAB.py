@@ -73,7 +73,7 @@ def fetch_employee_url(emp_id):
     """
     try:
         response = requests.get(BASE_URL, headers=headers, params={"id": emp_id}, timeout=10)
-        if response.status_code == 200 and "image" in response.headers.get("Content-Type", ""):
+        if response.status_code == 200:
             img = Image.open(BytesIO(response.content))
             img = img.resize((110, 120))  # optional: uniform size
             buffered = BytesIO()
