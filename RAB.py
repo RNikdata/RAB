@@ -65,8 +65,9 @@ BASE_URL = st.secrets.get("api_auth", {}).get("base_url", "https://muerp.mu-sigm
 
 DEFAULT_IMAGE_URL = "https://static.vecteezy.com/system/resources/previews/008/442/086/original/illustration-of-human-icon-user-symbol-icon-modern-design-on-blank-background-free-vector.jpg"
 
-def get_employee_image(employee_id):
-    """Return a URL for employee image (API or default placeholder)."""
+@st.cache_data(show_spinner=False)
+def get_employee_image_cached(employee_id):
+    """Fetch employee image once and cache it."""
     try:
         headers = {
             "userid": API_USERNAME,
@@ -74,20 +75,18 @@ def get_employee_image(employee_id):
         }
         response = requests.get(BASE_URL, headers=headers, params={"id": employee_id}, timeout=5)
         if response.status_code == 200:
-            # Some APIs return actual image bytes, some return redirect URL
-            # If it's an image bytes, save to BytesIO and convert to data URI:
             content_type = response.headers.get('Content-Type', '')
             if "image" in content_type:
                 import base64
                 b64_img = base64.b64encode(response.content).decode()
                 return f"data:{content_type};base64,{b64_img}"
             else:
-                # If API returns URL, just return it
                 return response.url
         else:
             return DEFAULT_IMAGE_URL
     except Exception as e:
         return DEFAULT_IMAGE_URL
+
 #######################################
 # --- Page Navigation Setup ---
 #######################################
@@ -400,7 +399,7 @@ elif st.session_state["active_page"] == "Supply Pool":
             for j, col in enumerate(cols):
                 if i + j < n:
                     row = sorted_df.iloc[i + j]
-                    img_url = get_employee_image(row['Employee Id'])
+                    img_url = get_employee_image_cached(row['Employee Id'])
                     with col:
                         with st.container():
                             st.markdown(
