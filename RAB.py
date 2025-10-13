@@ -8,7 +8,9 @@ import time
 import hashlib
 import os
 import requests
-from requests.auth import HTTPBasicAuth
+from PIL import Image
+from io import BytesIO
+
 
 st.set_page_config(
     page_title="Resource Transfer Board",  # <-- Browser tab name
@@ -57,22 +59,35 @@ merged_df = df.merge(
 #######################################
 # --- API Authentication ---
 #######################################
-API_USERNAME = st.secrets["api_auth"]["username"]
-API_PASSWORD = st.secrets["api_auth"]["password"]
-BASE_URL = st.secrets["api_auth"]["base_url"]
+API_USERNAME = st.secrets.get("api_auth", {}).get("username", "streamlit_user")
+API_PASSWORD = st.secrets.get("api_auth", {}).get("password", "streamlitadmin@mu-sigma25")
+BASE_URL = st.secrets.get("api_auth", {}).get("base_url", "https://muerp.mu-sigma.com/dmsRest/getEmployeeImage")
 
-@st.cache_data(show_spinner=False)
 def get_employee_image(employee_id):
-    url = f"{BASE_URL}{employee_id}"
-    try:
-        response = requests.get(url, auth=HTTPBasicAuth(API_USERNAME, API_PASSWORD), timeout=5)
-        if response.status_code == 200:
-            return url
-        else:
-            return "https://static.vecteezy.com/system/resources/previews/008/442/086/original/illustration-of-human-icon-user-symbol-icon-modern-design-on-blank-background-free-vector.jpg"
-    except:
-        return "https://static.vecteezy.com/system/resources/previews/008/442/086/original/illustration-of-human-icon-user-symbol-icon-modern-design-on-blank-background-free-vector.jpg"
+    """Fetch employee image from API and return PIL image or default image."""
+    url = BASE_URL
+    headers = {
+        "userid": API_USERNAME,
+        "password": API_PASSWORD
+    }
+    params = {"id": employee_id}
 
+    try:
+        response = requests.get(url, headers=headers, params=params, timeout=5)
+        if response.status_code == 200:
+            # Return image object for Streamlit
+            img = Image.open(BytesIO(response.content))
+            return img
+        else:
+            st.warning(f"⚠️ API returned status code: {response.status_code} for Employee ID {employee_id}")
+            return Image.open(BytesIO(requests.get(
+                "https://static.vecteezy.com/system/resources/previews/008/442/086/original/illustration-of-human-icon-user-symbol-icon-modern-design-on-blank-background-free-vector.jpg"
+            ).content))
+    except Exception as e:
+        st.error(f"❌ Error fetching image for Employee ID {employee_id}: {e}")
+        return Image.open(BytesIO(requests.get(
+            "https://static.vecteezy.com/system/resources/previews/008/442/086/original/illustration-of-human-icon-user-symbol-icon-modern-design-on-blank-background-free-vector.jpg"
+        ).content))
 #######################################
 # --- Page Navigation Setup ---
 #######################################
@@ -387,13 +402,14 @@ elif st.session_state["active_page"] == "Supply Pool":
             for j, col in enumerate(cols):
                 if i + j < n:
                     row = sorted_df.iloc[i + j]
+                    img_url = get_emloyee_image(row['Employee Id'])
                     with col:
                         with st.container():
                             st.markdown(
                                 f"""
                                 <div style='display:flex; align-items:center; gap:15px; padding:8px; border:3px solid #e0e0e0; border-radius:8px; margin-bottom:5px;'>
                                     <div style='flex-shrink:0;'>
-                                        <img src= "{row['Image URL']}" style='width:110px; height:120px; border-radius:4px; object-fit:cover;'>
+                                        <img src= "{img_url}" style='width:110px; height:120px; border-radius:4px; object-fit:cover;'>
                                     </div>
                                     <div style='flex-grow:1;'>
                                         <div style='font-size:20px; font-weight:bold;'>{row['Employee Name']}</div>
