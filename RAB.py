@@ -403,70 +403,77 @@ elif st.session_state["active_page"] == "Supply Pool":
     if not filtered_df_unique.empty:
         sorted_df = filtered_df_unique[columns_to_show].sort_values(by="Employee Name").reset_index(drop=True)
         n = len(sorted_df)
-        for i in range(0, n, 2):
-            cols = st.columns([1,1])
-            for j, col in enumerate(cols):
-                if i + j < n:
-                    row = sorted_df.iloc[i + j]
-                    emp_id = row['Employee Id']
-                    img = fetch_employee_url(emp_id) 
-                    html_img_tag = f'<img src="{img}" style="width:110px; height:120px; border-radius:4px; object-fit:cover;">' # get PIL image or default URL
-                    with col:
-                        with st.container():
-                            st.markdown(
-                                f"""
-                                <div style='display:flex; align-items:center; gap:15px; padding:8px; border:3px solid #c0c0c0; border-radius:8px; margin-bottom:5px;'>
-                                    <div style='flex-shrink:0;'>
-                                        {html_img_tag}
-                                    </div>
-                                    <div style='flex-grow:1;'>
-                                        <div style='font-size:20px; font-weight:bold;'>{row['Employee Name']}</div>
-                                        <div style='font-size:14px; margin-top:5px; line-height:1.6;'>
-                                            <div style='display:flex;'>
-                                                <div style='width:33%;'><b>👤 ID:</b> {row['Employee Id']}</div>
-                                                <div style='width:33%;'><b>📌 Band:</b> {row['Designation']}</div>
-                                                <div style='width:33%;'><b>🏷️ Rank:</b> {row['Rank']}</div>
-                                            </div>
-                                            <div style='display:flex;'>
-                                                <div style='margin-top:4px;'><b>📂 Account:</b> {row['Account Name']}</div>
-                                            </div>
-                                            <div style='margin-top:4px;'><b>🧑‍💼 Mapped to:</b> {row['Manager Name']}</div>
-                                            <div style='margin-top:4px;'><b>👔 Manager:</b> {row['Final Manager']}</div>
-                                            <div style='margin-top:4px;'><b>👨‍💻 Skillset:</b> {row['Skillset']}</div>
+        # Placeholder for warnings and loading message
+        warning_placeholder = st.empty()
+        loading_placeholder = st.empty()
+
+        with st.spinner("⏳ Loading employee details..."):
+            for i in range(0, n, 2):
+                cols = st.columns([1,1])
+                for j, col in enumerate(cols):
+                    if i + j < n:
+                        row = sorted_df.iloc[i + j]
+                        emp_id = row['Employee Id']
+                        img = fetch_employee_url(emp_id) 
+                        html_img_tag = f'<img src="{img}" style="width:110px; height:120px; border-radius:4px; object-fit:cover;">' # get PIL image or default URL
+                        with col:
+                            with st.container():
+                                st.markdown(
+                                    f"""
+                                    <div style='display:flex; align-items:center; gap:15px; padding:8px; border:3px solid #c0c0c0; border-radius:8px; margin-bottom:5px;'>
+                                        <div style='flex-shrink:0;'>
+                                            {html_img_tag}
+                                        </div>
+                                        <div style='flex-grow:1;'>
+                                            <div style='font-size:20px; font-weight:bold;'>{row['Employee Name']}</div>
+                                            <div style='font-size:14px; margin-top:5px; line-height:1.6;'>
+                                                <div style='display:flex;'>
+                                                    <div style='width:33%;'><b>👤 ID:</b> {row['Employee Id']}</div>
+                                                    <div style='width:33%;'><b>📌 Band:</b> {row['Designation']}</div>
+                                                    <div style='width:33%;'><b>🏷️ Rank:</b> {row['Rank']}</div>
+                                                </div>
+                                                <div style='display:flex;'>
+                                                    <div style='margin-top:4px;'><b>📂 Account:</b> {row['Account Name']}</div>
+                                                </div>
+                                                <div style='margin-top:4px;'><b>🧑‍💼 Mapped to:</b> {row['Manager Name']}</div>
+                                                <div style='margin-top:4px;'><b>👔 Manager:</b> {row['Final Manager']}</div>
+                                                <div style='margin-top:4px;'><b>👨‍💻 Skillset:</b> {row['Skillset']}</div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                                """,
-                                unsafe_allow_html=True
-                            )
-
-
-                            dum_ads_df = ads_df.copy()
-                            dum_ads_df = dum_ads_df[dum_ads_df["Request Id"].notna()]
-                            
-                            if st.button("Interested in Employee", key=f"interested_{row['Employee Id']}"):
-                                emp_name = row['Employee Name']
+                                    """,
+                                    unsafe_allow_html=True
+                                )
+    
+    
+                                dum_ads_df = ads_df.copy()
+                                dum_ads_df = dum_ads_df[dum_ads_df["Request Id"].notna()]
                                 
-                                if {"Employee Name", "Employee to Swap", "Status"}.issubset(dum_ads_df.columns):
-                                    approved_check = dum_ads_df[dum_ads_df["Status"] == "Approved"]
-                                    approved_check = approved_check[
-                                        (approved_check["Employee Name"] == emp_name) | 
-                                        (approved_check["Employee to Swap"] == emp_name)
-                                    ]
-                                else:
-                                    approved_check = pd.DataFrame()
-                                
-                                if approved_check.empty:  # Go to form only if NOT in approved requests
-                                    st.session_state["preselect_interested_employee"] = f"{row['Employee Id']} - {row['Employee Name']}"
-                                    st.session_state["active_page"] = "Employee Transfer Form"  
-                                    st.rerun()
-                                else:
-                                    warning_placeholder.warning(f"⚠️ The employee {row['Employee Name']} is already involved in an approved transfer request.")
+                                if st.button("Interested in Employee", key=f"interested_{row['Employee Id']}"):
+                                    emp_name = row['Employee Name']
                                     
-
+                                    if {"Employee Name", "Employee to Swap", "Status"}.issubset(dum_ads_df.columns):
+                                        approved_check = dum_ads_df[dum_ads_df["Status"] == "Approved"]
+                                        approved_check = approved_check[
+                                            (approved_check["Employee Name"] == emp_name) | 
+                                            (approved_check["Employee to Swap"] == emp_name)
+                                        ]
+                                    else:
+                                        approved_check = pd.DataFrame()
                                     
-                            st.markdown("<hr style='margin-top:1px; margin-bottom:5px; border:0; solid #d3d3d3;'>", unsafe_allow_html=True)
+                                    if approved_check.empty:  # Go to form only if NOT in approved requests
+                                        st.session_state["preselect_interested_employee"] = f"{row['Employee Id']} - {row['Employee Name']}"
+                                        st.session_state["active_page"] = "Employee Transfer Form"  
+                                        st.rerun()
+                                    else:
+                                        warning_placeholder.warning(f"⚠️ The employee {row['Employee Name']} is already involved in an approved transfer request.")
+                                        
+    
+                                        
+                                st.markdown("<hr style='margin-top:1px; margin-bottom:5px; border:0; solid #d3d3d3;'>", unsafe_allow_html=True)
+        loading_placeholder.empty()
+        
     else:
         st.warning("⚠️ No employees found for the selected filters.")
 
