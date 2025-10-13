@@ -79,16 +79,12 @@ def fetch_employee_url(emp_id):
         print(f"Response status for {emp_id}: {response.status_code}")
         if response.status_code == 200:
             img = Image.open(BytesIO(response.content))
-            #img = img.resize((200, 200))  # optional: uniform size
-            #return img
+
         else:
             # Fallback to default image from URL
             response = requests.get(DEFAULT_IMAGE_URL)
             img = Image.open(BytesIO(response.content))
-            #img = img.resize((200, 200))
-            #return img
-    
-        img = img.resize((110, 120)) 
+            
         buffered = BytesIO()
         img.save(buffered, format="PNG")
         img_base64 = base64.b64encode(buffered.getvalue()).decode("utf-8")
@@ -414,7 +410,7 @@ elif st.session_state["active_page"] == "Supply Pool":
                     row = sorted_df.iloc[i + j]
                     emp_id = row['Employee Id']
                     img = fetch_employee_url(emp_id) 
-                    html_img_tag = f'<img src="{img}" style="width:130px; height:130px; border-radius:4px; object-fit:cover;">' # get PIL image or default URL
+                    html_img_tag = f'<img src="{img}" style="width:140px; height:140px; border-radius:4px; object-fit:cover;">' # get PIL image or default URL
                     with col:
                         with st.container():
                             st.markdown(
