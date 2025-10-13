@@ -435,7 +435,6 @@ elif st.session_state["active_page"] == "Supply Pool":
                                                 <div style='display:flex;'>
                                                     <div style='margin-top:4px;'><b>📂 Account:</b> {row['Account Name']}</div>
                                                 </div>
-                                                <div style='margin-top:4px;'><b>🧑‍💼 Mapped to:</b> {row['Manager Name']}</div>
                                                 <div style='margin-top:4px;'><b>👔 Manager:</b> {row['Final Manager']}</div>
                                                 <div style='margin-top:4px;'><b>👨‍💻 Skillset:</b> {row['Skillset']}</div>
                                                 </div>
