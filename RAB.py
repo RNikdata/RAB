@@ -10,6 +10,7 @@ import os
 import requests
 from PIL import Image
 from io import BytesIO
+from IPython.display import display
 
 
 st.set_page_config(
@@ -59,11 +60,26 @@ merged_df = df.merge(
 #######################################
 # --- API Authentication ---
 #######################################
-API_USERNAME = st.secrets.get("api_auth", {}).get("username", "streamlit_user")
-API_PASSWORD = st.secrets.get("api_auth", {}).get("password", "streamlitadmin@mu-sigma25")
-BASE_URL = st.secrets.get("api_auth", {}).get("base_url", "https://muerp.mu-sigma.com/dmsRest/getEmployeeImage")
+API_USERNAME = st.secrets["api_auth"]["username"]
+API_PASSWORD = st.secrets["api_auth"]["password"]
+BASE_URL = st.secrets["api_auth"]["base_url"]
 
 DEFAULT_IMAGE_URL = "https://static.vecteezy.com/system/resources/previews/008/442/086/original/illustration-of-human-icon-user-symbol-icon-modern-design-on-blank-background-free-vector.jpg"
+headers = {"userid": API_USERNAME, "password": API_PASSWORD}
+
+def fetch_employee_url(emp_id):
+    try:
+        response = requests.get(BASE_URL, headers=headers, params={"id": emp_id}, timeout=5)
+        if response.status_code == 200:
+            img = Image.open(BytesIO(response.content))
+            buffered = BytesIO()
+            img.save(buffered,format = "PNG")
+            img_base64 = base64.b64encode(buffered.getvalue()).decode("utf-8")
+            return img_base64
+        else:
+            return DEFAULT_IMAGE_URL
+    except:
+        return DEFAULT_IMAGE_URL
 
 #######################################
 # --- Page Navigation Setup ---
@@ -366,26 +382,6 @@ elif st.session_state["active_page"] == "Supply Pool":
     filtered_df_unique = filtered_df_unique[filtered_df_unique["Final Manager"].notna()]
     # Add a new column "Image URL"
     # Ensure the URL column exists in the DataFrame that will be displayed
-    if "Image URL" not in filtered_df_unique.columns:
-        @st.cache_data
-        def fetch_employee_url(emp_id):
-            try:
-                headers = {"userid": API_USERNAME, "password": API_PASSWORD}
-                response = requests.get(BASE_URL, headers=headers, params={"id": emp_id}, timeout=5)
-                if response.status_code == 200:
-                    content_type = response.headers.get('Content-Type', '')
-                    if "image" in content_type:
-                        import base64
-                        b64_img = base64.b64encode(response.content).decode()
-                        return f"data:{content_type};base64,{b64_img}"
-                    else:
-                        return response.url
-                else:
-                    return DEFAULT_IMAGE_URL
-            except:
-                return DEFAULT_IMAGE_URL
-
-    filtered_df_unique["Image URL"] = filtered_df_unique["Employee Id"].apply(fetch_employee_url)
     
     columns_to_show = ["Manager Name", "Account Name", "Employee Id", "Employee Name", "Designation", "Rank","Final Manager","Image URL"]
     columns_to_show = [col for col in columns_to_show if col in filtered_df_unique.columns]
@@ -399,7 +395,9 @@ elif st.session_state["active_page"] == "Supply Pool":
             for j, col in enumerate(cols):
                 if i + j < n:
                     row = sorted_df.iloc[i + j]
-                    img_url = row["Image URL"]
+                    emp_id = row['Employee Id']
+                    img_base64 = fetch_employee_url(emp_id)
+                    img_url = f"data:image/png;base64,{img_base64}"
                     with col:
                         with st.container():
                             st.markdown(
