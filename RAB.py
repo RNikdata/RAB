@@ -7,6 +7,8 @@ from google.oauth2.service_account import Credentials
 import time
 import hashlib
 import os
+import requests
+from requests.auth import HTTPBasicAuth
 
 st.set_page_config(
     page_title="Resource Transfer Board",  # <-- Browser tab name
@@ -15,7 +17,7 @@ st.set_page_config(
 )
 
 #######################################
-# --- Deployed version code snipper ---
+# --- Google Sheets Connection ---
 #######################################
 
 # --- Connect to Google Sheets using Streamlit secrets ---
@@ -51,6 +53,25 @@ merged_df = df.merge(
     on="Employee Id",
     how="left"
 )
+
+#######################################
+# --- API Authentication ---
+#######################################
+API_USERNAME = st.secrets["api_auth"]["username"]
+API_PASSWORD = st.secrets["api_auth"]["password"]
+BASE_URL = st.secrets["api_auth"]["base_url"]  # https://muerp.mu-sigma.com/xxxx/getEmployeeImage?id=
+
+def get_employee_image(employee_id):
+    """Fetch employee image URL from API, fallback to default if failed."""
+    url = f"{BASE_URL}{employee_id}"
+    try:
+        response = requests.get(url, auth=HTTPBasicAuth(API_USERNAME, API_PASSWORD), timeout=5)
+        if response.status_code == 200:
+            return url
+        else:
+            return "https://static.vecteezy.com/system/resources/previews/008/442/086/original/illustration-of-human-icon-user-symbol-icon-modern-design-on-blank-background-free-vector.jpg"
+    except:
+        return "https://static.vecteezy.com/system/resources/previews/008/442/086/original/illustration-of-human-icon-user-symbol-icon-modern-design-on-blank-background-free-vector.jpg"
 
 #######################################
 # --- Page Navigation Setup ---
@@ -89,7 +110,6 @@ with nav_cols[3]:
     if st.button("✏️ Employee Transfer Form", use_container_width=True):
         st.session_state["active_page"] = "Employee Transfer Form"
 st.markdown("---")
-
 # --- Tab 1: Manager-wise Summary ---
             
 if st.session_state["active_page"] == "Transfer Summary":
@@ -352,6 +372,7 @@ elif st.session_state["active_page"] == "Supply Pool":
     filtered_df_unique = filtered_df_unique.drop_duplicates(subset=["Employee Id"], keep="first")
     filtered_df_unique["3+_yr_Tenure_Flag"] = filtered_df_unique["Tenure"].apply(lambda x: "Yes" if x > 3 else "No")
     filtered_df_unique = filtered_df_unique[filtered_df_unique["Final Manager"].notna()]
+
     
     columns_to_show = ["Manager Name", "Account Name", "Employee Id", "Employee Name", "Designation", "Rank","Final Manager"]
     columns_to_show = [col for col in columns_to_show if col in filtered_df_unique.columns]
@@ -371,8 +392,7 @@ elif st.session_state["active_page"] == "Supply Pool":
                                 f"""
                                 <div style='display:flex; align-items:center; gap:15px; padding:8px; border:3px solid #e0e0e0; border-radius:8px; margin-bottom:5px;'>
                                     <div style='flex-shrink:0;'>
-                                        <img src="https://static.vecteezy.com/system/resources/previews/008/442/086/original/illustration-of-human-icon-user-symbol-icon-modern-design-on-blank-background-free-vector.jpg" 
-                                             style='width:110px; height:120px; border-radius:4px; object-fit:cover;'>
+                                        <img src="{get_employee_image(row['Employee Id'])}" style='width:110px; height:120px; border-radius:4px; object-fit:cover;'>
                                     </div>
                                     <div style='flex-grow:1;'>
                                         <div style='font-size:20px; font-weight:bold;'>{row['Employee Name']}</div>
