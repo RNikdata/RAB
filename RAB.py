@@ -88,7 +88,7 @@ def fetch_employee_url(emp_id):
             #img = img.resize((200, 200))
             #return img
     
-        img = img.resize((200, 200)) 
+        img = img.resize((110, 120)) 
         buffered = BytesIO()
         img.save(buffered, format="PNG")
         img_base64 = base64.b64encode(buffered.getvalue()).decode("utf-8")
