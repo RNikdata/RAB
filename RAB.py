@@ -68,14 +68,18 @@ headers = {"userid": API_USERNAME, "password": API_PASSWORD}
 
 @st.cache_data
 def fetch_employee_url(emp_id):
+    """
+    Fetch employee image from API and return a base64 data URL for HTML <img src>.
+    """
     try:
         response = requests.get(BASE_URL, headers=headers, params={"id": emp_id}, timeout=10)
-        if response.status_code == 200:
+        if response.status_code == 200 and "image" in response.headers.get("Content-Type", ""):
             img = Image.open(BytesIO(response.content))
+            img = img.resize((110, 120))  # optional: uniform size
             buffered = BytesIO()
             img.save(buffered, format="PNG")
             img_base64 = base64.b64encode(buffered.getvalue()).decode("utf-8")
-            return f"data:image/png;base64,{img_base64}"  # return ready-to-use data URL
+            return f"data:image/png;base64,{img_base64}"
         else:
             return DEFAULT_IMAGE_URL
     except:
@@ -396,7 +400,7 @@ elif st.session_state["active_page"] == "Supply Pool":
                 if i + j < n:
                     row = sorted_df.iloc[i + j]
                     emp_id = row['Employee Id']
-                    img_url = fetch_employee_url(emp_id)
+                    img_url = fetch_employee_url(emp_id)  # get PIL image or default URL
                     with col:
                         with st.container():
                             st.markdown(
