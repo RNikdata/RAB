@@ -10,8 +10,6 @@ import os
 import requests
 from PIL import Image
 from io import BytesIO
-from IPython.display import display
-
 
 st.set_page_config(
     page_title="Resource Transfer Board",  # <-- Browser tab name
