@@ -400,7 +400,7 @@ elif st.session_state["active_page"] == "Supply Pool":
             for j, col in enumerate(cols):
                 if i + j < n:
                     row = sorted_df.iloc[i + j]
-                    img_url = get_emloyee_image(row['Employee Id'])
+                    img_url = get_employee_image(row['Employee Id'])
                     with col:
                         with st.container():
                             st.markdown(
