@@ -406,7 +406,7 @@ elif st.session_state["active_page"] == "Supply Pool":
                                 f"""
                                 <div style='display:flex; align-items:center; gap:15px; padding:8px; border:3px solid #e0e0e0; border-radius:8px; margin-bottom:5px;'>
                                     <div style='flex-shrink:0;'>
-                                        <img_url = "{img_url}" style='width:110px; height:120px; border-radius:4px; object-fit:cover;'>
+                                        <img src = "{img_url}" style='width:110px; height:120px; border-radius:4px; object-fit:cover;'>
                                     </div>
                                     <div style='flex-grow:1;'>
                                         <div style='font-size:20px; font-weight:bold;'>{row['Employee Name']}</div>
