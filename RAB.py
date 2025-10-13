@@ -59,10 +59,10 @@ merged_df = df.merge(
 #######################################
 API_USERNAME = st.secrets["api_auth"]["username"]
 API_PASSWORD = st.secrets["api_auth"]["password"]
-BASE_URL = st.secrets["api_auth"]["base_url"]  # https://muerp.mu-sigma.com/xxxx/getEmployeeImage?id=
+BASE_URL = st.secrets["api_auth"]["base_url"]
 
+@st.cache_data(show_spinner=False)
 def get_employee_image(employee_id):
-    """Fetch employee image URL from API, fallback to default if failed."""
     url = f"{BASE_URL}{employee_id}"
     try:
         response = requests.get(url, auth=HTTPBasicAuth(API_USERNAME, API_PASSWORD), timeout=5)
@@ -372,6 +372,7 @@ elif st.session_state["active_page"] == "Supply Pool":
     filtered_df_unique = filtered_df_unique.drop_duplicates(subset=["Employee Id"], keep="first")
     filtered_df_unique["3+_yr_Tenure_Flag"] = filtered_df_unique["Tenure"].apply(lambda x: "Yes" if x > 3 else "No")
     filtered_df_unique = filtered_df_unique[filtered_df_unique["Final Manager"].notna()]
+    filtered_df_unique["Image URL"] = filtered_df_unique["Employee Id"].apply(get_employee_image)
 
     
     columns_to_show = ["Manager Name", "Account Name", "Employee Id", "Employee Name", "Designation", "Rank","Final Manager"]
@@ -392,7 +393,7 @@ elif st.session_state["active_page"] == "Supply Pool":
                                 f"""
                                 <div style='display:flex; align-items:center; gap:15px; padding:8px; border:3px solid #e0e0e0; border-radius:8px; margin-bottom:5px;'>
                                     <div style='flex-shrink:0;'>
-                                        <img src="{get_employee_image(row['Employee Id'])}" style='width:110px; height:120px; border-radius:4px; object-fit:cover;'>
+                                        <img src= "{row['Image URL']}" style='width:110px; height:120px; border-radius:4px; object-fit:cover;'>
                                     </div>
                                     <div style='flex-grow:1;'>
                                         <div style='font-size:20px; font-weight:bold;'>{row['Employee Name']}</div>
