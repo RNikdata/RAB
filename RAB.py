@@ -65,15 +65,15 @@ BASE_URL = st.secrets.get("api_auth", {}).get("base_url", "https://muerp.mu-sigm
 
 DEFAULT_IMAGE_URL = "https://static.vecteezy.com/system/resources/previews/008/442/086/original/illustration-of-human-icon-user-symbol-icon-modern-design-on-blank-background-free-vector.jpg"
 
-@st.cache_data(show_spinner=False)
-def get_employee_image_cached(employee_id):
-    """Fetch employee image once and cache it."""
+# --- Pre-compute image URLs for all employees ---
+def fetch_employee_url(emp_id):
+    """Return the API image URL or default if API fails."""
     try:
         headers = {
             "userid": API_USERNAME,
             "password": API_PASSWORD
         }
-        response = requests.get(BASE_URL, headers=headers, params={"id": employee_id}, timeout=5)
+        response = requests.get(BASE_URL, headers=headers, params={"id": emp_id}, timeout=5)
         if response.status_code == 200:
             content_type = response.headers.get('Content-Type', '')
             if "image" in content_type:
@@ -84,7 +84,7 @@ def get_employee_image_cached(employee_id):
                 return response.url
         else:
             return DEFAULT_IMAGE_URL
-    except Exception as e:
+    except:
         return DEFAULT_IMAGE_URL
 
 #######################################
@@ -386,6 +386,8 @@ elif st.session_state["active_page"] == "Supply Pool":
     filtered_df_unique = filtered_df_unique.drop_duplicates(subset=["Employee Id"], keep="first")
     filtered_df_unique["3+_yr_Tenure_Flag"] = filtered_df_unique["Tenure"].apply(lambda x: "Yes" if x > 3 else "No")
     filtered_df_unique = filtered_df_unique[filtered_df_unique["Final Manager"].notna()]
+    # Add a new column "Image URL"
+    filtered_df_unique["Image URL"] = filtered_df_unique["Employee Id"].apply(fetch_employee_url)
     
     columns_to_show = ["Manager Name", "Account Name", "Employee Id", "Employee Name", "Designation", "Rank","Final Manager"]
     columns_to_show = [col for col in columns_to_show if col in filtered_df_unique.columns]
@@ -399,14 +401,14 @@ elif st.session_state["active_page"] == "Supply Pool":
             for j, col in enumerate(cols):
                 if i + j < n:
                     row = sorted_df.iloc[i + j]
-                    img_url = get_employee_image_cached(row['Employee Id'])
+                    img_url = row["Image URL"]
                     with col:
                         with st.container():
                             st.markdown(
                                 f"""
                                 <div style='display:flex; align-items:center; gap:15px; padding:8px; border:3px solid #e0e0e0; border-radius:8px; margin-bottom:5px;'>
                                     <div style='flex-shrink:0;'>
-                                        <img src= "{img_url}" style='width:110px; height:120px; border-radius:4px; object-fit:cover;'>
+                                        <img_url = "{img_url}" style='width:110px; height:120px; border-radius:4px; object-fit:cover;'>
                                     </div>
                                     <div style='flex-grow:1;'>
                                         <div style='font-size:20px; font-weight:bold;'>{row['Employee Name']}</div>
