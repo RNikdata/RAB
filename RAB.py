@@ -79,16 +79,16 @@ def fetch_employee_url(emp_id):
         print(f"Response status for {emp_id}: {response.status_code}")
         if response.status_code == 200:
             img = Image.open(BytesIO(response.content))
-            #img = img.resize((110, 120))  # optional: uniform size
+            #img = img.resize((200, 200))  # optional: uniform size
             #return img
         else:
             # Fallback to default image from URL
             response = requests.get(DEFAULT_IMAGE_URL)
             img = Image.open(BytesIO(response.content))
-            #img = img.resize((110, 120))
+            #img = img.resize((200, 200))
             #return img
     
-        img = img.resize((110, 120)) 
+        img = img.resize((200, 200)) 
         buffered = BytesIO()
         img.save(buffered, format="PNG")
         img_base64 = base64.b64encode(buffered.getvalue()).decode("utf-8")
