@@ -396,6 +396,7 @@ elif st.session_state["active_page"] == "Supply Pool":
     filtered_df_unique = filtered_df_unique.drop_duplicates(subset=["Employee Id"], keep="first")
     filtered_df_unique["3+_yr_Tenure_Flag"] = filtered_df_unique["Tenure"].apply(lambda x: "Yes" if x > 3 else "No")
     filtered_df_unique = filtered_df_unique[filtered_df_unique["Final Manager"].notna()]
+    filtered_df_unique["Skillset"] = filtered_df_unique["Skillset"].fillna("")
     # Add a new column "Image URL"
     # Ensure the URL column exists in the DataFrame that will be displayed
     
