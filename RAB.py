@@ -65,28 +65,6 @@ BASE_URL = st.secrets.get("api_auth", {}).get("base_url", "https://muerp.mu-sigm
 
 DEFAULT_IMAGE_URL = "https://static.vecteezy.com/system/resources/previews/008/442/086/original/illustration-of-human-icon-user-symbol-icon-modern-design-on-blank-background-free-vector.jpg"
 
-# Ensure the URL column exists in the DataFrame that will be displayed
-if "Image URL" not in filtered_df_unique.columns:
-    @st.cache_data
-    def fetch_employee_url(emp_id):
-        try:
-            headers = {"userid": API_USERNAME, "password": API_PASSWORD}
-            response = requests.get(BASE_URL, headers=headers, params={"id": emp_id}, timeout=5)
-            if response.status_code == 200:
-                content_type = response.headers.get('Content-Type', '')
-                if "image" in content_type:
-                    import base64
-                    b64_img = base64.b64encode(response.content).decode()
-                    return f"data:{content_type};base64,{b64_img}"
-                else:
-                    return response.url
-            else:
-                return DEFAULT_IMAGE_URL
-        except:
-            return DEFAULT_IMAGE_URL
-
-    filtered_df_unique["Image URL"] = filtered_df_unique["Employee Id"].apply(fetch_employee_url)
-
 #######################################
 # --- Page Navigation Setup ---
 #######################################
@@ -387,6 +365,26 @@ elif st.session_state["active_page"] == "Supply Pool":
     filtered_df_unique["3+_yr_Tenure_Flag"] = filtered_df_unique["Tenure"].apply(lambda x: "Yes" if x > 3 else "No")
     filtered_df_unique = filtered_df_unique[filtered_df_unique["Final Manager"].notna()]
     # Add a new column "Image URL"
+    # Ensure the URL column exists in the DataFrame that will be displayed
+    if "Image URL" not in filtered_df_unique.columns:
+        @st.cache_data
+        def fetch_employee_url(emp_id):
+            try:
+                headers = {"userid": API_USERNAME, "password": API_PASSWORD}
+                response = requests.get(BASE_URL, headers=headers, params={"id": emp_id}, timeout=5)
+                if response.status_code == 200:
+                    content_type = response.headers.get('Content-Type', '')
+                    if "image" in content_type:
+                        import base64
+                        b64_img = base64.b64encode(response.content).decode()
+                        return f"data:{content_type};base64,{b64_img}"
+                    else:
+                        return response.url
+                else:
+                    return DEFAULT_IMAGE_URL
+            except:
+                return DEFAULT_IMAGE_URL
+
     filtered_df_unique["Image URL"] = filtered_df_unique["Employee Id"].apply(fetch_employee_url)
     
     columns_to_show = ["Manager Name", "Account Name", "Employee Id", "Employee Name", "Designation", "Rank","Final Manager","Image URL"]
