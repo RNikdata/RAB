@@ -414,7 +414,7 @@ elif st.session_state["active_page"] == "Supply Pool":
                     row = sorted_df.iloc[i + j]
                     emp_id = row['Employee Id']
                     img = fetch_employee_url(emp_id) 
-                    html_img_tag = f'<img src="{img}" style="width:120px; height:120px; border-radius:4px; object-fit:cover;">' # get PIL image or default URL
+                    html_img_tag = f'<img src="{img}" style="width:130px; height:130px; border-radius:4px; object-fit:cover;">' # get PIL image or default URL
                     with col:
                         with st.container():
                             st.markdown(
