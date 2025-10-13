@@ -66,9 +66,10 @@ BASE_URL = st.secrets["api_auth"]["base_url"]
 DEFAULT_IMAGE_URL = "https://static.vecteezy.com/system/resources/previews/008/442/086/original/illustration-of-human-icon-user-symbol-icon-modern-design-on-blank-background-free-vector.jpg"
 headers = {"userid": API_USERNAME, "password": API_PASSWORD}
 
+@st.cache_data
 def fetch_employee_url(emp_id):
     try:
-        response = requests.get(BASE_URL, headers=headers, params={"id": emp_id}, timeout=5)
+        response = requests.get(BASE_URL, headers=headers, params={"id": emp_id}, timeout=10)
         if response.status_code == 200:
             img = Image.open(BytesIO(response.content))
             buffered = BytesIO()
