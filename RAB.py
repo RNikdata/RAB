@@ -415,7 +415,7 @@ elif st.session_state["active_page"] == "Supply Pool":
                         with st.container():
                             st.markdown(
                                 f"""
-                                <div style='display:flex; align-items:center; gap:15px; padding:8px; border:3px solid #e0e0e0; border-radius:8px; margin-bottom:5px; background-color:#2E2E2E;'>
+                                <div style='display:flex; align-items:center; gap:15px; padding:8px; border:3px solid #e0e0e0; border-radius:8px; margin-bottom:5px;'>
                                     <div style='flex-shrink:0;'>
                                         {html_img_tag}
                                     </div>
