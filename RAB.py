@@ -337,11 +337,14 @@ elif st.session_state["active_page"] == "Supply Pool":
         "Designation",
         options=[d for d in merged_df["Designation"].dropna().unique() if d in designation]
     )
-    skill_filter = st.sidebar.mutliselect(
-        "Skills",
-        options = unique_skills,
-        index=0
+    
+    skill_filter = st.sidebar.multiselect(
+        "🧠 Select Skills",
+        options=unique_skills,
+        default=[]  # you can set a default selection if you want
     )
+
+    
     st.sidebar.markdown("<br><br>",unsafe_allow_html = True)
     st.sidebar.header("🔎 Search")
     resource_search = st.sidebar.text_input("Search Employee Name or ID",placeholder = "Employe ID/Name")
