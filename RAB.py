@@ -134,6 +134,8 @@ st.markdown("---")
             
 if st.session_state["active_page"] == "Transfer Summary":
 
+    unique_skills = df["Skillset"].dropna().unique().tolist()
+    
     # --- Sidebar: Logo & Company Name ---
     st.sidebar.markdown(
         """
@@ -299,6 +301,8 @@ elif st.session_state["active_page"] == "Supply Pool":
         """,
         unsafe_allow_html=True
     )
+    unique_skills = sorted(df["Skillset"].dropna().unique().tolist())
+    
     top_managers = [
         "Nivedhan Narasimhan",
         "Rajdeep Roy Choudhury",
@@ -332,6 +336,11 @@ elif st.session_state["active_page"] == "Supply Pool":
     designation_filter = st.sidebar.multiselect(
         "Designation",
         options=[d for d in merged_df["Designation"].dropna().unique() if d in designation]
+    )
+    skill_filter = st.sidebar.mutliselect(
+        "Skills",
+        options = unique_skills,
+        index=0
     )
     st.sidebar.markdown("<br><br>",unsafe_allow_html = True)
     st.sidebar.header("🔎 Search")
