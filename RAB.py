@@ -490,8 +490,8 @@ elif st.session_state["active_page"] == "Supply Pool":
         selected_skills = [s.lower() for s in skill_filter]
     
         # Ensure "Skillset" column is string and handle nulls
-        filtered_df = df[
-            df["Skillset"].fillna("").apply(
+        df_unique = df_unique[
+            df_unique["Skillset"].fillna("").apply(
                 lambda x: any(skill in x.lower() for skill in selected_skills)
             )
         ]
