@@ -229,8 +229,6 @@ if st.session_state["active_page"] == "Transfer Summary":
     # List of all managers for summary
     all_managers = pd.concat([summary_df["Manager Name"], summary_df["Interested Manager"]]).dropna().unique()
     
-    no_of_managers = len(top_managers)
-    
     # all_managers is a NumPy array — so filter it using np.isin
     all_managers = [mgr for mgr in all_managers if mgr in top_managers]
 
@@ -267,6 +265,8 @@ if st.session_state["active_page"] == "Transfer Summary":
         })
 
     grouped_summary = pd.DataFrame(summary_list)
+    num_rows = len(grouped_summary)
+    
 
     if manager_filter:
         grouped_summary = grouped_summary[grouped_summary["Final Manager"].isin(manager_filter)]
@@ -278,7 +278,7 @@ if st.session_state["active_page"] == "Transfer Summary":
         ),
         use_container_width=True,
         hide_index=True,
-        height=no_of_managers*35
+        height=num_rows*35
     )
 
     # st.markdown(
