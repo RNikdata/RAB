@@ -486,7 +486,15 @@ elif st.session_state["active_page"] == "Supply Pool":
     if designation_filter:
         df_unique = df_unique[df_unique["Designation"].isin(designation_filter)]
     if skill_filter:
-        filtered_df = df[df["Skillset"].apply(lambda x: any(skill in x for skill in skill_filter))]
+        # Convert to lowercase for case-insensitive matching
+        selected_skills = [s.lower() for s in skill_filter]
+    
+        # Ensure "Skillset" column is string and handle nulls
+        filtered_df = df[
+            df["Skillset"].fillna("").apply(
+                lambda x: any(skill in x.lower() for skill in selected_skills)
+            )
+        ]
     if resource_search:
         df_unique = df_unique[
             df_unique["Employee Name"].str.contains(resource_search, case=False, na=False) |
