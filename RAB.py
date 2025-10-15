@@ -725,7 +725,7 @@ elif st.session_state["active_page"] == "Employee Transfer Form":
     with col3:
         employee_to_swap_add = st.selectbox(
             "Employee to Transfer",
-            options=["Select Employee to Swap"] + (available_employees["Employee Id"].astype(str) + " - " + available_employees["Employee Name"]).dropna().tolist(),
+            options=["Select Employee to Swap"] + (df["Employee Id"].astype(str) + " - " + available_employees["Employee Name"]).dropna().tolist(),
             key="employee_to_swap_add"
         )
 
