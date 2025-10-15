@@ -437,11 +437,10 @@ elif st.session_state["active_page"] == "Supply Pool":
     )
     
     skill_filter = st.sidebar.multiselect(
-        "🧠 Select Skills",
+        "Skills",
         options=unique_skills,
         default=[]  # you can set a default selection if you want
     )
-
     
     st.sidebar.markdown("<br><br>",unsafe_allow_html = True)
     st.sidebar.header("🔎 Search")
@@ -486,6 +485,8 @@ elif st.session_state["active_page"] == "Supply Pool":
         df_unique = df_unique[df_unique["Final Manager"].isin(manager_filter)]
     if designation_filter:
         df_unique = df_unique[df_unique["Designation"].isin(designation_filter)]
+    if skill_filter:
+        filtered_df = df[df["Skillset"].apply(lambda x: any(skill in x for skill in skill_filter))]
     if resource_search:
         df_unique = df_unique[
             df_unique["Employee Name"].str.contains(resource_search, case=False, na=False) |
