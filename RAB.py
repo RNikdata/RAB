@@ -155,7 +155,7 @@ if "active_page" not in st.session_state:
 header_col1, header_col2 = st.columns([6, 1])
 
 with header_col1:
-    st.markdown("<h1 style='text-align:center'>🧑‍💼 Resource Transfer Board</h1>", unsafe_allow_html=True)
+    st.markdown("<h1 style='text-align:center'>🧑‍💼 mu Ghumao Board</h1>", unsafe_allow_html=True)
 
 with header_col2:
     st.markdown("<br>", unsafe_allow_html=True)
@@ -198,6 +198,8 @@ if st.session_state["active_page"] == "Transfer Summary":
 
     # Sidebar Filters
     st.sidebar.header("⚙️ Filters")
+    st.markdown("<br>", unsafe_allow_html=True)
+    st.markdown("<br>", unsafe_allow_html=True)
     account_filter = st.sidebar.multiselect("Account Name", options=merged_df["Account Name"].dropna().unique())
     delivery_filter = st.sidebar.multiselect("Delivery Owner", options=merged_df["Delivery Owner"].dropna().unique())
     pl_filter = st.sidebar.multiselect("P&L Owner", options=merged_df["P&L Owner Mapping"].dropna().unique())
@@ -350,6 +352,8 @@ elif st.session_state["active_page"] == "Supply Pool":
 
     # --- Sidebar Filters ---
     st.sidebar.header("⚙️ Filters")
+    st.markdown("<br>", unsafe_allow_html=True)
+    st.markdown("<br>", unsafe_allow_html=True)
     account_filter = st.sidebar.multiselect("Account Name", options=merged_df["Account Name"].dropna().unique())
     manager_filter = st.sidebar.multiselect(
         "Manager Name",
