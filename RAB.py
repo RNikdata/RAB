@@ -90,6 +90,8 @@ df = df.merge(
 
 # Drop duplicate Account column from account_df if needed
 df = df.drop(columns=["Account"])
+
+st.write(df.columns.tolist())
 ########################################
 
 # --- Load Data --- (for local testing & development)
