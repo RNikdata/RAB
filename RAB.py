@@ -197,8 +197,8 @@ if st.session_state["active_page"] == "Transfer Summary":
     )
 
     # Sidebar Filters
-    st.sidebar.markdown("<br>", unsafe_allow_html=True)
-    st.sidebar.markdown("<br>", unsafe_allow_html=True)
+    st.sidebar.markdown("<br><br>",unsafe_allow_html = True)
+    st.sidebar.markdown("<br><br>",unsafe_allow_html = True)
     st.sidebar.header("⚙️ Filters")
     account_filter = st.sidebar.multiselect("Account Name", options=merged_df["Account Name"].dropna().unique())
     delivery_filter = st.sidebar.multiselect("Delivery Owner", options=merged_df["Delivery Owner"].dropna().unique())
@@ -303,7 +303,7 @@ if st.session_state["active_page"] == "Transfer Summary":
 
     # --- Display table ---
     st.dataframe(
-        grouped_summary.sort_values(by=["Total_Requests_Raised", "Account Name"], ascending=[False, True]),
+        grouped_summary.sort_values(by=["Total_Available_Employees"], ascending=[False]),
         use_container_width=True,
         hide_index=True,
         height=len(grouped_summary) * 40
@@ -352,8 +352,8 @@ elif st.session_state["active_page"] == "Supply Pool":
 
     # --- Sidebar Filters ---
     
-    st.sidebar.markdown("<br>", unsafe_allow_html=True)
-    st.sidebar.markdown("<br>", unsafe_allow_html=True)
+    st.sidebar.markdown("<br><br>",unsafe_allow_html = True)
+    st.sidebar.markdown("<br><br>",unsafe_allow_html = True)
     st.sidebar.header("⚙️ Filters")
     account_filter = st.sidebar.multiselect("Account Name", options=merged_df["Account Name"].dropna().unique())
     manager_filter = st.sidebar.multiselect(
