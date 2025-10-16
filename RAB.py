@@ -197,9 +197,9 @@ if st.session_state["active_page"] == "Transfer Summary":
     )
 
     # Sidebar Filters
+    st.sidebar.markdown("<br>", unsafe_allow_html=True)
+    st.sidebar.markdown("<br>", unsafe_allow_html=True)
     st.sidebar.header("⚙️ Filters")
-    st.sidebar.markdown("<br>", unsafe_allow_html=True)
-    st.sidebar.markdown("<br>", unsafe_allow_html=True)
     account_filter = st.sidebar.multiselect("Account Name", options=merged_df["Account Name"].dropna().unique())
     delivery_filter = st.sidebar.multiselect("Delivery Owner", options=merged_df["Delivery Owner"].dropna().unique())
     pl_filter = st.sidebar.multiselect("P&L Owner", options=merged_df["P&L Owner Mapping"].dropna().unique())
@@ -351,9 +351,10 @@ elif st.session_state["active_page"] == "Supply Pool":
     designation = ["TDS1", "TDS2", "TDS3", "TDS4", "-"]
 
     # --- Sidebar Filters ---
+    
+    st.sidebar.markdown("<br>", unsafe_allow_html=True)
+    st.sidebar.markdown("<br>", unsafe_allow_html=True)
     st.sidebar.header("⚙️ Filters")
-    st.sidebar.markdown("<br>", unsafe_allow_html=True)
-    st.sidebar.markdown("<br>", unsafe_allow_html=True)
     account_filter = st.sidebar.multiselect("Account Name", options=merged_df["Account Name"].dropna().unique())
     manager_filter = st.sidebar.multiselect(
         "Manager Name",
