@@ -13,7 +13,7 @@ from PIL import Image
 from io import BytesIO
 
 st.set_page_config(
-    page_title="Resource Transfer Board",  # <-- Browser tab name
+    page_title="mu Ghumao Board",  # <-- Browser tab name
     page_icon="🧑‍💼",                            # <-- Favicon in browser tab
     layout="wide"                              # optional
 )
@@ -198,8 +198,8 @@ if st.session_state["active_page"] == "Transfer Summary":
 
     # Sidebar Filters
     st.sidebar.header("⚙️ Filters")
-    st.markdown("<br>", unsafe_allow_html=True)
-    st.markdown("<br>", unsafe_allow_html=True)
+    st.sidebar.markdown("<br>", unsafe_allow_html=True)
+    st.sidebar.markdown("<br>", unsafe_allow_html=True)
     account_filter = st.sidebar.multiselect("Account Name", options=merged_df["Account Name"].dropna().unique())
     delivery_filter = st.sidebar.multiselect("Delivery Owner", options=merged_df["Delivery Owner"].dropna().unique())
     pl_filter = st.sidebar.multiselect("P&L Owner", options=merged_df["P&L Owner Mapping"].dropna().unique())
@@ -352,8 +352,8 @@ elif st.session_state["active_page"] == "Supply Pool":
 
     # --- Sidebar Filters ---
     st.sidebar.header("⚙️ Filters")
-    st.markdown("<br>", unsafe_allow_html=True)
-    st.markdown("<br>", unsafe_allow_html=True)
+    st.sidebar.markdown("<br>", unsafe_allow_html=True)
+    st.sidebar.markdown("<br>", unsafe_allow_html=True)
     account_filter = st.sidebar.multiselect("Account Name", options=merged_df["Account Name"].dropna().unique())
     manager_filter = st.sidebar.multiselect(
         "Manager Name",
