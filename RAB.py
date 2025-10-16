@@ -90,6 +90,7 @@ df = df.merge(
 
 # Drop duplicate Account column from account_df if needed
 df = df.drop(columns=["Account"])
+st.write(merged_summary.columns.tolist())
 ########################################
 
 # --- Load Data --- (for local testing & development)
@@ -203,7 +204,7 @@ if st.session_state["active_page"] == "Transfer Summary":
     st.sidebar.header("🔎 Search")
     resource_search = st.sidebar.text_input("Search Employee Name or ID", placeholder="Employee ID/Name")
 
-    st.subheader("📊 Transfer Summary by Account / Delivery / P&L Owner")
+    st.subheader("📊 Transfer Summary")
     st.markdown("<br>", unsafe_allow_html=True)
 
     summary_df = ads_df.copy()
