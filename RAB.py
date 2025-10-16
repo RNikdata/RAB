@@ -244,18 +244,19 @@ if st.session_state["active_page"] == "Transfer Summary":
 
     # --- Group by Account + Delivery Owner + P&L Owner Mapping ---
     grouped_summary = merged_summary.groupby(
-        ["Account Name", "Delivery Owner", "P&L Owner Mapping"], as_index=False
+        ["Delivery Owner", "P&L Owner Mapping", "Account Name"], 
+        as_index=False
     ).agg(
         Total_Employees=pd.NamedAgg(column="Employee Id", aggfunc=lambda x: x.dropna().nunique()),
         Total_Requests_Raised=pd.NamedAgg(column="Request Id", aggfunc=lambda x: x.dropna().nunique()),
         Total_Approved=pd.NamedAgg(column="Status", aggfunc=lambda x: (x == "Approved").sum()),
         Total_Rejected=pd.NamedAgg(column="Status", aggfunc=lambda x: (x == "Rejected").sum()),
-        Total_Pending=pd.NamedAgg(column="Status", aggfunc=lambda x: (x == "Pending").sum())
+        Total_Pending=pd.NamedAgg(column="Status", aggfunc=lambda x: x.dropna().eq("Pending").sum())
     )
 
     # --- Apply sidebar filters ---
     if account_filter:
-        grouped_summary = grouped_summary[grouped_summary["Account"].isin(account_filter)]
+        grouped_summary = grouped_summary[grouped_summary["Account Name"].isin(account_filter)]
     if delivery_filter:
         grouped_summary = grouped_summary[grouped_summary["Delivery Owner"].isin(delivery_filter)]
     if pl_filter:
