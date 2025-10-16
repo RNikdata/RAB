@@ -376,9 +376,9 @@ elif st.session_state["active_page"] == "Supply Pool":
     if account_filter:
         df_unique = df_unique[df_unique["Account Name"].isin(account_filter)]
     if delivery_filter:
-        grouped_summary = grouped_summary[grouped_summary["Delivery Owner"].isin(delivery_filter)]
+        grouped_summary = df_unique[df_unique["Delivery Owner"].isin(delivery_filter)]
     if pl_filter:
-        grouped_summary = grouped_summary[grouped_summary["P&L Owner Mapping"].isin(pl_filter)]
+        grouped_summary = df_unique[df_unique["P&L Owner Mapping"].isin(pl_filter)]
     if designation_filter:
         df_unique = df_unique[df_unique["Designation"].isin(designation_filter)]
     if skill_filter:
