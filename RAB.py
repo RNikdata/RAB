@@ -267,7 +267,6 @@ if st.session_state["active_page"] == "Transfer Summary":
         })
 
     grouped_summary = pd.DataFrame(summary_list)
-    num_rows = len(grouped_summary)
     
     if manager_filter:
         grouped_summary = grouped_summary[grouped_summary["Manager Name"].isin(manager_filter)]
@@ -279,8 +278,9 @@ if st.session_state["active_page"] == "Transfer Summary":
         ),
         use_container_width=True,
         hide_index=True,
-        height=num_rows*40
+        height=len(grouped_summary)*40  # dynamically adjust height
     )
+
 
     # st.markdown(
     #     "<p style='margin-top:15px; color:#b0b0b0; font-size:14px; font-style:italic;'>"
