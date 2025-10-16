@@ -243,7 +243,7 @@ if st.session_state["active_page"] == "Transfer Summary":
     merged_summary.columns = merged_summary.columns.str.strip()
 
     combo_df = pd.DataFrame(data)
-
+    st.write(combo_df)
     # --- Group by Account + Delivery Owner + P&L Owner Mapping ---
     grouped_summary = merged_summary.groupby(
         ["Delivery Owner", "P&L Owner Mapping", "Account Name"], 
@@ -399,8 +399,6 @@ elif st.session_state["active_page"] == "Supply Pool":
     # --- Columns to display ---
     columns_to_show = ["Delivery Owner", "P&L Owner Mapping", "Account Name", "Employee Id", "Employee Name", "Designation", "Rank", "Skillset"]
     columns_to_show = [col for col in columns_to_show if col in filtered_df_unique.columns]
-
-    st.write(filtered_df_unique)
 
     # --- Display Employee Cards ---
     if not filtered_df_unique.empty:
