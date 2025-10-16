@@ -386,7 +386,7 @@ elif st.session_state["active_page"] == "Supply Pool":
     filtered_df_unique["Skillset"] = filtered_df_unique["Skillset"].fillna("")
 
     # --- Columns to display ---
-    columns_to_show = ["Manager Name", "Account Name", "Employee Id", "Employee Name", "Designation", "Rank", "Skillset"]
+    columns_to_show = ["Delivery Owner", "P&L Owner Mapping", "Account Name", "Employee Id", "Employee Name", "Designation", "Rank", "Skillset"]
     columns_to_show = [col for col in columns_to_show if col in filtered_df_unique.columns]
 
     st.write(filtered_df_unique)
