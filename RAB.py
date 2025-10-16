@@ -90,7 +90,6 @@ df = df.merge(
 
 # Drop duplicate Account column from account_df if needed
 df = df.drop(columns=["Account"])
-st.write(merged_summary.columns.tolist())
 ########################################
 
 # --- Load Data --- (for local testing & development)
@@ -218,6 +217,8 @@ if st.session_state["active_page"] == "Transfer Summary":
         on="Employee Id",
         how="left"
     )
+    
+    st.write(merged_summary.columns.tolist())
 
     # Apply sidebar filters
     if account_filter:
