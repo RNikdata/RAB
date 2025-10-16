@@ -11,7 +11,6 @@ import requests
 import base64
 from PIL import Image
 from io import BytesIO
-import win32com.client as win32
 
 st.set_page_config(
     page_title="mu Ghumao Board",  # <-- Browser tab name
