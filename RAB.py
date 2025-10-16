@@ -40,6 +40,56 @@ ads_sheet = gc.open_by_key(SHEET_ID).worksheet(ADS_SHEET_NAME)
 df = get_as_dataframe(employee_sheet, evaluate_formulas=True).dropna(how="all")
 ads_df = get_as_dataframe(ads_sheet, evaluate_formulas=True).dropna(how="all")
 
+# Define the data
+data = {
+    "Account": [
+        "Bristol-Myers Squibb",
+        "J&J",
+        "AbbVie",
+        "Gilead Sciences  Inc.",
+        "Recursion",
+        "Novartis",
+        "Sanofi",
+        "Abbott Laboratories",
+        "Loyalty Pacific",
+        "Coles"
+    ],
+    "Delivery Owner": [
+        "Riddhi J Katira",
+        "Sana Aram",
+        "Aneesha Bijju",
+        "Aviral Tiwari",
+        "Saaketh Ram",
+        "Satyananda Palui",
+        "Satyananda Palui",
+        "Satyananda Palui",
+        "Aviral Bhargava",
+        "Aviral Bhargava"
+    ],
+    "P&L Owner Mapping": [
+        "Shilpa P Bhat",
+        "Rajdeep Roy Choudhury",
+        "Nivedhan Narasimhan",
+        "Nivedhan Narasimhan",
+        "Nivedhan Narasimhan",
+        "Shilpa P Bhat",
+        "Tanmay Sengupta",
+        "Tanmay Sengupta",
+        "Shilpa P Bhat",
+        "Shilpa P Bhat"
+    ]
+}
+account_df = pd.DataFrame(data)
+
+df = df.merge(
+    account_df, 
+    how="left",                     # keep all rows from df
+    left_on="Account Name",         # column in df
+    right_on="Account"              # column in account_df
+)
+
+# Drop duplicate Account column from account_df if needed
+merged_df = merged_df.drop(columns=["Account"])
 ########################################
 
 # --- Load Data --- (for local testing & development)
@@ -134,8 +184,6 @@ st.markdown("---")
             
 if st.session_state["active_page"] == "Transfer Summary":
 
-    unique_skills = df["Skillset"].dropna().unique().tolist()
-    
     # --- Sidebar: Logo & Company Name ---
     st.sidebar.markdown(
         """
@@ -146,148 +194,64 @@ if st.session_state["active_page"] == "Transfer Summary":
         unsafe_allow_html=True
     )
 
-    top_managers = [
-        "Nivedhan Narasimhan",
-        "Rajdeep Roy Choudhury",
-        "Riyas Mohammed Abdul Razak",
-        "Sabyasachi Mondal",
-        "Satyananda Palui",
-        "Shilpa P Bhat",
-        "Siddharth Chhottray",
-        "Tanmay Sengupta",
-        "Samanvitha A Bhagavath",
-        "Aviral Bhargava"
-    ]
-    # designation = ["TDS1","TDS2","TDS3","TDS4","-"]
-    
-    # --- Sidebar Filters ---
-    st.sidebar.markdown("<br><br>",unsafe_allow_html = True)
-    st.sidebar.markdown("<br><br>",unsafe_allow_html = True)
+    # Sidebar Filters
     st.sidebar.header("⚙️ Filters")
-    # account_filter = st.sidebar.multiselect("Account Name", options=merged_df["Account Name"].dropna().unique())
-    manager_filter = st.sidebar.multiselect(
-        "Manager Name",
-        options= top_managers
-    )
-    # designation_filter = st.sidebar.multiselect(
-    #     "Designation",
-    #     options=[d for d in merged_df["Designation"].dropna().unique() if d in designation]
-    # )
+    account_filter = st.sidebar.multiselect("Account Name", options=merged_df["Account Name"].dropna().unique())
+    delivery_filter = st.sidebar.multiselect("Delivery Owner", options=merged_df["Delivery Owner"].dropna().unique())
+    pl_filter = st.sidebar.multiselect("P&L Owner", options=merged_df["P&L Owner Mapping"].dropna().unique())
+    
     st.sidebar.header("🔎 Search")
-    resource_search = st.sidebar.text_input("Search Employee Name or ID",placeholder = "Employe ID/Name")
-    st.subheader("📊 Manager Transfer Summary")
+    resource_search = st.sidebar.text_input("Search Employee Name or ID", placeholder="Employee ID/Name")
+
+    st.subheader("📊 Transfer Summary by Account / Delivery / P&L Owner")
     st.markdown("<br>", unsafe_allow_html=True)
+
     summary_df = ads_df.copy()
-    summary_df1 = df.copy()
-
-    # Dictionary to store manager: [list of employee names]
-    manager_employees = {}
-    
-    for mgr in top_managers:
-        # Filter employees under this manager
-        emp_names = summary_df.loc[
-            summary_df["Manager Name"] == mgr, "Employee Name"
-        ].dropna().unique().tolist()
-        
-        # Store in dictionary
-        manager_employees[mgr] = emp_names
-
-    mgr_to_mgr = dict(zip(summary_df["Employee Name"], summary_df["Manager Name"]))
-    
-    summary_df1 = summary_df1.drop_duplicates(subset=["Employee Id"], keep="first")
-    summary_df1 = summary_df1[~summary_df1["Designation"].isin(["AL"])]
-    summary_df11 = summary_df1[summary_df1["Current Billability"].isin(["PU - Person Unbilled", "-", "PI - Person Investment"])]
-    summary_df1["Tenure"] = pd.to_numeric(summary_df1["Tenure"], errors='coerce')
-    summary_df12 = summary_df1[summary_df1["Tenure"] > 35.9]
-    summary_df1 = pd.concat([summary_df11, summary_df12], ignore_index=True)
-    summary_df1 = summary_df1.drop_duplicates(subset=["Employee Id"], keep="first")
-    
-    # Remove invalid manager rows
-    summary_df = summary_df[summary_df["Manager Name"].notna()]
-    summary_df = summary_df[summary_df["Manager Name"].str.strip() != "- - -"]
 
     # Ensure Status column exists
     summary_df["Status"] = summary_df["Status"].fillna("Pending")
 
-    # Build manager-to-manager map
-    #display(mgr_to_mgr)
-    
-    # Recursive lookup for top-level manager
-    def get_final_manager(mgr_name):
-        a=mgr_name
-        visited = set()
-        while mgr_name and mgr_name not in top_managers:
-            if mgr_name in visited:
-                return None
-            visited.add(mgr_name)
-            mgr_name = mgr_to_mgr.get(mgr_name)
-        return mgr_name if mgr_name in top_managers else None
-    
-    # Create Final Manager column
-    summary_df["Final Manager"] = summary_df["Manager Name"].apply(
-        lambda x: x if x in top_managers else get_final_manager(x)
-    )
-
-    # List of all managers for summary
-    all_managers = pd.concat([summary_df["Manager Name"], summary_df["Interested Manager"]]).dropna().unique()
-    
-    # all_managers is a NumPy array — so filter it using np.isin
-    all_managers = [mgr for mgr in all_managers if mgr in top_managers]
-
-    summary_df1 = summary_df1.merge(
-        summary_df[["Employee Id", "Final Manager"]] if not summary_df.empty else pd.DataFrame(),
+    # Merge with employee sheet to get Delivery Owner & P&L Owner
+    merged_summary = summary_df.merge(
+        merged_df[["Employee Id", "Account Name", "Delivery Owner", "P&L Owner Mapping"]],
         on="Employee Id",
         how="left"
     )
-    
-    # Prepare summary table
-    summary_list = []
-    for mgr in all_managers:
-        temp_df = summary_df[
-            (summary_df["Final Manager"] == mgr) | 
-            (summary_df["Interested Manager"] == mgr)
+
+    # Apply sidebar filters
+    if account_filter:
+        merged_summary = merged_summary[merged_summary["Account Name"].isin(account_filter)]
+    if delivery_filter:
+        merged_summary = merged_summary[merged_summary["Delivery Owner"].isin(delivery_filter)]
+    if pl_filter:
+        merged_summary = merged_summary[merged_summary["P&L Owner Mapping"].isin(pl_filter)]
+    if resource_search:
+        merged_summary = merged_summary[
+            merged_summary["Employee Name"].str.contains(resource_search, case=False, na=False) |
+            merged_summary["Employee Id"].astype(str).str.contains(resource_search, case=False, na=False)
         ]
-        temp_df1 = summary_df1[summary_df1["Final Manager"] == mgr]
-        
-        total_requests = temp_df["Request Id"].dropna().nunique()
-        total_approved = (temp_df[temp_df["Status"] == "Approved"]["Request Id"].dropna().nunique())
-        total_rejected = (temp_df[temp_df["Status"] == "Rejected"]["Request Id"].dropna().nunique())
-        total_pending = (temp_df[temp_df["Status"] == "Pending"]["Request Id"].dropna().nunique())
 
-        unique_employees = temp_df1["Employee Id"].astype(str).dropna().unique()
-        total_employees = len(unique_employees)
-        
-        summary_list.append({
-            "Manager Name": mgr,
-            "Total Available Employee": total_employees,
-            "Total Requests Raised": total_requests,
-            "Total Approved": total_approved,
-            "Total Rejected": total_rejected,
-            "Total Pending": total_pending
-        })
+    # Group by Account / Delivery Owner / P&L Owner and summarize requests
+    grouped_summary = merged_summary.groupby(
+        ["Account Name", "Delivery Owner", "P&L Owner Mapping"], as_index=False
+    ).agg(
+        Total_Requests_Raised=pd.NamedAgg(column="Request Id", aggfunc=lambda x: x.dropna().nunique()),
+        Total_Approved=pd.NamedAgg(column="Status", aggfunc=lambda x: (x=="Approved").sum()),
+        Total_Rejected=pd.NamedAgg(column="Status", aggfunc=lambda x: (x=="Rejected").sum()),
+        Total_Pending=pd.NamedAgg(column="Status", aggfunc=lambda x: (x=="Pending").sum()),
+        Total_Employees=pd.NamedAgg(column="Employee Id", aggfunc=lambda x: x.dropna().nunique())
+    )
 
-    grouped_summary = pd.DataFrame(summary_list)
-    
-    if manager_filter:
-        grouped_summary = grouped_summary[grouped_summary["Manager Name"].isin(manager_filter)]
-
+    # Display the table
     st.dataframe(
         grouped_summary.sort_values(
-            by=["Total Requests Raised", "Manager Name"], 
+            by=["Total_Requests_Raised", "Account Name"],
             ascending=[False, True]
         ),
         use_container_width=True,
         hide_index=True,
-        height=len(grouped_summary)*40  # dynamically adjust height
+        height=len(grouped_summary) * 40
     )
-
-
-    # st.markdown(
-    #     "<p style='margin-top:15px; color:#b0b0b0; font-size:14px; font-style:italic;'>"
-    #     'Note: "Account Name" and "Designation" filters are not applicable for this Manager Summary view.'
-    #     "</p>",
-    #     unsafe_allow_html=True
-    # )
 
 elif st.session_state["active_page"] == "Supply Pool":
 
