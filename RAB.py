@@ -238,14 +238,13 @@ if st.session_state["active_page"] == "Transfer Summary":
         on='Employee Id',
         how='left'
     )
-    st.write(merged_summary.columns.tolist())
 
     # Strip spaces in column names to avoid KeyError
     merged_summary.columns = merged_summary.columns.str.strip()
 
     # --- Group by Account + Delivery Owner + P&L Owner Mapping ---
     grouped_summary = merged_summary.groupby(
-        ["Account", "Delivery Owner", "P&L Owner Mapping"], as_index=False
+        ["Account Name", "Delivery Owner", "P&L Owner Mapping"], as_index=False
     ).agg(
         Total_Employees=pd.NamedAgg(column="Employee Id", aggfunc=lambda x: x.dropna().nunique()),
         Total_Requests_Raised=pd.NamedAgg(column="Request Id", aggfunc=lambda x: x.dropna().nunique()),
