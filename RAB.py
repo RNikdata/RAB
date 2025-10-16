@@ -47,7 +47,7 @@ data = {
         "J&J",
         "Abbvie",
         "Gilead Sciences  Inc.",
-        "Recursion",
+        "RECURSION",
         "Novartis",
         "Sanofi",
         "Abbott Laboratories",
