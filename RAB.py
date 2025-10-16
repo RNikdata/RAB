@@ -251,10 +251,20 @@ if st.session_state["active_page"] == "Transfer Summary":
     ).agg(
         Total_Employees=pd.NamedAgg(column="Employee Id", aggfunc=lambda x: x.dropna().nunique()),
         Total_Requests_Raised=pd.NamedAgg(column="Request Id", aggfunc=lambda x: x.dropna().nunique()),
-        Total_Approved=pd.NamedAgg(column="Status", aggfunc=lambda x: (x == "Approved").sum()),
-        Total_Rejected=pd.NamedAgg(column="Status", aggfunc=lambda x: (x == "Rejected").sum()),
-        Total_Pending=pd.NamedAgg(column="Status", aggfunc=lambda x: x.dropna().eq("Pending").sum())
+        Total_Approved=pd.NamedAgg(
+            column="Status", 
+            aggfunc=lambda x: x[merged_summary.loc[x.index, "Request Id"].notna()].eq("Approved").sum()
+        ),
+        Total_Rejected=pd.NamedAgg(
+            column="Status", 
+            aggfunc=lambda x: x[merged_summary.loc[x.index, "Request Id"].notna()].eq("Rejected").sum()
+        ),
+        Total_Pending=pd.NamedAgg(
+            column="Status", 
+            aggfunc=lambda x: x[merged_summary.loc[x.index, "Request Id"].notna()].eq("Pending").sum()
+        )
     )
+
 
     # --- Apply sidebar filters ---
     if account_filter:
