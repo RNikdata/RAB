@@ -89,7 +89,7 @@ df = df.merge(
 )
 
 # Drop duplicate Account column from account_df if needed
-merged_df = merged_df.drop(columns=["Account"])
+df = df.drop(columns=["Account"])
 ########################################
 
 # --- Load Data --- (for local testing & development)
