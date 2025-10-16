@@ -274,6 +274,8 @@ if st.session_state["active_page"] == "Transfer Summary":
 
     grouped_summary = grouped_summary.rename(columns={"Account": "Account Name"})
 
+    column_to_show_in_grouped_summary = ["P&L Owner Mapping","Delivery Owner","Account Name","Total_Available_Employees", "Total_Requests_Raised","Total_Pending", "Total_Approved", "Total_Rejected"]
+    grouped_summary = grouped_summary[column_to_show_in_grouped_summary]
     count_cols = ["Total_Available_Employees", "Total_Requests_Raised", "Total_Approved", "Total_Rejected", "Total_Pending"]
     grouped_summary[count_cols] = grouped_summary[count_cols].fillna(0).astype(int)
 
