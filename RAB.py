@@ -208,49 +208,74 @@ if st.session_state["active_page"] == "Transfer Summary":
     st.subheader("📊 Transfer Summary")
     st.markdown("<br>", unsafe_allow_html=True)
 
-    summary_df = ads_df.copy()
+    # --- Copy dataframes ---
+    employee_df = df.copy()
+    request_df = ads_df.copy()
 
-    # Ensure Status column exists
-    summary_df["Status"] = summary_df["Status"].fillna("Pending")
+    # --- Filter employees ---
+    employee_df = employee_df.drop_duplicates(subset=["Employee Id"], keep="first")
+    employee_df = employee_df[~employee_df["Designation"].isin(["AL"])]
 
-    # Merge with employee sheet to get Delivery Owner & P&L Owner
-    merged_summary = summary_df.merge(
-        merged_df[["Employee Id", "Delivery Owner", "P&L Owner Mapping"]],
-        on="Employee Id",
-        how="left"
+    # Current Billability filter
+    billable_df = employee_df[
+        employee_df["Current Billability"].isin(["PU - Person Unbilled", "-", "PI - Person Investment"])
+    ]
+
+    # Tenure filter
+    employee_df["Tenure"] = pd.to_numeric(employee_df["Tenure"], errors='coerce')
+    tenure_df = employee_df[employee_df["Tenure"] > 35.9]
+
+    # Combine filters
+    employee_df = pd.concat([billable_df, tenure_df], ignore_index=True)
+    employee_df = employee_df.drop_duplicates(subset=["Employee Id"], keep="first")
+
+    # --- Ensure Status column exists in requests ---
+    request_df["Status"] = request_df["Status"].fillna("Pending")
+
+    # --- Merge employee info with requests ---
+    merged_summary = employee_df.merge(
+        request_df[['Employee Id', 'Request Id', 'Status']],
+        on='Employee Id',
+        how='left'
     )
-    
 
-    # Apply sidebar filters
+    # Strip spaces in column names to avoid KeyError
+    merged_summary.columns = merged_summary.columns.str.strip()
+
+    # --- Group by Account + Delivery Owner + P&L Owner Mapping ---
+    grouped_summary = merged_summary.groupby(
+        ["Account", "Delivery Owner", "P&L Owner Mapping"], as_index=False
+    ).agg(
+        Total_Employees=pd.NamedAgg(column="Employee Id", aggfunc=lambda x: x.dropna().nunique()),
+        Total_Requests_Raised=pd.NamedAgg(column="Request Id", aggfunc=lambda x: x.dropna().nunique()),
+        Total_Approved=pd.NamedAgg(column="Status", aggfunc=lambda x: (x == "Approved").sum()),
+        Total_Rejected=pd.NamedAgg(column="Status", aggfunc=lambda x: (x == "Rejected").sum()),
+        Total_Pending=pd.NamedAgg(column="Status", aggfunc=lambda x: (x == "Pending").sum())
+    )
+
+    # --- Apply sidebar filters ---
     if account_filter:
-        merged_summary = merged_summary[merged_summary["Account Name"].isin(account_filter)]
+        grouped_summary = grouped_summary[grouped_summary["Account"].isin(account_filter)]
     if delivery_filter:
-        merged_summary = merged_summary[merged_summary["Delivery Owner"].isin(delivery_filter)]
+        grouped_summary = grouped_summary[grouped_summary["Delivery Owner"].isin(delivery_filter)]
     if pl_filter:
-        merged_summary = merged_summary[merged_summary["P&L Owner Mapping"].isin(pl_filter)]
+        grouped_summary = grouped_summary[grouped_summary["P&L Owner Mapping"].isin(pl_filter)]
+
+    # --- Optional: search by employee name ---
     if resource_search:
-        merged_summary = merged_summary[
-            merged_summary["Employee Name"].str.contains(resource_search, case=False, na=False) |
-            merged_summary["Employee Id"].astype(str).str.contains(resource_search, case=False, na=False)
+        resource_ids = employee_df[
+            employee_df["Employee Name"].str.contains(resource_search, case=False, na=False) |
+            employee_df["Employee Id"].astype(str).str.contains(resource_search, na=False)
+        ]["Employee Id"].unique()
+        grouped_summary = grouped_summary[
+            merged_summary[merged_summary["Employee Id"].isin(resource_ids)]
+            .groupby(["Account", "Delivery Owner", "P&L Owner Mapping"], as_index=False)
+            .size().index
         ]
 
-    # Group by Account / Delivery Owner / P&L Owner and summarize requests
-    grouped_summary = merged_summary.groupby(
-        ["Account Name", "Delivery Owner", "P&L Owner Mapping"], as_index=False
-    ).agg(
-        Total_Requests_Raised=pd.NamedAgg(column="Request Id", aggfunc=lambda x: x.dropna().nunique()),
-        Total_Approved=pd.NamedAgg(column="Status", aggfunc=lambda x: (x=="Approved").sum()),
-        Total_Rejected=pd.NamedAgg(column="Status", aggfunc=lambda x: (x=="Rejected").sum()),
-        Total_Pending=pd.NamedAgg(column="Status", aggfunc=lambda x: (x=="Pending").sum()),
-        Total_Employees=pd.NamedAgg(column="Employee Id", aggfunc=lambda x: x.dropna().nunique())
-    )
-
-    # Display the table
+    # --- Display table ---
     st.dataframe(
-        grouped_summary.sort_values(
-            by=["Total_Requests_Raised", "Account Name"],
-            ascending=[False, True]
-        ),
+        grouped_summary.sort_values(by=["Total_Requests_Raised", "Account"], ascending=[False, True]),
         use_container_width=True,
         hide_index=True,
         height=len(grouped_summary) * 40
