@@ -11,7 +11,6 @@ import requests
 import base64
 from PIL import Image
 from io import BytesIO
-import itertools
 
 st.set_page_config(
     page_title="Resource Transfer Board",  # <-- Browser tab name
@@ -243,24 +242,14 @@ if st.session_state["active_page"] == "Transfer Summary":
     # Strip spaces in column names to avoid KeyError
     merged_summary.columns = merged_summary.columns.str.strip()
 
-    # --- Get unique values for cross join ---
-    delivery_owners = merged_summary["Delivery Owner"].dropna().unique()
-    pl_owners = merged_summary["P&L Owner Mapping"].dropna().unique()
-    accounts = merged_summary["Account Name"].dropna().unique()
-    
-    # Create a complete cartesian product
-   
-    all_combinations = pd.DataFrame(
-        list(itertools.product(delivery_owners, pl_owners, accounts)),
-        columns=["Delivery Owner", "P&L Owner Mapping", "Account Name"]
-    )
+    combo_df = pd.DataFrame(data)
 
     # --- Group by Account + Delivery Owner + P&L Owner Mapping ---
     grouped_summary = merged_summary.groupby(
         ["Delivery Owner", "P&L Owner Mapping", "Account Name"], 
         as_index=False
     ).agg(
-        Total_Employees=pd.NamedAgg(column="Employee Id", aggfunc=lambda x: x.dropna().nunique()),
+        Total_Available_Employees=pd.NamedAgg(column="Employee Id", aggfunc=lambda x: x.dropna().nunique()),
         Total_Requests_Raised=pd.NamedAgg(column="Request Id", aggfunc=lambda x: x.dropna().nunique()),
         Total_Approved=pd.NamedAgg(
             column="Status", 
@@ -276,13 +265,15 @@ if st.session_state["active_page"] == "Transfer Summary":
         )
     )
 
-    grouped_summary = all_combinations.merge(
+    grouped_summary = combo_df.merge(
         grouped_summary,
-        on=["Delivery Owner", "P&L Owner Mapping", "Account Name"],
+        left_on=["Delivery Owner", "P&L Owner Mapping", "Account"],
+        right_on=["Delivery Owner", "P&L Owner Mapping", "Account Name"],
         how="left"
-    ).fillna(0)
+    ).drop(columns=["Account"])
 
-
+    count_cols = ["Total_Available_Employees", "Total_Requests_Raised", "Total_Approved", "Total_Rejected", "Total_Pending"]
+    grouped_summary[count_cols] = grouped_summary[count_cols].fillna(0).astype(int)
 
     # --- Apply sidebar filters ---
     if account_filter:
