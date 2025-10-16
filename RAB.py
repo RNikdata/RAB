@@ -238,6 +238,7 @@ if st.session_state["active_page"] == "Transfer Summary":
         on='Employee Id',
         how='left'
     )
+    st.write(merged_summary.columns.tolist())
 
     # Strip spaces in column names to avoid KeyError
     merged_summary.columns = merged_summary.columns.str.strip()
