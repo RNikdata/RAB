@@ -269,9 +269,8 @@ if st.session_state["active_page"] == "Transfer Summary":
     grouped_summary = pd.DataFrame(summary_list)
     num_rows = len(grouped_summary)
     
-
     if manager_filter:
-        grouped_summary = grouped_summary[grouped_summary["Final Manager"].isin(manager_filter)]
+        grouped_summary = grouped_summary[grouped_summary["Manager Name"].isin(manager_filter)]
 
     st.dataframe(
         grouped_summary.sort_values(
