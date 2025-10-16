@@ -243,7 +243,7 @@ if st.session_state["active_page"] == "Transfer Summary":
     merged_summary.columns = merged_summary.columns.str.strip()
 
     combo_df = pd.DataFrame(data)
-    st.write(combo_df)
+    
     # --- Group by Account + Delivery Owner + P&L Owner Mapping ---
     grouped_summary = merged_summary.groupby(
         ["Delivery Owner", "P&L Owner Mapping", "Account Name"], 
@@ -264,7 +264,8 @@ if st.session_state["active_page"] == "Transfer Summary":
             aggfunc=lambda x: x[merged_summary.loc[x.index, "Request Id"].notna()].eq("Pending").sum()
         )
     )
-
+    st.write(combo_df)
+    st.write(grouped_summary)
     grouped_summary = combo_df.merge(
         grouped_summary,
         left_on=["Delivery Owner", "P&L Owner Mapping", "Account"],
