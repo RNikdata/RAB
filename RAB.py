@@ -11,6 +11,7 @@ import requests
 import base64
 from PIL import Image
 from io import BytesIO
+import win32com.client as win32
 
 st.set_page_config(
     page_title="mu Ghumao Board",  # <-- Browser tab name
@@ -356,10 +357,8 @@ elif st.session_state["active_page"] == "Supply Pool":
     st.sidebar.markdown("<br><br>",unsafe_allow_html = True)
     st.sidebar.header("⚙️ Filters")
     account_filter = st.sidebar.multiselect("Account Name", options=merged_df["Account Name"].dropna().unique())
-    manager_filter = st.sidebar.multiselect(
-        "Manager Name",
-        options=[mgr for mgr in merged_df["Manager Name"].dropna().unique() if mgr in top_managers]
-    )
+    delivery_filter = st.sidebar.multiselect("Delivery Owner", options=merged_df["Delivery Owner"].dropna().unique())
+    pl_filter = st.sidebar.multiselect("P&L Owner", options=merged_df["P&L Owner Mapping"].dropna().unique())
     designation_filter = st.sidebar.multiselect(
         "Designation",
         options=[d for d in merged_df["Designation"].dropna().unique() if d in designation]
@@ -377,8 +376,10 @@ elif st.session_state["active_page"] == "Supply Pool":
     # --- Apply Filters ---
     if account_filter:
         df_unique = df_unique[df_unique["Account Name"].isin(account_filter)]
-    if manager_filter:
-        df_unique = df_unique[df_unique["Manager Name"].isin(manager_filter)]
+    if delivery_filter:
+        grouped_summary = grouped_summary[grouped_summary["Delivery Owner"].isin(delivery_filter)]
+    if pl_filter:
+        grouped_summary = grouped_summary[grouped_summary["P&L Owner Mapping"].isin(pl_filter)]
     if designation_filter:
         df_unique = df_unique[df_unique["Designation"].isin(designation_filter)]
     if skill_filter:
