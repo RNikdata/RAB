@@ -303,130 +303,37 @@ elif st.session_state["active_page"] == "Supply Pool":
         """,
         unsafe_allow_html=True
     )
+
     unique_skills = [
-        "muPDNA",
-        "muOBI",
-        "Pharma Regulatory Compliance",
-        "SAS",
-        "Python",
-        "Power BI",
-        "PowerApps",
-        "Azure AI Document Intelligence",
-        "Azure",
-        "muUniverse",
-        "muDSC",
-        "Clinical Trials",
-        "Qlik Sense",
-        "Dataiku",
-        "PySpark",
-        "SQL",
-        "Databricks",
-        "Snowflake",
-        "Streamlit",
-        "Customer Loyalty",
-        "Data Engineering",
-        "HEOR",
-        "Pharma Industry",
-        "Demand Forecasting",
-        "Sales and Operations Planning",
-        "Statistics",
-        "Machine Learning",
-        "YAML",
-        "Jupyter Notebook",
-        "Git Concepts",
-        "Bitbucket",
-        "DevOps",
-        "AWS",
-        "Kubernetes",
-        "ArgoWorkflows",
-        "Helm",
-        "Jenkins",
-        "Jfrog",
-        "Docker",
-        "Confluence",
-        "AWS Redshift",
-        "AWS S3",
-        "Postgres",
-        "MS Excel",
-        "Tableau",
-        "R",
-        "Node JS",
-        "Angular JS",
-        "React JS",
-        "Polars",
-        "Communication",
-        "Medical Devices Industry",
-        "Formulary Development",
-        "MS Office",
-        "Figma",
-        "Bricks and PreFabs",
-        "Supply Chain",
-        "Knowledge Graphs",
-        "Neural Networks",
-        "Graph Neural Networks",
-        "LLM",
-        "Vector DB",
-        "RAG",
-        "JIRA",
-        "Power Automate",
-        "MS Sharepoint",
-        "MS Powerpoint",
-        "Kedro",
-        "Dagster",
-        "GitHub",
-        "Site Selection",
-        "Clustering",
-        "UI/UX",
-        "Cloud Computing",
-        "Azure DevOps",
-        "AWS EC2",
-        "AWS EMR",
-        "AWS EKS",
-        "Oracle DB",
-        "AWS IAM",
-        "Spotfire",
-        "PyDash",
-        "HTML",
-        "CSS",
-        "Dash",
-        "MLOps",
-        "Financial Operations",
-        "Manufacturing",
-        "Azure Data Factory",
-        "Power Platform",
-        "Azure Blob Storage",
-        "Qlikview",
-        "MS OneNote",
-        "Payments Industry",
-        "Media Streaming Device Industry",
-        "Probability and Discrete Mathematics",
-        "Segmentation"
+        "muPDNA", "muOBI", "Pharma Regulatory Compliance", "SAS", "Python",
+        "Power BI", "PowerApps", "Azure AI Document Intelligence", "Azure",
+        "muUniverse", "muDSC", "Clinical Trials", "Qlik Sense", "Dataiku",
+        "PySpark", "SQL", "Databricks", "Snowflake", "Streamlit", "Customer Loyalty",
+        "Data Engineering", "HEOR", "Pharma Industry", "Demand Forecasting",
+        "Sales and Operations Planning", "Statistics", "Machine Learning", "YAML",
+        "Jupyter Notebook", "Git Concepts", "Bitbucket", "DevOps", "AWS", "Kubernetes",
+        "ArgoWorkflows", "Helm", "Jenkins", "Jfrog", "Docker", "Confluence", "AWS Redshift",
+        "AWS S3", "Postgres", "MS Excel", "Tableau", "R", "Node JS", "Angular JS",
+        "React JS", "Polars", "Communication", "Medical Devices Industry",
+        "Formulary Development", "MS Office", "Figma", "Bricks and PreFabs", "Supply Chain",
+        "Knowledge Graphs", "Neural Networks", "Graph Neural Networks", "LLM", "Vector DB",
+        "RAG", "JIRA", "Power Automate", "MS Sharepoint", "MS Powerpoint", "Kedro", "Dagster",
+        "GitHub", "Site Selection", "Clustering", "UI/UX", "Cloud Computing", "Azure DevOps",
+        "AWS EC2", "AWS EMR", "AWS EKS", "Oracle DB", "AWS IAM", "Spotfire", "PyDash", "HTML",
+        "CSS", "Dash", "MLOps", "Financial Operations", "Manufacturing", "Azure Data Factory",
+        "Power Platform", "Azure Blob Storage", "Qlikview", "MS OneNote", "Payments Industry",
+        "Media Streaming Device Industry", "Probability and Discrete Mathematics", "Segmentation"
     ]
-    
+
     top_managers = [
-        "Nivedhan Narasimhan",
-        "Rajdeep Roy Choudhury",
-        "Riyas Mohammed Abdul Razak",
-        "Sabyasachi Mondal",
-        "Satyananda Palui",
-        "Shilpa P Bhat",
-        "Siddharth Chhottray",
-        "Tanmay Sengupta",
-        "Samanvitha A Bhagavath",
-        "Aviral Bhargava"
+        "Nivedhan Narasimhan", "Rajdeep Roy Choudhury", "Riyas Mohammed Abdul Razak",
+        "Sabyasachi Mondal", "Satyananda Palui", "Shilpa P Bhat", "Siddharth Chhottray",
+        "Tanmay Sengupta", "Samanvitha A Bhagavath", "Aviral Bhargava"
     ]
-    
-    designation = [
-        "TDS1",
-        "TDS2",
-        "TDS3",
-        "TDS4",
-        "-"
-    ]
-    
+
+    designation = ["TDS1", "TDS2", "TDS3", "TDS4", "-"]
+
     # --- Sidebar Filters ---
-    st.sidebar.markdown("<br><br>",unsafe_allow_html = True)
-    st.sidebar.markdown("<br><br>",unsafe_allow_html = True)
     st.sidebar.header("⚙️ Filters")
     account_filter = st.sidebar.multiselect("Account Name", options=merged_df["Account Name"].dropna().unique())
     manager_filter = st.sidebar.multiselect(
@@ -437,65 +344,27 @@ elif st.session_state["active_page"] == "Supply Pool":
         "Designation",
         options=[d for d in merged_df["Designation"].dropna().unique() if d in designation]
     )
-    
-    skill_filter = st.sidebar.multiselect(
-        "Skills",
-        options=unique_skills,
-        default=[]  # you can set a default selection if you want
-    )
-    
-    st.sidebar.markdown("<br><br>",unsafe_allow_html = True)
+    skill_filter = st.sidebar.multiselect("Skills", options=unique_skills, default=[])
     st.sidebar.header("🔎 Search")
-    resource_search = st.sidebar.text_input("Search Employee Name or ID",placeholder = "Employe ID/Name")
+    resource_search = st.sidebar.text_input("Search Employee Name or ID", placeholder="Employee ID/Name")
+
     st.subheader("📝 Supply Pool")
     st.markdown("<br>", unsafe_allow_html=True)
     warning_placeholder = st.empty()
+
     df_unique = df.drop_duplicates(subset=["Employee Id"]).copy()
 
-    # Dictionary to store manager: [list of employee names]
-    manager_employees = {}
-    
-    for mgr in top_managers:
-        # Filter employees under this manager
-        emp_names = df_unique.loc[
-            df_unique["Manager Name"] == mgr, "Employee Name"
-        ].dropna().unique().tolist()
-        
-        # Store in dictionary
-        manager_employees[mgr] = emp_names
-
-    mgr_to_mgr = dict(zip(df_unique["Employee Name"], df_unique["Manager Name"]))
-
-    def get_final_manager(mgr_name):
-        visited = set()
-        while mgr_name and mgr_name not in top_managers:
-            if mgr_name in visited:
-                return None
-            visited.add(mgr_name)
-            mgr_name = mgr_to_mgr.get(mgr_name)
-        return mgr_name if mgr_name in top_managers else None
-    
-    # Create Final Manager column
-    df_unique["Final Manager"] = df_unique["Manager Name"].apply(
-        lambda x: x if x in top_managers else get_final_manager(x)
-    )
-
-    # --- Filter DataFrame based on filters ---
+    # --- Apply Filters ---
     if account_filter:
         df_unique = df_unique[df_unique["Account Name"].isin(account_filter)]
     if manager_filter:
-        df_unique = df_unique[df_unique["Final Manager"].isin(manager_filter)]
+        df_unique = df_unique[df_unique["Manager Name"].isin(manager_filter)]
     if designation_filter:
         df_unique = df_unique[df_unique["Designation"].isin(designation_filter)]
     if skill_filter:
-        # Convert to lowercase for case-insensitive matching
         selected_skills = [s.lower() for s in skill_filter]
-    
-        # Ensure "Skillset" column is string and handle nulls
         df_unique = df_unique[
-            df_unique["Skillset"].fillna("").apply(
-                lambda x: any(skill in x.lower() for skill in selected_skills)
-            )
+            df_unique["Skillset"].fillna("").apply(lambda x: any(skill in x.lower() for skill in selected_skills))
         ]
     if resource_search:
         df_unique = df_unique[
@@ -506,45 +375,42 @@ elif st.session_state["active_page"] == "Supply Pool":
     # --- Tenure & Billability filters ---
     filtered_df_unique = df_unique.drop_duplicates(subset=["Employee Id"], keep="first")
     filtered_df_unique = filtered_df_unique[~filtered_df_unique["Designation"].isin(["AL"])]
-    filtered_df_unique1 = filtered_df_unique[filtered_df_unique["Current Billability"].isin(["PU - Person Unbilled", "-", "PI - Person Investment"])]
+    filtered_df_unique1 = filtered_df_unique[
+        filtered_df_unique["Current Billability"].isin(["PU - Person Unbilled", "-", "PI - Person Investment"])
+    ]
     filtered_df_unique["Tenure"] = pd.to_numeric(filtered_df_unique["Tenure"], errors='coerce')
     filtered_df_unique2 = filtered_df_unique[filtered_df_unique["Tenure"] > 35.9]
     filtered_df_unique = pd.concat([filtered_df_unique1, filtered_df_unique2], ignore_index=True)
     filtered_df_unique = filtered_df_unique.drop_duplicates(subset=["Employee Id"], keep="first")
     filtered_df_unique["3+_yr_Tenure_Flag"] = filtered_df_unique["Tenure"].apply(lambda x: "Yes" if x > 3 else "No")
-    filtered_df_unique = filtered_df_unique[filtered_df_unique["Final Manager"].notna()]
     filtered_df_unique["Skillset"] = filtered_df_unique["Skillset"].fillna("")
-    # Add a new column "Image URL"
-    # Ensure the URL column exists in the DataFrame that will be displayed
-    
-    columns_to_show = ["Manager Name", "Account Name", "Employee Id", "Employee Name", "Designation", "Rank","Final Manager","Skillset"]
+
+    # --- Columns to display ---
+    columns_to_show = ["Manager Name", "Account Name", "Employee Id", "Employee Name", "Designation", "Rank", "Skillset"]
     columns_to_show = [col for col in columns_to_show if col in filtered_df_unique.columns]
 
     # --- Display Employee Cards ---
     if not filtered_df_unique.empty:
         sorted_df = filtered_df_unique[columns_to_show].sort_values(by="Employee Name").reset_index(drop=True)
         n = len(sorted_df)
-        # Placeholder for warnings and loading message
-        warning_placeholder = st.empty()
         loading_placeholder = st.empty()
 
         with st.spinner("⏳ Loading employee details..."):
             for i in range(0, n, 2):
-                cols = st.columns([1,1])
+                cols = st.columns([1, 1])
                 for j, col in enumerate(cols):
                     if i + j < n:
                         row = sorted_df.iloc[i + j]
                         emp_id = row['Employee Id']
-                        img = fetch_employee_url(emp_id) 
-                        html_img_tag = f'<img src="{img}" style="width:110px; height:120px; border-radius:4px; object-fit:cover;">' # get PIL image or default URL
+                        img = fetch_employee_url(emp_id)
+                        html_img_tag = f'<img src="{img}" style="width:110px; height:120px; border-radius:4px; object-fit:cover;">'
+
                         with col:
                             with st.container():
                                 st.markdown(
                                     f"""
                                     <div style='display:flex; align-items:center; gap:15px; padding:8px; border:3px solid #c0c0c0; border-radius:8px; margin-bottom:5px;'>
-                                        <div style='flex-shrink:0;'>
-                                            {html_img_tag}
-                                        </div>
+                                        <div style='flex-shrink:0;'>{html_img_tag}</div>
                                         <div style='flex-grow:1;'>
                                             <div style='font-size:20px; font-weight:bold;'>{row['Employee Name']}</div>
                                             <div style='font-size:14px; margin-top:5px; line-height:1.6;'>
@@ -553,50 +419,44 @@ elif st.session_state["active_page"] == "Supply Pool":
                                                     <div style='width:33%;'><b>📌 Band:</b> {row['Designation']}</div>
                                                     <div style='width:33%;'><b>🏷️ Rank:</b> {row['Rank']}</div>
                                                 </div>
-                                                <div style='display:flex;'>
-                                                    <div style='margin-top:4px;'><b>📂 Account:</b> {row['Account Name']}</div>
-                                                </div>
-                                                <div style='margin-top:4px;'><b>👔 Manager:</b> {row['Final Manager']}</div>
+                                                <div style='margin-top:4px;'><b>📂 Account:</b> {row['Account Name']}</div>
+                                                <div style='margin-top:4px;'><b>👔 Manager:</b> {row['Manager Name']}</div>
                                                 <div style='margin-top:4px;'><b>👨‍💻 Skillset:</b> {row['Skillset']}</div>
-                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                     """,
                                     unsafe_allow_html=True
                                 )
-    
-    
+
+                                # --- Interested in Employee button ---
                                 dum_ads_df = ads_df.copy()
                                 dum_ads_df = dum_ads_df[dum_ads_df["Request Id"].notna()]
-                                
+
                                 if st.button("Interested in Employee", key=f"interested_{row['Employee Id']}"):
                                     emp_name = row['Employee Name']
-                                    
+
                                     if {"Employee Name", "Employee to Swap", "Status"}.issubset(dum_ads_df.columns):
                                         approved_check = dum_ads_df[dum_ads_df["Status"] == "Approved"]
                                         approved_check = approved_check[
-                                            (approved_check["Employee Name"] == emp_name) | 
+                                            (approved_check["Employee Name"] == emp_name) |
                                             (approved_check["Employee to Swap"] == emp_name)
                                         ]
                                     else:
                                         approved_check = pd.DataFrame()
-                                    
-                                    if approved_check.empty:  # Go to form only if NOT in approved requests
+
+                                    if approved_check.empty:
                                         st.session_state["preselect_interested_employee"] = f"{row['Employee Id']} - {row['Employee Name']}"
-                                        st.session_state["active_page"] = "Employee Transfer Form"  
+                                        st.session_state["active_page"] = "Employee Transfer Form"
                                         st.rerun()
                                     else:
                                         warning_placeholder.warning(f"⚠️ The employee {row['Employee Name']} is already involved in an approved transfer request.")
-                                        
-    
-                                        
+
                                 st.markdown("<hr style='margin-top:1px; margin-bottom:5px; border:0; solid #d3d3d3;'>", unsafe_allow_html=True)
+
         loading_placeholder.empty()
-        
     else:
         st.warning("⚠️ No employees found for the selected filters.")
-
 
 # --- Tab 3: Transfer Requests ---
 elif st.session_state["active_page"] == "Transfer Requests":
