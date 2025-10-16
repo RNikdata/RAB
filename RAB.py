@@ -726,7 +726,7 @@ elif st.session_state["active_page"] == "Transfer Requests":
     
                         # Reject other pending requests for the same Employee
                         ads_df.loc[
-                            (ads_df["Employee Id"] == emp_id) & 
+                            ((ads_df["Employee Id"] == emp_id) | (ads_df["Employee to Swap"] == emp_id)) & 
                             (ads_df["Request Id"] != request_id_select) &
                             (ads_df["Status"] == "Pending"),
                             "Status"
@@ -734,7 +734,7 @@ elif st.session_state["active_page"] == "Transfer Requests":
     
                         # Reject other pending requests for the same Swap Employee
                         ads_df.loc[
-                            (ads_df["Employee to Swap"] == swap_emp_name) &
+                            ((ads_df["Employee to Swap"] == swap_emp_name) | (ads_df["Employee to Swap"] == swap_emp_name))  &
                             (ads_df["Request Id"] != request_id_select) &
                             (ads_df["Status"] == "Pending"),
                             "Status"
