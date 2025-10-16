@@ -45,7 +45,7 @@ data = {
     "Account": [
         "Bristol-Myers Squibb",
         "J&J",
-        "AbbVie",
+        "Abbvie",
         "Gilead Sciences  Inc.",
         "Recursion",
         "Novartis",
