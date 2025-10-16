@@ -242,8 +242,6 @@ if st.session_state["active_page"] == "Transfer Summary":
     # Strip spaces in column names to avoid KeyError
     merged_summary.columns = merged_summary.columns.str.strip()
 
-    st.write(merged_summary)
-
     # --- Group by Account + Delivery Owner + P&L Owner Mapping ---
     grouped_summary = merged_summary.groupby(
         ["Delivery Owner", "P&L Owner Mapping", "Account Name"], 
