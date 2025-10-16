@@ -167,7 +167,7 @@ if st.session_state["active_page"] == "Transfer Summary":
     # account_filter = st.sidebar.multiselect("Account Name", options=merged_df["Account Name"].dropna().unique())
     manager_filter = st.sidebar.multiselect(
         "Manager Name",
-        options=[mgr for mgr in merged_df["Manager Name"].dropna().unique() if mgr in top_managers]
+        options= top_managers
     )
     # designation_filter = st.sidebar.multiselect(
     #     "Designation",
