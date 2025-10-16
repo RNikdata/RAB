@@ -264,14 +264,15 @@ if st.session_state["active_page"] == "Transfer Summary":
             aggfunc=lambda x: x[merged_summary.loc[x.index, "Request Id"].notna()].eq("Pending").sum()
         )
     )
-    st.write(combo_df)
-    st.write(grouped_summary)
+    
     grouped_summary = combo_df.merge(
         grouped_summary,
         left_on=["Delivery Owner", "P&L Owner Mapping", "Account"],
         right_on=["Delivery Owner", "P&L Owner Mapping", "Account Name"],
         how="left"
-    ).drop(columns=["Account"])
+    ).drop(columns=["Account Name"])
+
+    grouped_summary = grouped_summary.rename(columns={"Account": "Account Name"})
 
     count_cols = ["Total_Available_Employees", "Total_Requests_Raised", "Total_Approved", "Total_Rejected", "Total_Pending"]
     grouped_summary[count_cols] = grouped_summary[count_cols].fillna(0).astype(int)
