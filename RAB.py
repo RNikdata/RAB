@@ -212,11 +212,10 @@ if st.session_state["active_page"] == "Transfer Summary":
 
     # Ensure Status column exists
     summary_df["Status"] = summary_df["Status"].fillna("Pending")
-    st.write(summary_df.columns.tolist())
 
     # Merge with employee sheet to get Delivery Owner & P&L Owner
     merged_summary = summary_df.merge(
-        merged_df[["Employee Id", "Account Name", "Delivery Owner", "P&L Owner Mapping"]],
+        merged_df[["Employee Id", "Delivery Owner", "P&L Owner Mapping"]],
         on="Employee Id",
         how="left"
     )
