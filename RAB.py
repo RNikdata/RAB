@@ -198,7 +198,7 @@ if st.session_state["active_page"] == "Transfer Summary":
     summary_df1 = summary_df1[~summary_df1["Designation"].isin(["AL"])]
     summary_df11 = summary_df1[summary_df1["Current Billability"].isin(["PU - Person Unbilled", "-", "PI - Person Investment"])]
     summary_df1["Tenure"] = pd.to_numeric(summary_df1["Tenure"], errors='coerce')
-    summary_df12 = summary_df1[summary_df1["Tenure"] > 3]
+    summary_df12 = summary_df1[summary_df1["Tenure"] > 35.9]
     summary_df1 = pd.concat([summary_df11, summary_df12], ignore_index=True)
     summary_df1 = summary_df1.drop_duplicates(subset=["Employee Id"], keep="first")
     
