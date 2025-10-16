@@ -269,13 +269,13 @@ if st.session_state["active_page"] == "Transfer Summary":
         ]["Employee Id"].unique()
         grouped_summary = grouped_summary[
             merged_summary[merged_summary["Employee Id"].isin(resource_ids)]
-            .groupby(["Account", "Delivery Owner", "P&L Owner Mapping"], as_index=False)
+            .groupby(["Account Name", "Delivery Owner", "P&L Owner Mapping"], as_index=False)
             .size().index
         ]
 
     # --- Display table ---
     st.dataframe(
-        grouped_summary.sort_values(by=["Total_Requests_Raised", "Account"], ascending=[False, True]),
+        grouped_summary.sort_values(by=["Total_Requests_Raised", "Account Name"], ascending=[False, True]),
         use_container_width=True,
         hide_index=True,
         height=len(grouped_summary) * 40
