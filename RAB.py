@@ -420,7 +420,8 @@ elif st.session_state["active_page"] == "Supply Pool":
                                                     <div style='width:33%;'><b>🏷️ Rank:</b> {row['Rank']}</div>
                                                 </div>
                                                 <div style='margin-top:4px;'><b>📂 Account:</b> {row['Account Name']}</div>
-                                                <div style='margin-top:4px;'><b>👔 Manager:</b> {row['Manager Name']}</div>
+                                                <div style='margin-top:4px;'><b>📦 Delivery Owner:</b> {row['Delivery Owner']}</div>
+                                                <div style='margin-top:4px;'><b>💼 P&L Owner:</b> {row['P&L Owner Mapping']}</div>
                                                 <div style='margin-top:4px;'><b>👨‍💻 Skillset:</b> {row['Skillset']}</div>
                                             </div>
                                         </div>
