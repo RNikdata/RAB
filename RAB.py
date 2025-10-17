@@ -308,8 +308,6 @@ if st.session_state["active_page"] == "Transfer Summary":
         hide_index=True,
         height=len(grouped_summary) * 40
     )
-    styled_df = grouped_summary.style.set_properties(**{'text-align': 'center'})
-    st.table(styled_df)
 
 elif st.session_state["active_page"] == "Supply Pool":
 
