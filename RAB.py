@@ -308,6 +308,8 @@ if st.session_state["active_page"] == "Transfer Summary":
         hide_index=True,
         height=len(grouped_summary) * 40
     )
+    styled_df = grouped_summary.style.set_properties(**{'text-align': 'center'})
+    st.table(styled_df)
 
 elif st.session_state["active_page"] == "Supply Pool":
 
@@ -341,13 +343,7 @@ elif st.session_state["active_page"] == "Supply Pool":
         "Power Platform", "Azure Blob Storage", "Qlikview", "MS OneNote", "Payments Industry",
         "Media Streaming Device Industry", "Probability and Discrete Mathematics", "Segmentation"
     ]
-
-    top_managers = [
-        "Nivedhan Narasimhan", "Rajdeep Roy Choudhury", "Riyas Mohammed Abdul Razak",
-        "Sabyasachi Mondal", "Satyananda Palui", "Shilpa P Bhat", "Siddharth Chhottray",
-        "Tanmay Sengupta", "Samanvitha A Bhagavath", "Aviral Bhargava"
-    ]
-
+    
     designation = ["TDS1", "TDS2", "TDS3", "TDS4", "-"]
 
     # --- Sidebar Filters ---
