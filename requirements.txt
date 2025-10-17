@@ -1,7 +1,7 @@
 streamlit
 pandas
-gspread
-gspread-dataframe
-google-auth
 numpy
+gspread
+gspread_dataframe
+google-auth
 pywin32
