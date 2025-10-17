@@ -492,19 +492,6 @@ elif st.session_state["active_page"] == "Transfer Requests":
         unsafe_allow_html=True
     )
     
-    top_managers = [
-        "Nivedhan Narasimhan",
-        "Rajdeep Roy Choudhury",
-        "Riyas Mohammed Abdul Razak",
-        "Sabyasachi Mondal",
-        "Satyananda Palui",
-        "Shilpa P Bhat",
-        "Siddharth Chhottray",
-        "Tanmay Sengupta",
-        "Samanvitha A Bhagavath",
-        "Aviral Bhargava"
-    ]
-    
     designation = [
         "TDS1",
         "TDS2",
@@ -518,10 +505,8 @@ elif st.session_state["active_page"] == "Transfer Requests":
     st.sidebar.markdown("<br><br>",unsafe_allow_html = True)
     st.sidebar.header("⚙️ Filters")
     account_filter = st.sidebar.multiselect("Account Name", options=merged_df["Account Name"].dropna().unique())
-    manager_filter = st.sidebar.multiselect(
-        "Manager Name",
-        options=[mgr for mgr in merged_df["Manager Name"].dropna().unique() if mgr in top_managers]
-    )
+    delivery_filter = st.sidebar.multiselect("Delivery Owner", options=merged_df["Delivery Owner"].dropna().unique())
+    pl_filter = st.sidebar.multiselect("P&L Owner", options=merged_df["P&L Owner Mapping"].dropna().unique())
     designation_filter = st.sidebar.multiselect(
         "Designation",
         options=[d for d in merged_df["Designation"].dropna().unique() if d in designation]
@@ -543,7 +528,7 @@ elif st.session_state["active_page"] == "Transfer Requests":
     with col1:
         interested_manager_search = st.selectbox(
             "Search by Interested Manager",
-            options=swap_df["Manager Name"].dropna().unique().tolist(),
+            options=swap_df["Interested Manager"].dropna().unique().tolist(),
             key="interested_manager_search_box",
             index = None
         )
@@ -641,7 +626,7 @@ elif st.session_state["active_page"] == "Transfer Requests":
         else:
             return "color: orange; font-weight: bold;"
 
-    swap_columns = ["Request Id", "Employee Id", "Employee Name", "Manager Name","Account Name", "Designation", 
+    swap_columns = ["Request Id", "Employee Id", "Employee Name","Account Name", "Designation", "Delivery Owner","P&L Owner Mapping",
                     "Interested Manager", "Employee to Swap", "Status"]
     swap_columns = [col for col in swap_columns if col in swap_df.columns]
 
@@ -649,8 +634,10 @@ elif st.session_state["active_page"] == "Transfer Requests":
     
     if account_filter:
         swap_df_filtered = swap_df_filtered[swap_df_filtered["Account Name"].isin(account_filter)]
-    if manager_filter:
-        swap_df_filtered = swap_df_filtered[swap_df_filtered["Manager Name"].isin(manager_filter)]
+    if delivery_filter:
+        grouped_summary = swap_df_filtered[swap_df_filtered["Delivery Owner"].isin(delivery_filter)]
+    if pl_filter:
+        grouped_summary = swap_df_filtered[swap_df_filtered["P&L Owner Mapping"].isin(pl_filter)]
     if designation_filter:
         swap_df_filtered = swap_df_filtered[swap_df_filtered["Designation"].isin(designation_filter)]
     if resource_search:
