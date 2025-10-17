@@ -623,28 +623,28 @@ elif st.session_state["active_page"] == "Transfer Requests":
                             emp_swap = approved_row.get("Employee to Swap", "")
                     
                             # 🔹 Add actual email columns here if available in ads_df
-                            delivery_email = ""
-                            pl_email = ""
-                            emp_email = ""
+                            delivery_email = "sami.sriharatejesh@mu-sigma.com"
+                            pl_email = "eshwaravarun.s@mu-sigma.com"
+                            emp_email = "aarul.v@mu-sigma.com"
                             swap_email = ""
                             sender_email = session.CurrentUser.Address
                             
-                            if delivery_owner:
-                                delivery_row = ads_df[ads_df["Employee Name"] == delivery_owner]
-                                if not delivery_row.empty:
-                                    delivery_email = delivery_row.iloc[0].get("Email", "")
-                            if pl_owner:
-                                pl_row = ads_df[ads_df["Employee Name"] == pl_owner]
-                                if not pl_row.empty:
-                                    pl_email = pl_row.iloc[0].get("Email", "")
-                            if emp_name:
-                                emp_row = ads_df[ads_df["Employee Name"] == emp_name]
-                                if not emp_row.empty:
-                                    emp_email = emp_row.iloc[0].get("Email", "")
-                            if emp_swap:
-                                swap_row = ads_df[ads_df["Employee Name"] == emp_swap]
-                                if not swap_row.empty:
-                                    swap_email = swap_row.iloc[0].get("Email", "")
+                            # if delivery_owner:
+                            #     delivery_row = ads_df[ads_df["Employee Name"] == delivery_owner]
+                            #     if not delivery_row.empty:
+                            #         delivery_email = delivery_row.iloc[0].get("Email", "")
+                            # if pl_owner:
+                            #     pl_row = ads_df[ads_df["Employee Name"] == pl_owner]
+                            #     if not pl_row.empty:
+                            #         pl_email = pl_row.iloc[0].get("Email", "")
+                            # if emp_name:
+                            #     emp_row = ads_df[ads_df["Employee Name"] == emp_name]
+                            #     if not emp_row.empty:
+                            #         emp_email = emp_row.iloc[0].get("Email", "")
+                            # if emp_swap:
+                            #     swap_row = ads_df[ads_df["Employee Name"] == emp_swap]
+                            #     if not swap_row.empty:
+                            #         swap_email = swap_row.iloc[0].get("Email", "")
 
                             recipients = [delivery_email, pl_email, emp_email, swap_email]
                             recipients = [r for r in recipients if r]  # remove blanks
