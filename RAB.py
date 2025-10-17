@@ -635,9 +635,9 @@ elif st.session_state["active_page"] == "Transfer Requests":
     if account_filter:
         swap_df_filtered = swap_df_filtered[swap_df_filtered["Account Name"].isin(account_filter)]
     if delivery_filter:
-        grouped_summary = swap_df_filtered[swap_df_filtered["Delivery Owner"].isin(delivery_filter)]
+        swap_df_filtered = swap_df_filtered[swap_df_filtered["Delivery Owner"].isin(delivery_filter)]
     if pl_filter:
-        grouped_summary = swap_df_filtered[swap_df_filtered["P&L Owner Mapping"].isin(pl_filter)]
+        swap_df_filtered = swap_df_filtered[swap_df_filtered["P&L Owner Mapping"].isin(pl_filter)]
     if designation_filter:
         swap_df_filtered = swap_df_filtered[swap_df_filtered["Designation"].isin(designation_filter)]
     if resource_search:
