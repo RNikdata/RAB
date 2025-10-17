@@ -4,4 +4,4 @@ numpy
 gspread
 gspread_dataframe
 google-auth
-pywin32
+pywin32; sys_platform == "win32"
