@@ -627,6 +627,8 @@ elif st.session_state["active_page"] == "Transfer Requests":
                             pl_email = ""
                             emp_email = ""
                             swap_email = ""
+                            sender_email = session.CurrentUser.Address
+                            
                             if delivery_owner:
                                 delivery_row = ads_df[ads_df["Employee Name"] == delivery_owner]
                                 if not delivery_row.empty:
@@ -646,19 +648,24 @@ elif st.session_state["active_page"] == "Transfer Requests":
 
                             recipients = [delivery_email, pl_email, emp_email, swap_email]
                             recipients = [r for r in recipients if r]  # remove blanks
-                    
-                            mail.Subject = f"Transfer Request Approved - Request ID | {request_id_select}"
+                            
+                            mail.Subject = f"Transfer Request Approved - Request ID: {request_id_select}"
+
+                            # Body
                             mail.Body = (
-                                f"Dear all,\n\n"
-                                f"The transfer request (ID: {request_id_select}) has been *approved* by {sender_name}.\n\n"
-                                f"Details:\n"
+                                f"Hi all,\n\n"
+                                f"The Transfer Request reference Request ID: {request_id_select} "
+                                f"for the employee {emp_name} has been approved by {sender_email}.\n\n"
+                                f"Transfer Request Details:\n"
                                 f"- Employee Name: {emp_name}\n"
                                 f"- Employee ID: {emp_id}\n"
-                                f"- Swap Employee: {emp_swap}\n"
+                                f"- Interested Manager: {interested_manager}\n"
+                                f"- Approved By: {sender_email}\n"
                                 f"- Delivery Owner: {delivery_owner}\n"
-                                f"- P&L Owner: {pl_owner}\n\n"
+                                f"- Employee to Swap: {emp_swap}\n\n"
                                 f"Kindly take necessary follow-up actions.\n\n"
-                                f"Regards,\n{sender_name}"
+                                f"Regards,\n"
+                                f"{sender_name}"
                             )
                     
                             mail.To = "; ".join(recipients)
