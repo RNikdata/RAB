@@ -711,7 +711,7 @@ elif st.session_state["active_page"] == "Employee Transfer Form":
     with col2:
         interested_employee_add = st.selectbox(
             "Interested Employee",
-            options=optoins_interested
+            options=options_interested,
             key="interested_employee_add",
             index = default_idx
         )
