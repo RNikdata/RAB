@@ -687,14 +687,18 @@ elif st.session_state["active_page"] == "Employee Transfer Form":
     options_swap = ["Select Employee to Swap"] + (available_employees["Employee Id"].astype(str) + " - " + available_employees["Employee Name"]).tolist()
        
     # Pre-fill if selected from Tab 1
+
     preselected = st.session_state.get("preselect_interested_employee", None)
+    #default_idx = options_interested.index(preselected) if preselected in options_interested else 0
+    # Dropdown
+    options_interested = ["Select Interested Employee"] + (available_employees["Employee Id"].astype(str) + " - " + available_employees["Employee Name"]).dropna().tolist()
     default_idx = options_interested.index(preselected) if preselected in options_interested else 0
 
     # --- Handle session state for dropdowns ---
-    if "interested_employee_add" not in st.session_state:
-        st.session_state["interested_employee_add"] = preselected if preselected else "Select Interested Employee"
-    if "employee_to_swap_add" not in st.session_state:
-        st.session_state["employee_to_swap_add"] = "Select Employee to Swap"   
+    # if "interested_employee_add" not in st.session_state:
+    #     st.session_state["interested_employee_add"] = preselected if preselected else "Select Interested Employee"
+    # if "employee_to_swap_add" not in st.session_state:
+    #     st.session_state["employee_to_swap_add"] = "Select Employee to Swap"   
 
     # --- Dropdowns ---
     col1, col2, col3 = st.columns([1, 2, 2])
@@ -707,7 +711,7 @@ elif st.session_state["active_page"] == "Employee Transfer Form":
     with col2:
         interested_employee_add = st.selectbox(
             "Interested Employee",
-            options=["Select Interested Employee"] + (available_employees["Employee Id"].astype(str) + " - " + available_employees["Employee Name"]).dropna().tolist(),
+            options=optoins_interested
             key="interested_employee_add",
             index = default_idx
         )
