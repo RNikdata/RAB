@@ -608,6 +608,65 @@ elif st.session_state["active_page"] == "Transfer Requests":
                             (ads_df["Status"] == "Pending"),
                             "Status"
                         ] = "Rejected"
+
+                         # --- 📧 Send Email Notification ---
+                        try:
+                            import win32com.client as win32
+                    
+                            outlook = win32.Dispatch('outlook.application')
+                            mail = outlook.CreateItem(0)
+                    
+                            sender_name = approved_row.get("Interested Manager", "")
+                            delivery_owner = approved_row.get("Delivery Owner", "")
+                            pl_owner = approved_row.get("P&L Owner Mapping", "")
+                            emp_name = approved_row.get("Employee Name", "")
+                            emp_swap = approved_row.get("Employee to Swap", "")
+                    
+                            # 🔹 Add actual email columns here if available in ads_df
+                            delivery_email = ""
+                            pl_email = ""
+                            emp_email = ""
+                            swap_email = ""
+                            if delivery_owner:
+                                delivery_row = ads_df[ads_df["Employee Name"] == delivery_owner]
+                                if not delivery_row.empty:
+                                    delivery_email = delivery_row.iloc[0].get("Email", "")
+                            if pl_owner:
+                                pl_row = ads_df[ads_df["Employee Name"] == pl_owner]
+                                if not pl_row.empty:
+                                    pl_email = pl_row.iloc[0].get("Email", "")
+                            if emp_name:
+                                emp_row = ads_df[ads_df["Employee Name"] == emp_name]
+                                if not emp_row.empty:
+                                    emp_email = emp_row.iloc[0].get("Email", "")
+                            if emp_swap:
+                                swap_row = ads_df[ads_df["Employee Name"] == emp_swap]
+                                if not swap_row.empty:
+                                    swap_email = swap_row.iloc[0].get("Email", "")
+
+                            recipients = [delivery_email, pl_email, emp_email, swap_email]
+                            recipients = [r for r in recipients if r]  # remove blanks
+                    
+                            mail.Subject = f"Transfer Request Approved - Request ID | {request_id_select}"
+                            mail.Body = (
+                                f"Dear all,\n\n"
+                                f"The transfer request (ID: {request_id_select}) has been *approved* by {sender_name}.\n\n"
+                                f"Details:\n"
+                                f"- Employee Name: {emp_name}\n"
+                                f"- Employee ID: {emp_id}\n"
+                                f"- Swap Employee: {emp_swap}\n"
+                                f"- Delivery Owner: {delivery_owner}\n"
+                                f"- P&L Owner: {pl_owner}\n\n"
+                                f"Kindly take necessary follow-up actions.\n\n"
+                                f"Regards,\n{sender_name}"
+                            )
+                    
+                            mail.To = "; ".join(recipients)
+                            mail.Send()
+                            msg_placeholder.success(f"📧 Email sent successfully to {', '.join(recipients)}")
+                    
+                        except Exception as email_error:
+                            msg_placeholder.warning(f"⚠️ Status updated but email not sent: {email_error}")
     
                     # Save updates to Google Sheet
                     set_with_dataframe(ads_sheet, ads_df, include_index=False, resize=True)
